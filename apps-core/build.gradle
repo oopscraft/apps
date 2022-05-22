@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'java-library'
+	id 'idea'
 }
 
 configurations {
@@ -11,18 +13,23 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+	// spring boot
+	api 'org.springframework.boot:spring-boot-starter'
+	api 'org.springframework.boot:spring-boot-starter-test'
+
+	// data
+	api 'org.springframework.boot:spring-boot-starter-data-jpa'
+	api 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	api 'com.h2database:h2'
+	//api 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+
 	compileOnly 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

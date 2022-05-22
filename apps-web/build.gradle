@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'java-library'
 }
 
 configurations {
@@ -11,13 +12,24 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+	// project
+	api project(':apps-core')
+
+	// spring boot
+	api 'org.springframework.boot:spring-boot-starter-data-rest'
+	//api 'org.springframework.boot:spring-boot-starter-security'
+	api 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	api 'org.springframework.boot:spring-boot-starter-web'
+	api 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	api 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// spring doc
+	api 'org.springdoc:springdoc-openapi-data-rest:1.6.8'
+	api 'org.springdoc:springdoc-openapi-core:1.6.8'
+	api 'org.springdoc:springdoc-openapi-ui:1.6.8'
+
+	// etc
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'

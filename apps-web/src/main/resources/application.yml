@@ -1,0 +1,23 @@
+logging:
+  level:
+    root: DEBUG
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+springdoc:
+  version: '@springdoc.version@'
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /api
+    groups-order: DESC
+  group-configs:
+    - group: version 1.0
+      paths-to-match: /api/v1/**

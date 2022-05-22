@@ -1,3 +1,3 @@
-rootProject.name=apps
+rootProject.name = 'apps'
 include 'apps-core'
 include 'apps-web'

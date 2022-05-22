@@ -21,3 +21,14 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# ignore output directory
+**/build/
+**/out/
+
+# ignore hidden
+**/.idea/
+**/.gradle/
+
+# ignore generated resource
+**/src/main/generated/
