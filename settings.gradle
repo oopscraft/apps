@@ -1,3 +1,4 @@
 rootProject.name = 'apps'
 include 'apps-core'
 include 'apps-web'
+include 'apps-batch'
