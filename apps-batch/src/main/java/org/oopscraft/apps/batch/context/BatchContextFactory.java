@@ -1,18 +1,18 @@
-package org.oopscraft.apps.batch.job;
+package org.oopscraft.apps.batch.context;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobContextFactory {
+public class BatchContextFactory {
 
     /**
      * getBatchContextFromArguments
      * @param arguments
      * @return
      */
-    public static JobContext getJobContextFromArguments(String[] arguments) throws ClassNotFoundException {
+    public static BatchContext getJobContextFromArguments(String[] arguments) throws ClassNotFoundException {
         Class<?> jobClass = null;
         String baseDate = null;
         Map<String,String> jobParameterMap = new LinkedHashMap<>();
@@ -38,7 +38,7 @@ public class JobContextFactory {
         }
 
         // build
-        JobContext jobContext = new JobContext();
+        BatchContext jobContext = new BatchContext();
         jobContext.setJobClass(jobClass);
         jobContext.setBaseDate(baseDate);
         jobContext.setJobParameters(jobParameterMap);

@@ -1,4 +1,4 @@
-package org.oopscraft.apps.batch.job;
+package org.oopscraft.apps.batch.context;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobContext {
+public class BatchContext {
 
     private Class<?> jobClass;
 

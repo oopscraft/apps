@@ -2,8 +2,8 @@ package org.oopscraft.apps.batch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.oopscraft.apps.batch.job.JobContext;
-import org.oopscraft.apps.batch.job.JobContextFactory;
+import org.oopscraft.apps.batch.context.BatchContext;
+import org.oopscraft.apps.batch.context.BatchContextFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -24,7 +24,7 @@ public class BatchApplication implements CommandLineRunner {
 
     private final Job job;
 
-    private static JobContext jobContext;
+    private static BatchContext jobContext;
 
     /**
      * main
@@ -32,10 +32,11 @@ public class BatchApplication implements CommandLineRunner {
      */
     public static void main(String[] args) throws Exception {
 
-        jobContext = JobContextFactory.getJobContextFromArguments(args);
+        jobContext = BatchContextFactory.getJobContextFromArguments(args);
 
         new SpringApplicationBuilder(BatchApplication.class)
                 .sources(jobContext.getJobClass())
+                .properties("--spring.batch.job.enabled=false")
                 .beanNameGenerator(new FullyQualifiedAnnotationBeanNameGenerator())
                 .web(WebApplicationType.NONE)
                 .registerShutdownHook(true)
