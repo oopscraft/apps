@@ -37,4 +37,10 @@ allprojects {
             }
         }
     }
+    configurations.all {
+        resolutionStrategy.dependencySubstitution {
+            substitute module("org.oopscraft.apps:apps-core") using project(":apps-core")
+        }
+    }
 }
+

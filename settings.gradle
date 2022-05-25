@@ -2,3 +2,9 @@ rootProject.name = 'apps'
 include 'apps-core'
 include 'apps-web'
 include 'apps-batch'
+
+// batman
+if(file('batman').exists()) {
+    include 'batman:batman-core'
+}
+
