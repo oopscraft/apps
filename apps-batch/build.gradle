@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'java-library'
+	id 'maven-publish'
 	id 'idea'
 }
 
@@ -29,4 +30,14 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootJar {
+	enabled = true
+	classifier = 'boot'
+}
+
+jar {
+	enabled = true
+	classifier = ''
 }

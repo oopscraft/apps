@@ -1,5 +1,5 @@
 allprojects {
-    group = 'io.oopscraft'
+    group = 'org.oopscraft.apps'
     version = '0.0.1-SNAPSHOT'
     repositories {
         maven {
@@ -11,5 +11,30 @@ allprojects {
             }
         }
         mavenCentral()
+    }
+    afterEvaluate { project ->
+        if(project.plugins.hasPlugin('maven-publish')) {
+            project.publishing {
+                publications {
+                    mavenJava(MavenPublication) {
+                        groupId = group
+                        artifactId = project.name
+                        version = version
+                        from components.java
+                    }
+                }
+                repositories {
+                    maven {
+                        allowInsecureProtocol = true
+                        url System.getProperty("mavenPublishUrl")
+                        credentials {
+                            username System.getProperty("mavenUsername")
+                            password System.getProperty("mavenPassword")
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }

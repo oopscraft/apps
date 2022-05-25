@@ -14,7 +14,7 @@ pipeline {
                 MAVEN_CREDENTIALS = credentials('MAVEN_CREDENTIALS')
             }
             steps {
-                sh "./gradlew --init-script init.gradle publish --stacktrace -PmavenPublishUrl=${MAVEN_PUBLISH_URL} -PmavenUsername=${MAVEN_CREDENTIALS_USR} -PmavenPassword=${MAVEN_CREDENTIALS_PSW}"
+                sh "./gradlew publish --stacktrace -DmavenPublishUrl=${MAVEN_PUBLISH_URL} -DmavenUsername=${MAVEN_CREDENTIALS_USR} -DmavenPassword=${MAVEN_CREDENTIALS_PSW}"
             }
         }
     }
