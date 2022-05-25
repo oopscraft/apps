@@ -1,3 +1,4 @@
 [submodule "batman"]
 	path = batman
 	url = https://github.com/oopscraft/batman.git
+    ignore = dirty
