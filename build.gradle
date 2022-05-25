@@ -1,10 +1,15 @@
 allprojects {
     group = 'io.oopscraft'
     version = '0.0.1-SNAPSHOT'
-}
-
-subprojects {
     repositories {
+        maven {
+            allowInsecureProtocol = true
+            url project.mavenGroupUrl
+            credentials {
+                username project.mavenUsername
+                password project.mavenPassword
+            }
+        }
         mavenCentral()
     }
 }

@@ -1,0 +1,14 @@
+allprojects {
+    publishing {
+        repositories {
+            maven {
+                allowInsecureProtocol = true
+                url System.getProperty("mavenPublishUrl")
+                credentials {
+                    username System.getProperty("mavenUsername")
+                    password System.getProperty("mavenPassword")
+                }
+            }
+        }
+    }
+}

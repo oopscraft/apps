@@ -26,7 +26,6 @@ dependencies {
 
 	// spring doc
 	api 'org.springdoc:springdoc-openapi-data-rest:1.6.8'
-	api 'org.springdoc:springdoc-openapi-core:1.6.8'
 	api 'org.springdoc:springdoc-openapi-ui:1.6.8'
 
 	// etc
