@@ -40,6 +40,8 @@ allprojects {
     configurations.all {
         resolutionStrategy.dependencySubstitution {
             substitute module("org.oopscraft.apps:apps-core") using project(":apps-core")
+            substitute module("org.oopscraft.apps:apps-web") using project(":apps-web")
+            substitute module("org.oopscraft.apps:apps-batch") using project(":apps-batch")
         }
     }
 }

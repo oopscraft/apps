@@ -5,6 +5,11 @@ include 'apps-batch'
 
 // batman
 if(file('batman').exists()) {
-    include 'batman:batman-core'
+    include 'batman-core'
+    project(':batman-core').projectDir = file('./batman/batman-core')
+    include 'batman-admin'
+    project(':batman-admin').projectDir = file('./batman/batman-admin')
+    include 'batman-agent'
+    project(':batman-agent').projectDir = file('./batman/batman-agent')
 }
 
