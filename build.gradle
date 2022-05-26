@@ -13,7 +13,7 @@ allprojects {
         mavenCentral()
     }
     afterEvaluate { project ->
-        if(project.plugins.hasPlugin('maven-publish')) {
+        if (project.plugins.hasPlugin('maven-publish')) {
             project.publishing {
                 publications {
                     mavenJava(MavenPublication) {
@@ -37,12 +37,107 @@ allprojects {
             }
         }
     }
+
     configurations.all {
         resolutionStrategy.dependencySubstitution {
-            substitute module("org.oopscraft.apps:apps-core") using project(":apps-core")
-            substitute module("org.oopscraft.apps:apps-web") using project(":apps-web")
-            substitute module("org.oopscraft.apps:apps-batch") using project(":apps-batch")
+            println "#################${gradle.rootProject}"
+            rootProject.childProjects.each { name, childProject ->
+                println "${name}"
+                println "${childProject.plugins.hasPlugin('maven-publish')}"
+                if (childProject.plugins.hasPlugin('maven-publish')) {
+                    println "######### groupId: ${childProject.group}"
+                    println "######### artifactId: ${childProject.name}"
+                    def groupId = childProject.group
+                    def artifactId = childProject.name
+                    //substitute module("${groupId}:${artifactId}") using project("${artifactId}")
+                    //substitute module("org.oopscraft.apps:apps-web") using project(":apps-web")
+                }
+            }
         }
     }
 }
 
+//    configurations.all {
+//        resolutionStrategy.dependencySubstitution {
+//
+//            // root api project
+//            substitute module("org.oopscraft.apps:apps-core") using project(":apps-core")
+//            substitute module("org.oopscraft.apps:apps-web") using project(":apps-web")
+//            substitute module("org.oopscraft.apps:apps-batch") using project(":apps-batch")
+//
+//            // additional included projects
+//            gradle.ext.submodules.each { submodule ->
+//                if(submodule.module == null) {
+//                    return
+//                }
+//                def projectDir = file(submodule.path)
+//                if(projectDir.exists()){
+//                    def projectName = submodule.path.split('/').last()
+//                    def projectObj = project(":${projectName}")
+//
+//                    println "projectObj: ${projectObj}"
+//                    substitute module("${submodule.module}") using projectObj
+//
+//                    //def groupId = projectObj.getGroup()
+////                    def projectObject = project(":${projectName}")
+////                    if(projectObject.getPlugins() != null
+////                    && projectObject.plugins.hasPlugn('maven-publish')){
+//
+////                        def groupId = projectObj.group
+////                        def artifactId = projectObj.name
+////                        println "substitue ${groupId}:${artifactId} using ${projectObject}"
+////                        substitute module("${groupId}:${artifactId}") using projectObject
+////                    }
+//
+//                }
+//
+//            }
+////
+//            println "################"
+//            if(project.group != null && project.name != null) {
+//                println "########### ${project.group}"
+//                println "############ ${project.name}"
+//                def groupId = project.group
+//                def artifactId = project.name
+////                    substitute module("${groupId}:${artifactId}") using project(":${artifactId}")
+//            }
+
+//                gradle.rootProject.childProjects.each {(name, childProject) ->
+//                    println "group: ${childProject.get('group')}"
+//                }
+            //substitute module("org.oopscraft.apps:apps-core") using project(":apps-core")
+            //substitute module("org.oopscraft.apps:apps-web") using project(":apps-web")
+            //substitute module("org.oopscraft.apps:apps-batch") using project(":apps-batch")
+//        }
+//    }
+//
+//}
+
+
+
+// submodule resolutionStrategy
+//allprojects {
+//    configurations.all {
+//        resolutionStrategy.dependencySubstitution {
+//
+//            // root project
+//            substitute module("com.kakaoinsure.core:core-boot-app") using project(":core-boot-app")
+//            substitute module("com.kakaoinsure.core:core-boot-api") using project(":core-boot-api")
+//            substitute module("com.kakaoinsure.core:core-boot-batch") using project(":core-boot-batch")
+//
+//            // submodules
+//            gradle.ext.submodules.each { submodule ->
+//                println "== dependencySubstitution:${submodule}"
+//                if (file(submodule).exists()) {
+//                    println "== submodule[${submodule}] found"
+//                    for (element in ['app', 'api', 'batch']) {
+//                        def artifactId = "${submodule}-${element}".toString()
+//                        if(file("./${submodule}/${artifactId}").exists()){
+//                            substitute module("com.kakaoinsure.core:${artifactId}") using project(":${artifactId}")
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
