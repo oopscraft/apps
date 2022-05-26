@@ -49,7 +49,7 @@ allprojects {
                     println "######### artifactId: ${childProject.name}"
                     def groupId = childProject.group
                     def artifactId = childProject.name
-                    //substitute module("${groupId}:${artifactId}") using project("${artifactId}")
+                    substitute module("${groupId}:${artifactId}") using project(":${artifactId}")
                     //substitute module("org.oopscraft.apps:apps-web") using project(":apps-web")
                 }
             }
