@@ -3,25 +3,7 @@ include 'apps-core'
 include 'apps-web'
 include 'apps-batch'
 
+apply from: 'settings-submodule.gradle'
 
-// submodule
-gradle.ext.submodules = [
-        [ path:'batman'],
-        [ path:'batman/batman-core', module:'org.oopscraft.batman:batman-core'],
-        [ path:'batman/batman-admin', module:'org.oopscraft.batman:batman-admin'],
-        [ path:'batman/batman-agent', module:'org.oopscraft.batman:batman-agent']
-]
-
-// load project
-gradle.ext.submodules.each { submodule ->
-    println "submodule.path: ${submodule.path}"
-    def submoduleDir = file(submodule.path)
-    if(submoduleDir.exists() && submoduleDir.list({file,name -> name.endsWith(".gradle")} as FilenameFilter).length) {
-        def projectName = submodule.path.split('/').last()
-        println "\t -> projectName: ${projectName}"
-        include "${projectName}"
-        project(":${projectName}").projectDir = submoduleDir
-    }
-}
 
 

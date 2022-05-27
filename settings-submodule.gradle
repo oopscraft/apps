@@ -1,0 +1,29 @@
+// defines submodule
+gradle.ext.submodules = [
+    "batman"
+]
+
+/**
+ * include project
+ * @param projectPath
+ * @return
+ */
+def includeProject(projectPath) {
+    def projectDir = file(projectPath)
+    if(projectDir.exists() && projectDir.list({file,name -> name.endsWith(".gradle")} as FilenameFilter).length) {
+        def projectName = projectDir.getName()
+        println "includeProject[${projectPath}] as ${projectName}"
+        include "${projectName}"
+        project(":${projectName}").projectDir = projectDir
+        projectDir.listFiles({file -> file.isDirectory()} as FileFilter).each { directory ->
+            def directoryPath = new File(".").toURI().relativize(directory.toURI()).getPath()
+            includeProject(directoryPath)
+        }
+    }
+}
+
+// load submodules
+gradle.ext.submodules.each { submodule ->
+    includeProject(submodule)
+}
+

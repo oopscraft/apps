@@ -1,0 +1,16 @@
+// dependencySubstitution
+println "== dependencySubstitution"
+allprojects {
+    configurations.all {
+        resolutionStrategy.dependencySubstitution {
+            rootProject.childProjects.each { name, subproject ->
+                if (subproject.plugins.hasPlugin('maven-publish')) {
+                    def groupId = subproject.group
+                    def artifactId = subproject.name
+                    println "substitute '${groupId}:${artifactId} using ${subproject.name}"
+                    substitute module("${groupId}:${artifactId}") using project(":${artifactId}")
+                }
+            }
+        }
+    }
+}
