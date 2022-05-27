@@ -5,25 +5,23 @@ gradle.ext.submodules = [
 
 /**
  * include project
- * @param projectPath
+ * @param directory
  * @return
  */
-def includeProject(projectPath) {
-    def projectDir = file(projectPath)
-    if(projectDir.exists() && projectDir.list({file,name -> name.endsWith(".gradle")} as FilenameFilter).length) {
-        def projectName = projectDir.getName()
-        println "includeProject[${projectPath}] as ${projectName}"
+def includeProject(directory) {
+    if(directory.exists() && directory.listFiles({it.getName() == "build.gradle"} as FileFilter).length) {
+        def projectName = directory.getName()
+        println "includeProject[${directory}] as ${projectName}"
         include "${projectName}"
-        project(":${projectName}").projectDir = projectDir
-        projectDir.listFiles({file -> file.isDirectory()} as FileFilter).each { directory ->
-            def directoryPath = new File(".").toURI().relativize(directory.toURI()).getPath()
-            includeProject(directoryPath)
+        project(":${projectName}").projectDir = directory
+        directory.listFiles({it.isDirectory()} as FileFilter).each {
+            includeProject(it)
         }
     }
 }
 
 // load submodules
 gradle.ext.submodules.each { submodule ->
-    includeProject(submodule)
+    includeProject(file(submodule))
 }
 
