@@ -7,8 +7,8 @@ allprojects {
                 if (it.plugins.hasPlugin('maven-publish')) {
                     def groupId = it.group
                     def artifactId = it.name
-                    println "substitute '${groupId}:${artifactId} using ${artifactId}"
-                    substitute module("${groupId}:${artifactId}") using project(":${artifactId}")
+                    println "substitute '${groupId}:${artifactId} using ${it.name}"
+                    substitute module("${groupId}:${artifactId}") using project(":${it.name}")
                 }
             }
         }
