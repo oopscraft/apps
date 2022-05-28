@@ -107,7 +107,7 @@ public class BatchConfiguration {
                 jobRepositoryFactoryBean.setMaxVarCharLength(1024);
                 return jobRepositoryFactoryBean.getObject();
             }
-            // false 일 경우는 none-resource TransactionManager
+            // none-resource TransactionManager
             else{
                 PlatformTransactionManager batchTransactionManager = new ResourcelessTransactionManager();
                 MapJobRepositoryFactoryBean jobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(batchTransactionManager);
@@ -138,76 +138,5 @@ public class BatchConfiguration {
             return new StepBuilderFactory(jobRepository, transactionManager);
         }
     }
-
-
-//    /**
-//     * BatchConfigurer
-//     */
-//    @EnableBatchProcessing
-//    @RequiredArgsConstructor
-//    public static class BatchConfigurer implements org.springframework.batch.core.configuration.annotation.BatchConfigurer, InitializingBean, DisposableBean {
-//
-//        private final BatchConfig batchConfig;
-//
-//        private HikariDataSource batchDataSource;
-//
-//        private PlatformTransactionManager batchTransactionManager;
-//
-//        private JobRepository jobRepository;
-//
-//        private SimpleJobLauncher jobLauncher;
-//
-//        @Override
-//        public void afterPropertiesSet() throws Exception {
-//            if(batchConfig.getDatasource() != null){
-//                batchDataSource = new HikariDataSource(batchConfig.getDatasource());
-//                batchTransactionManager = new DataSourceTransactionManager(batchDataSource);
-//                JobRepositoryFactoryBean jobRepositoryFactoryBean = new JobRepositoryFactoryBean();
-//                jobRepositoryFactoryBean.setDataSource(batchDataSource);
-//                jobRepositoryFactoryBean.setTransactionManager(batchTransactionManager);
-//                jobRepositoryFactoryBean.setTablePrefix("SPRING_BATCH_");
-//                jobRepositoryFactoryBean.setMaxVarCharLength(1024);
-//                jobRepositoryFactoryBean.afterPropertiesSet();
-//                jobRepository = jobRepositoryFactoryBean.getObject();
-//            }else{
-//                batchTransactionManager = new ResourcelessTransactionManager();
-//                MapJobRepositoryFactoryBean jobRepositoryFactoryBean = new MapJobRepositoryFactoryBean(batchTransactionManager);
-//                jobRepositoryFactoryBean.afterPropertiesSet();
-//                jobRepository = jobRepositoryFactoryBean.getObject();
-//            }
-//
-//            jobLauncher = new SimpleJobLauncher();
-//            jobLauncher.setJobRepository(jobRepository);
-//            jobLauncher.afterPropertiesSet();
-//        }
-//
-//        @Override
-//        public void destroy() throws Exception {
-//            if(batchDataSource != null) {
-//                batchDataSource.close();
-//            }
-//        }
-//
-//        @Override
-//        public JobRepository getJobRepository() throws Exception {
-//            return jobRepository;
-//        }
-//
-//        @Override
-//        public PlatformTransactionManager getTransactionManager() throws Exception {
-//            return batchTransactionManager;
-//        }
-//
-//        @Override
-//        public JobLauncher getJobLauncher() throws Exception {
-//            return jobLauncher;
-//        }
-//
-//        @Override
-//        public JobExplorer getJobExplorer() throws Exception {
-//            return null;
-//        }
-//
-//   }
 
 }
