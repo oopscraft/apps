@@ -1,6 +1,7 @@
 
 # batch
 batch:
+  enable-datasource: false
   datasource:
     jdbc-url:
     username:

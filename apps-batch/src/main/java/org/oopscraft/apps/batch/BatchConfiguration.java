@@ -4,8 +4,6 @@ package org.oopscraft.apps.batch;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import org.oopscraft.apps.core.CoreConfiguration;
-import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -19,31 +17,23 @@ import org.springframework.batch.core.scope.StepScope;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
 
+@EnableConfigurationProperties(BatchConfig.class)
+@ConfigurationPropertiesScan
 @Import({
         CoreConfiguration.class,
         BatchConfiguration.CustomBatchConfiguration.class
 })
 public class BatchConfiguration {
-
-    /**
-     * batchConfig
-     * @return
-     */
-    @Bean
-    @ConfigurationProperties(prefix = "batch")
-    private BatchConfig batchConfig() {
-        return new BatchConfig();
-    }
 
     /**
      * CustomBatchConfiguration
@@ -82,7 +72,7 @@ public class BatchConfiguration {
 
         @Override
         public void afterPropertiesSet() throws Exception {
-            if(batchConfig.getDatasource() != null){
+            if(batchConfig.isEnableDatasource()){
                 batchDataSource = new HikariDataSource(batchConfig.getDatasource());
             }
         }
