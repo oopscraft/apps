@@ -30,4 +30,5 @@ hs_err_pid*
 **/.gradle/
 
 # ignore generated resource
-**/src/main/generated/
+**/src/main/generated
+**/src/test/generated
