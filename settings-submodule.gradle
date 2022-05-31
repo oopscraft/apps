@@ -1,20 +1,37 @@
 // defines submodule
 gradle.ext.submodules = [
-        "apps-module",
-        "batman"
+        "apps-module"
 ]
 
-
-includeBuild("./apps-module") {
-    dependencySubstitution {
-        substitute(module("org.oopscraft.apps:apps-module-core"))
-                .with(project(":apps-module-core"))
-        substitute(module("org.oopscraft.apps:apps-module-web"))
-                .with(project(":apps-module-web"))
-        substitute(module("org.oopscraft.apps:apps-module-batch"))
-                .with(project(":apps-module-batch"))
+/**
+ * includeSubmodule
+ * @param submodule
+ * @return
+ */
+def includeSubmodule(submodule) {
+    println("includeSubmodule:${submodule}")
+    includeBuild("apps-module") {
+        dependencySubstitution {
+            substitute(module("org.oopscraft.apps:apps-module-core"))
+                    .with(project(":apps-module-core"))
+            substitute(module("org.oopscraft.apps:apps-module-web"))
+                    .with(project(":apps-module-web"))
+            substitute(module("org.oopscraft.apps:apps-module-batch"))
+                    .with(project(":apps-module-batch"))
+        }
     }
 }
+
+// load submodules
+gradle.ext.submodules.each { submodule ->
+    def directory = file(submodule)
+    if(directory.exists() && directory.listFiles({it.getName() == "build.gradle"} as FileFilter).length) {
+        includeSubmodule(submodule)
+    }
+}
+
+
+
 
 //include "apps-module-web"
 //project("apps-module-web").projectDir = file()

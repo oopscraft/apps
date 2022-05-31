@@ -7,6 +7,10 @@ plugins {
 	id 'idea'
 }
 
+ext {
+	includeModule = project.hasProperty("includeModule") ? project.properties.get("includeModule").toBoolean():false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -17,6 +21,12 @@ dependencies {
 
 	// project
 	api project(':apps-core')
+
+	// include module
+	println("includeModule:${includeModule}")
+	if(includeModule == true) {
+		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT'
+	}
 
 	// spring boot
 	api 'org.springframework.boot:spring-boot-starter-data-rest'
@@ -38,9 +48,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-
-	// module
-	runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT'
 }
 
 tasks.named('test') {

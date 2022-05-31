@@ -19,6 +19,12 @@ configurations {
 
 dependencies {
 
+	// include module
+	println("includeModule:${includeModule}")
+	if(includeModule == true) {
+		runtimeOnly 'org.oopscraft.apps:apps-module-core:1.0.0-SNAPSHOT'
+	}
+
 	// spring boot
 	api 'org.springframework.boot:spring-boot-starter'
 	api 'org.springframework.boot:spring-boot-starter-test'
@@ -64,13 +70,6 @@ dependencies {
 
 	// devtools
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-	// include module
-	println("includeModule:${includeModule}")
-	if(includeModule == true) {
-		runtimeOnly 'org.oopscraft.apps:apps-module-core:1.0.0-SNAPSHOT'
-	}
-
 }
 
 tasks.named('test') {
