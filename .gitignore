@@ -32,3 +32,6 @@ hs_err_pid*
 # ignore generated resource
 **/src/main/generated
 **/src/test/generated
+
+# idea
+**/.idea/

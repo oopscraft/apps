@@ -7,6 +7,10 @@ plugins {
 	id 'idea'
 }
 
+ext {
+	includeModule = project.hasProperty("includeModule") ? project.properties.get("includeModule").toBoolean():false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -60,6 +64,13 @@ dependencies {
 
 	// devtools
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	// include module
+	println("includeModule:${includeModule}")
+	if(includeModule == true) {
+		runtimeOnly 'org.oopscraft.apps:apps-module-core:1.0.0-SNAPSHOT'
+	}
+
 }
 
 tasks.named('test') {

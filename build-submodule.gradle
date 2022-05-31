@@ -1,4 +1,10 @@
-
+//allprojects {
+//    configurations.all{
+//        resolutionStrategy.dependencySubstitution {
+//            substitute module("org.oopscraft.apps:apps-module") using project(":apps-module:apps-module-web")
+//        }
+//    }
+//}
 
 //// dependencySubstitution
 //println "== dependencySubstitution"

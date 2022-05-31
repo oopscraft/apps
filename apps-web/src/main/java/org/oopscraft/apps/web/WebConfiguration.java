@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.Properties;
 
 @EnableAutoConfiguration
-@ComponentScan
 @Import({CoreConfiguration.class})
 public class WebConfiguration implements EnvironmentPostProcessor {
 

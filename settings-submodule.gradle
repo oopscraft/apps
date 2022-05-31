@@ -4,9 +4,20 @@ gradle.ext.submodules = [
         "batman"
 ]
 
-includeBuild('apps-module')
 
+includeBuild("./apps-module") {
+    dependencySubstitution {
+        substitute(module("org.oopscraft.apps:apps-module-core"))
+                .with(project(":apps-module-core"))
+        substitute(module("org.oopscraft.apps:apps-module-web"))
+                .with(project(":apps-module-web"))
+        substitute(module("org.oopscraft.apps:apps-module-batch"))
+                .with(project(":apps-module-batch"))
+    }
+}
 
+//include "apps-module-web"
+//project("apps-module-web").projectDir = file()
 
 
 

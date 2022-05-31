@@ -38,6 +38,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	// module
+	runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT'
 }
 
 tasks.named('test') {

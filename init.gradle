@@ -1,0 +1,13 @@
+allprojects {
+    repositories {
+        maven {
+            url "http://nexus.chomookun.net/repository/maven-public/"
+            allowInsecureProtocol = true
+            credentials {
+                username ""
+                password ""
+            }
+        }
+        mavenCentral()
+    }
+}
