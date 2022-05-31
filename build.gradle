@@ -1,6 +1,6 @@
 allprojects {
     group = 'org.oopscraft.apps'
-    version = '0.0.1-SNAPSHOT'
+    version = '1.0.0-SNAPSHOT'
     repositories {
         maven {
             allowInsecureProtocol = true

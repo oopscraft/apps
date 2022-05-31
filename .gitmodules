@@ -1,4 +1,6 @@
 [submodule "batman"]
 	path = batman
 	url = https://github.com/oopscraft/batman.git
-    ignore = dirty
+[submodule "apps-module"]
+	path = apps-module
+	url = https://github.com/oopscraft/apps-module.git

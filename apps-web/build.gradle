@@ -20,11 +20,13 @@ dependencies {
 
 	// spring boot
 	api 'org.springframework.boot:spring-boot-starter-data-rest'
-	//api 'org.springframework.boot:spring-boot-starter-security'
 	api 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	api 'org.springframework.boot:spring-boot-starter-web'
-	api 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 	api 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// spring-security
+	//api 'org.springframework.boot:spring-boot-starter-security'
+	//api 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
 	// spring doc
 	api 'org.springdoc:springdoc-openapi-data-rest:1.6.8'
