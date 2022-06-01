@@ -7,10 +7,6 @@ plugins {
 	id 'idea'
 }
 
-ext {
-	includeModule = project.hasProperty("includeModule") ? project.properties.get("includeModule").toBoolean():false
-}
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -23,7 +19,7 @@ dependencies {
 	api project(':apps-core')
 
 	// include module
-	println("includeModule:${includeModule}")
+	println("== includeModule:${includeModule}")
 	if(includeModule == true) {
 		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT'
 	}

@@ -7,10 +7,6 @@ plugins {
 	id 'idea'
 }
 
-ext {
-	includeModule = project.hasProperty("includeModule") ? project.properties.get("includeModule").toBoolean():false
-}
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -18,12 +14,6 @@ configurations {
 }
 
 dependencies {
-
-	// include module
-	println("includeModule:${includeModule}")
-	if(includeModule == true) {
-		runtimeOnly 'org.oopscraft.apps:apps-module-core:1.0.0-SNAPSHOT'
-	}
 
 	// spring boot
 	api 'org.springframework.boot:spring-boot-starter'

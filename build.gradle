@@ -1,3 +1,7 @@
+ext {
+    includeModule = System.getProperty("includeModule")?System.getProperty("includeModule").toBoolean():false
+}
+
 allprojects {
     group = 'org.oopscraft.apps'
     version = '1.0.0-SNAPSHOT'
