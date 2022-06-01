@@ -5,17 +5,6 @@ ext {
 allprojects {
     group = 'org.oopscraft.apps'
     version = '1.0.0-SNAPSHOT'
-    repositories {
-        maven {
-            allowInsecureProtocol = true
-            url project.mavenUrl
-            credentials {
-                username project.mavenUsername
-                password project.mavenPassword
-            }
-        }
-        mavenCentral()
-    }
     afterEvaluate { project ->
         if (project.plugins.hasPlugin('maven-publish')) {
             project.publishing {
