@@ -1,12 +1,10 @@
 package org.oopscraft.apps.core;
 
-import lombok.Builder;
 import org.oopscraft.apps.AppsPackage;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.core.env.ConfigurableEnvironment;
