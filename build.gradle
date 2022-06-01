@@ -17,9 +17,6 @@ allprojects {
             project.publishing {
                 publications {
                     mavenJava(MavenPublication) {
-                        groupId = group
-                        artifactId = project.name
-                        version = version
                         from components.java
                     }
                 }
