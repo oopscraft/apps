@@ -39,6 +39,3 @@ allprojects {
         }
     }
 }
-
-// load submodule
-apply from: 'build-submodule.gradle'

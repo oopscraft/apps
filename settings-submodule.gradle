@@ -1,6 +1,6 @@
-// defines submodule
+// defines module
 gradle.ext.submodules = [
-        "apps-module"
+    'apps-module'
 ]
 
 /**
@@ -9,15 +9,15 @@ gradle.ext.submodules = [
  * @return
  */
 def includeSubmodule(submodule) {
-    println("includeSubmodule:${submodule}")
-    includeBuild("apps-module") {
+    println("== includeSubmodule:${submodule}")
+    includeBuild(submodule) {
         dependencySubstitution {
-//            substitute(module("org.oopscraft.apps:apps-module-core"))
-//                    .with(project(":apps-module-core"))
-            substitute(module("org.oopscraft.apps:apps-module-web"))
-                    .with(project(":apps-module-web"))
-//            substitute(module("org.oopscraft.apps:apps-module-batch"))
-//                    .with(project(":apps-module-batch"))
+            substitute(module("org.oopscraft.apps:${submodule}-core"))
+                    .with(project(":${submodule}-core"))
+            substitute(module("org.oopscraft.apps:${submodule}-web"))
+                    .with(project(":${submodule}-web"))
+            substitute(module("org.oopscraft.apps:${submodule}-batch"))
+                    .with(project(":${submodule}-batch"))
         }
     }
 }
@@ -31,38 +31,4 @@ gradle.ext.submodules.each { submodule ->
     }
 }
 
-
-
-
-//include "apps-module-web"
-//project("apps-module-web").projectDir = file()
-
-
-
-
-
-
-
-
-///**
-// * include project
-// * @param directory
-// * @return
-// */
-//def includeProject(directory) {
-//    if(directory.exists() && directory.listFiles({it.getName() == "build.gradle"} as FileFilter).length) {
-//        def projectName = directory.getName()
-//        println "includeProject[${directory}] as ${projectName}"
-//        include "${projectName}"
-//        project(":${projectName}").projectDir = directory
-//        directory.listFiles({it.isDirectory()} as FileFilter).each {
-//            includeProject(it)
-//        }
-//    }
-//}
-//
-//// load submodules
-//gradle.ext.submodules.each { submodule ->
-//    includeProject(file(submodule))
-//}
 
