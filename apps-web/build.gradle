@@ -21,7 +21,7 @@ dependencies {
 	// include module
 	println("== includeModule:${includeModule}")
 	if(includeModule == true) {
-		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT'
+		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar'
 	}
 
 	// spring boot
