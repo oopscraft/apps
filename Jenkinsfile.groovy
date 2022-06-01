@@ -19,8 +19,9 @@ pipeline {
 
                 checkout scm
 
-                sh "./gradlew publish --stacktrace -DmavenPublishUrl=${MAVEN_PUBLISH_URL} -DmavenUsername=${MAVEN_CREDENTIALS_USR} -DmavenPassword=${MAVEN_CREDENTIALS_PSW}"
+                sh "./gradlew publish --init-script init.gradle --stacktrace -DmavenPublishUrl=${MAVEN_PUBLISH_URL} -DmavenUsername=${MAVEN_CREDENTIALS_USR} -DmavenPassword=${MAVEN_CREDENTIALS_PSW}"
             }
         }
     }
 }
+
