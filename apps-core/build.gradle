@@ -16,7 +16,7 @@ configurations {
 dependencies {
 
 	// platform
-	implementation platform(project(":apps-dependencies"))
+	api platform(project(":apps-dependencies"))
 	annotationProcessor platform(project(":apps-dependencies"))
 	testAnnotationProcessor platform(project(":apps-dependencies"))
 
