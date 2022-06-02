@@ -5,7 +5,6 @@ plugins {
 	id 'java-library'
 	id 'maven-publish'
 	id 'idea'
-	id "io.freefair.lombok" version "5.3.0"
 }
 
 configurations {
@@ -17,8 +16,9 @@ configurations {
 dependencies {
 
 	// platform
-	api platform(project(":apps-dependencies"))
+	implementation platform(project(":apps-dependencies"))
 	annotationProcessor platform(project(":apps-dependencies"))
+	testAnnotationProcessor platform(project(":apps-dependencies"))
 
 	// spring boot
 	api 'org.springframework.boot:spring-boot-starter'
