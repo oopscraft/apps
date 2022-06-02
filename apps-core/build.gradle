@@ -1,10 +1,11 @@
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.5.2'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	//id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java-library'
 	id 'maven-publish'
 	id 'idea'
+	id "io.freefair.lombok" version "5.3.0"
 }
 
 configurations {
@@ -15,7 +16,9 @@ configurations {
 
 dependencies {
 
-	//api platform('org.springframework.cloud:spring-cloud-dependencies:2020.0.5')
+	// platform
+	api platform(project(":apps-dependencies"))
+	annotationProcessor platform(project(":apps-dependencies"))
 
 	// spring boot
 	api 'org.springframework.boot:spring-boot-starter'
@@ -28,27 +31,23 @@ dependencies {
 	api 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
 
 	// lombok
-	api 'org.projectlombok:lombok'
-
-	// annotation
-	api 'javax.annotation:javax.annotation-api:1.3.2'
-
-	// query dsl
-	api 'com.querydsl:querydsl-jpa'
-	api 'com.querydsl:querydsl-apt'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
 	// hibernate
-	api 'org.hibernate:hibernate-jpamodelgen'
 	api 'org.hibernate:hibernate-jcache'
 	api 'org.ehcache:ehcache'
 	api 'javax.cache:cache-api:1.1.1'
+	api 'org.hibernate:hibernate-jpamodelgen'
+	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 
-	// annotationProcessor
+	// query dsl
+	api 'javax.annotation:javax.annotation-api:1.3.2'
+	api 'com.querydsl:querydsl-jpa'
+	api 'com.querydsl:querydsl-apt'
 	annotationProcessor 'javax.annotation:javax.annotation-api'
-	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt'
 	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
-	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 
 	// compile only
 	compileOnly 'org.springframework.boot:spring-boot-starter-web'
@@ -75,4 +74,12 @@ bootJar {
 jar {
 	enabled = true
 	classifier = ''
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
 }

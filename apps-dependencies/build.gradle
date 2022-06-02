@@ -1,0 +1,27 @@
+plugins {
+    id "java-platform"
+    id "maven-publish"
+}
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:2.5.2")
+    api platform("org.springframework.cloud:spring-cloud-dependencies:2020.0.5")
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.javaPlatform
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+

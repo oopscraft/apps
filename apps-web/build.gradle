@@ -1,10 +1,11 @@
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.5.2'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	//id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java-library'
 	id 'maven-publish'
 	id 'idea'
+	id "io.freefair.lombok" version "5.3.0"
 }
 
 configurations {
@@ -38,6 +39,12 @@ dependencies {
 	api 'org.springdoc:springdoc-openapi-data-rest:1.6.8'
 	api 'org.springdoc:springdoc-openapi-ui:1.6.8'
 
+	// spring cloud
+	api "org.springframework.boot:spring-boot-starter-actuator"
+	api "org.springframework.cloud:spring-cloud-starter-sleuth"
+	api "org.springframework.cloud:spring-cloud-sleuth-zipkin"
+	api "io.micrometer:micrometer-registry-prometheus"
+
 	// etc
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -58,4 +65,12 @@ bootJar {
 jar {
 	enabled = true
 	classifier = ''
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
 }

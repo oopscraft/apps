@@ -1,4 +1,5 @@
 rootProject.name = 'apps'
+include 'apps-dependencies'
 include 'apps-core'
 include 'apps-web'
 include 'apps-batch'
