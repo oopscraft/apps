@@ -1,8 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.5.2'
-	//id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java-library'
+	id 'org.springframework.boot' version '2.5.2'
 	id 'maven-publish'
 	id 'idea'
 }
@@ -13,47 +12,59 @@ configurations {
 	}
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDirs += ['src/main/java']
+			exclude "**/*.java"
+		}
+	}
+	test {
+		resources {
+			srcDirs += ['src/test/java']
+			exclude "**/*.java"
+		}
+	}
+}
+
 dependencies {
 
 	// platform
-	api platform(project(":apps-dependencies"))
+	implementation platform(project(":apps-dependencies"))
 	annotationProcessor platform(project(":apps-dependencies"))
+	testAnnotationProcessor platform(project(":apps-dependencies"))
 
 	// project
 	api project(':apps-core')
+
+	// spring boot starter
+	api 'org.springframework.boot:spring-boot-starter-web'
+	api 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	//api 'org.springframework.boot:spring-boot-starter-security'
+	api 'org.springframework.boot:spring-boot-starter-websocket'
+	api 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// annotationProcessor
+	annotationProcessor 'javax.annotation:javax.annotation-api'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt'
+	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
+	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
+
+	// unit test
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testCompileOnly 'org.junit.platform:junit-platform-runner'
 
 	// include module
 	println("== includeModule:${includeModule}")
 	if(includeModule == true) {
 		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar'
 	}
-
-	// spring boot
-	api 'org.springframework.boot:spring-boot-starter-data-rest'
-	api 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	api 'org.springframework.boot:spring-boot-starter-web'
-	api 'org.springframework.boot:spring-boot-starter-actuator'
-
-	// spring-security
-	//api 'org.springframework.boot:spring-boot-starter-security'
-	//api 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-
-	// spring doc
-	api 'org.springdoc:springdoc-openapi-data-rest:1.6.8'
-	api 'org.springdoc:springdoc-openapi-ui:1.6.8'
-
-	// spring cloud
-	api "org.springframework.boot:spring-boot-starter-actuator"
-	api "org.springframework.cloud:spring-cloud-starter-sleuth"
-	api "org.springframework.cloud:spring-cloud-sleuth-zipkin"
-	api "io.micrometer:micrometer-registry-prometheus"
-
-	// etc
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
