@@ -1,18 +1,42 @@
 # logging
 logging:
   level:
-    root: DEBUG
+    root: debug
+    org.apache.catalina.core.aprlifecyclelistener: info
+    org.apache.tomcat.util.compat: info
+    jdbc: off
+    jdbc.sqltiming: debug
+    jdbc.resultsettable: debug
+    org.springframework: info
+    com.zaxxer.hikari: info
+    org.hibernate: info
+    org.hibernate.sql: debug
+    org.hibernate.type.descriptor.sql.basicbinder: trace
 
 # spring
 spring:
-  datasource:
-    hikari:
-      driver-class-name: org.h2.Driver
-      jdbc-url: jdbc:h2:mem:apps;DB_CLOSE_ON_EXIT=FALSE;
-      username: test
-      password:
-      connection-test-query: select 1 from dual
+  profiles:
+    default: local
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
 
+# core
+core:
+  datasource:
+    # default
+    default:
+      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
+      username: sa
+      password:
+      connectionTestQuery: select 1 from dual
+    # readonly
+    readonly:
+      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
+      username: sa
+      password:
+      connectionTestQuery: select 1 from dual
+  initializeSchema: false
+  dataSql: /db/data-h2.sql
 

@@ -1,8 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.5.2'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java-library'
+	id 'org.springframework.boot' version '2.5.2'
 	id 'maven-publish'
 	id 'idea'
 }
@@ -13,8 +12,29 @@ configurations {
 	}
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDirs += ['src/main/java']
+			exclude "**/*.java"
+		}
+	}
+	test {
+		resources {
+			srcDirs += ['src/test/java']
+			exclude "**/*.java"
+		}
+	}
+}
+
 dependencies {
 
+	// platform
+	implementation platform(project(":apps-dependencies"))
+	annotationProcessor platform(project(":apps-dependencies"))
+	testAnnotationProcessor platform(project(":apps-dependencies"))
+
+	// project
 	api project(":apps-core")
 
 	// spring batch
@@ -22,26 +42,28 @@ dependencies {
 
 	// annotationProcessor
 	annotationProcessor 'javax.annotation:javax.annotation-api'
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt'
 	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
 	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 
-	// compile only
-	compileOnly 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.springframework.boot:spring-boot-starter-security'
-
-	// JUNIT test
+	// unit test
+	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
-	testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
-	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testCompileOnly 'org.junit.platform:junit-platform-runner'
 
-	// devtools
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	// include module
+	println("== includeModule:${includeModule}")
+	if(includeModule == true) {
+		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar'
+	}
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
 
@@ -53,4 +75,12 @@ bootJar {
 jar {
 	enabled = true
 	classifier = ''
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
 }

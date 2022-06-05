@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.oopscraft.apps.batch.item.db.MybatisDbItemReaderTestMapper">
+
+    <select id="selectItems" resultType="org.oopscraft.apps.batch.item.db.vo.DbItemVo">
+        <![CDATA[
+        select   floor(rand()*10000000) as "id"
+                ,concat('이름',floor(rand()*10000000)) as "name"
+        from  (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) a
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) b
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) c
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) d
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) e
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) f
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) g
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) h
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) i
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) j
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) k
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) l
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) m
+        cross join (select 0 union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) n
+        limit #{limit}
+        ]]>
+    </select>
+
+</mapper>

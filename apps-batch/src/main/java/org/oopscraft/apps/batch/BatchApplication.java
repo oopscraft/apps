@@ -7,11 +7,19 @@ import org.oopscraft.apps.batch.context.BatchContextFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.stream.Collectors;
 
@@ -20,11 +28,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BatchApplication implements CommandLineRunner {
 
+    private static BatchContext batchContext;
+
     private final JobLauncher jobLauncher;
 
     private final Job job;
-
-    private static BatchContext jobContext;
 
     /**
      * main
@@ -32,10 +40,16 @@ public class BatchApplication implements CommandLineRunner {
      */
     public static void main(String[] args) throws Exception {
 
-        jobContext = BatchContextFactory.getJobContextFromArguments(args);
+        // parse batch context
+        if(args == null || args.length < 1) {
+            throw new IllegalArgumentException("Usage: BatchApplication [jobClass] [args]...");
+        }
+        batchContext = BatchContextFactory.getJobContextFromArguments(args);
+        BatchConfiguration.setBatchContext(batchContext);
 
+        // runs spring application
         new SpringApplicationBuilder(BatchApplication.class)
-                .sources(jobContext.getJobClass())
+                .sources(batchContext.getJobClass())
                 .properties("--spring.batch.job.enabled=false")
                 .beanNameGenerator(new FullyQualifiedAnnotationBeanNameGenerator())
                 .web(WebApplicationType.NONE)
@@ -44,11 +58,12 @@ public class BatchApplication implements CommandLineRunner {
                 .run(args);
     }
 
+
     @Override
     public void run(String... args) throws Exception {
 
         // launch
-        JobExecution jobExecution = jobLauncher.run(job, jobContext.getJobParameters());
+        JobExecution jobExecution = jobLauncher.run(job, batchContext.getJobParameters());
         if(jobExecution.getStatus().isUnsuccessful()){
             String failureExceptions = jobExecution.getFailureExceptions().stream()
                     .map(e -> e.getMessage())

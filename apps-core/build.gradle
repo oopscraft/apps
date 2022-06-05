@@ -61,6 +61,18 @@ dependencies {
 	api "com.querydsl:querydsl-jpa"
 	api "com.querydsl:querydsl-apt"
 
+	// apache commons
+	api 'commons-io:commons-io'
+	api 'org.apache.commons:commons-lang3'
+	api 'org.apache.commons:commons-exec'
+
+	// aws
+	api "com.amazonaws:aws-java-sdk-core"
+	api "com.amazonaws:aws-java-sdk-s3"
+	api "com.amazonaws:aws-java-sdk-batch"
+	api "com.amazonaws:aws-java-sdk-logs"
+	api "com.amazonaws:aws-java-sdk-lambda"
+
 	// annotationProcessor
 	annotationProcessor 'javax.annotation:javax.annotation-api'
 	compileOnly 'org.projectlombok:lombok'
@@ -78,7 +90,7 @@ dependencies {
 	testCompileOnly 'org.junit.platform:junit-platform-runner'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
 
