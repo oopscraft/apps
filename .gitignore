@@ -35,3 +35,9 @@ hs_err_pid*
 
 # idea
 **/.idea/
+
+# application
+**/logs/
+**/dat/
+
+
