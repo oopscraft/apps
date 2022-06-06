@@ -13,6 +13,7 @@ import org.oopscraft.apps.core.data.RoutingDataSource;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,13 @@ import java.util.*;
         basePackageClasses = {AppsPackage.class},
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class
 )
-@EnableJpaRepositories
+@EnableJpaRepositories(
+        basePackageClasses = {AppsPackage.class},
+        entityManagerFactoryRef = "entityManagerFactory"
+)
+@EntityScan(
+        basePackageClasses = {AppsPackage.class}
+)
 @MapperScan(
         basePackageClasses = {AppsPackage.class},
         annotationClass = Mapper.class,

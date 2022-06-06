@@ -69,7 +69,7 @@ public class StepListener implements StepExecutionListener, ChunkListener {
 
     /**
      * loggingChunkContext
-     * @param chunkContext
+     * @param chunkContext chunk context
      */
     private void loggingChunkContext(ChunkContext chunkContext) {
         StepContext stepContext = chunkContext.getStepContext();
@@ -79,7 +79,7 @@ public class StepListener implements StepExecutionListener, ChunkListener {
 
     /**
      * loggingChunkContext
-     * @param stepExecution
+     * @param stepExecution step execution
      */
     private void loggingChunkContext(StepExecution stepExecution) {
         log.info("stepName={}, readCount={}, filterCount={}, writeCount={}, commitCount={}"

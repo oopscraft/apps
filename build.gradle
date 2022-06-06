@@ -1,5 +1,5 @@
 ext {
-    includeModule = System.getProperty("includeModule")?System.getProperty("includeModule").toBoolean():false
+    includeSubmodule = System.getProperty("includeSubmodule")?System.getProperty("includeSubmodule").toBoolean():false
 }
 
 allprojects {
@@ -23,3 +23,4 @@ allprojects {
         }
     }
 }
+

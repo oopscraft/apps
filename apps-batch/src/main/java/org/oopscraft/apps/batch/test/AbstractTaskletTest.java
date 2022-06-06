@@ -33,19 +33,6 @@ public class AbstractTaskletTest {
     @Getter
     private ConfigurableApplicationContext applicationContext;
 
-//    /**
-//     * setApplicationContext
-//     * @param applicationContext
-//     * @throws BeansException
-//     */
-//    @Override
-//    public final void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
-//        for(String beanName : applicationContext.getBeanDefinitionNames()) {
-//            log.info("beanName:{}", beanName);
-//        }
-//    }
-
     /**
      * launchTasklet
      * @param tasklet

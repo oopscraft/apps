@@ -144,7 +144,8 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     public final <T> MybatisDbItemWriter.MybatisDbItemWriterBuilder<T> createMybatisDbItemWriterBuilder(Class<T> itemType) {
         return MybatisDbItemWriter.<T>builder()
                 .name(UUID.randomUUID().toString())
-                .sqlSessionFactory(sqlSessionFactory);
+                .sqlSessionFactory(sqlSessionFactory)
+                .transactionManager(transactionManager);
     }
 
     /**
@@ -168,7 +169,8 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     public final <T> JpaDbItemWriter.JpaDbItemWriterBuilder<T> createJpaDbItemWriterBuilder(Class<T> itemType) {
         return JpaDbItemWriter.<T>builder()
                 .name(UUID.randomUUID().toString())
-                .entityManagerFactory(entityManagerFactory);
+                .entityManagerFactory(entityManagerFactory)
+                .transactionManager(transactionManager);
     }
 
     /**

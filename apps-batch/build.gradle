@@ -57,8 +57,8 @@ dependencies {
 	testCompileOnly 'org.junit.platform:junit-platform-runner'
 
 	// include module
-	println("== includeModule:${includeModule}")
-	if(includeModule == true) {
+	println("== includeSubmodule:${includeSubmodule}")
+	if(includeSubmodule == true) {
 		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar'
 	}
 }

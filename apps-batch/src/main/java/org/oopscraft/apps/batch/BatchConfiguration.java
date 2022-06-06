@@ -14,7 +14,6 @@ import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.explore.support.JobExplorerFactoryBean;
 import org.springframework.batch.core.explore.support.MapJobExplorerFactoryBean;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
@@ -44,7 +43,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Properties;
@@ -54,7 +52,7 @@ import java.util.Properties;
 @ConfigurationPropertiesScan
 @Import({
         CoreConfiguration.class,
-        BatchConfiguration.CustomBatchConfiguration.class
+        BatchConfiguration.SpringBatchConfiguration.class
 })
 public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactoryPostProcessor {
 
@@ -101,9 +99,12 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
         beanFactory.registerSingleton(BatchContext.class.getCanonicalName(), batchContext);
     }
 
+    /**
+     * custom batch configuration
+     */
     @Configuration(proxyBeanMethods = false)
     @RequiredArgsConstructor
-    public static class CustomBatchConfiguration implements InitializingBean, DisposableBean {
+    public static class SpringBatchConfiguration implements InitializingBean, DisposableBean {
 
         private static final String META_TABLE_PREFIX = "SPRING_BATCH_";
 
@@ -119,6 +120,8 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
         }
 
         private final BatchConfig batchConfig;
+
+        private final PlatformTransactionManager transactionManager;
 
         private HikariDataSource batchDataSource;
 
@@ -209,7 +212,7 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
 
         @Bean
         public StepBuilderFactory stepBuilderFactory(JobRepository jobRepository) {
-            return new StepBuilderFactory(jobRepository, batchTransactionManager);
+            return new StepBuilderFactory(jobRepository, transactionManager);
         }
     }
 

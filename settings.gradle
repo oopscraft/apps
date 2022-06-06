@@ -4,7 +4,20 @@ include 'apps-core'
 include 'apps-web'
 include 'apps-batch'
 
-apply from: 'settings-submodule.gradle'
+// defines module
+gradle.ext.submodules = [
+        'apps-module'
+]
+
+// load submodules
+gradle.ext.submodules.each { submodule ->
+    def directory = file(submodule)
+    if(directory.exists() && directory.listFiles({it.getName() == "build.gradle"} as FileFilter).length) {
+        System.setProperty('includeSubmodule','true')
+        includeBuild(submodule)
+    }
+}
+
 
 
 

@@ -66,6 +66,13 @@ dependencies {
 	api 'org.apache.commons:commons-lang3'
 	api 'org.apache.commons:commons-exec'
 
+	// model mapper
+	api "org.modelmapper:modelmapper"
+
+	// jackson
+	api "com.fasterxml.jackson.core:jackson-databind"
+	api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+
 	// aws
 	api "com.amazonaws:aws-java-sdk-core"
 	api "com.amazonaws:aws-java-sdk-s3"
