@@ -13,6 +13,8 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
+import java.util.UUID;
+
 public class AbstractJobTest {
 
     @Slf4j
@@ -48,7 +50,8 @@ public class AbstractJobTest {
         BatchApplication.main(new String[]{
                 AbstractJobTest.TestJob.class.getName(),
                 "20110101",
-                "message=hello"
+                "message=hello",
+                String.format("uuid=%s", UUID.randomUUID().toString())
         });
     }
 

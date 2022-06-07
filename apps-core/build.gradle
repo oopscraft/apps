@@ -73,6 +73,10 @@ dependencies {
 	api "com.fasterxml.jackson.core:jackson-databind"
 	api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 
+	// jdbc driver
+	api 'com.h2database:h2'
+	api 'org.mariadb.jdbc:mariadb-java-client'
+
 	// aws
 	api "com.amazonaws:aws-java-sdk-core"
 	api "com.amazonaws:aws-java-sdk-s3"

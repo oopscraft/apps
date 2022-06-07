@@ -1,0 +1,9 @@
+# batch
+batch:
+  enableDatasource: true
+  datasource:
+    driverClassName: org.mariadb.jdbc.Driver
+    jdbcUrl: jdbc:mariadb://192.168.0.2:3306/apps_batch?characterEncoding=utf8
+    username: apps_batch
+    password: abcd1234
+    connectionTestQuery: select 1 from dual

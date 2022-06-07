@@ -2,9 +2,11 @@ package org.oopscraft.apps.core;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.type.JdbcType;
+import org.hibernate.cfg.AvailableSettings;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
@@ -16,6 +18,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
@@ -30,6 +33,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
@@ -37,6 +41,7 @@ import org.springframework.util.Assert;
 import javax.sql.DataSource;
 import java.util.*;
 
+@Slf4j
 @EnableAutoConfiguration
 @EnableConfigurationProperties(CoreConfig.class)
 @EnableTransactionManagement
@@ -113,14 +118,59 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         return routingDataSource;
     }
 
+    /**
+     * entityManagerFactory
+     * @param dataSource
+     * @param coreConfig
+     * @return
+     * @throws Exception
+     */
+    @Bean public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, CoreConfig coreConfig) throws Exception {
+
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setDataSource(dataSource);
+
+        // package to scan
+        entityManagerFactory.setPackagesToScan(AppsPackage.class.getPackageName());
+
+        // defines vendor adapter
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        Properties jpaProperties = new Properties();
+        jpaProperties.setProperty(AvailableSettings.HQL_BULK_ID_STRATEGY, org.hibernate.hql.spi.id.inline.InlineIdsOrClauseBulkIdStrategy.class.getName());    // Bulk-id strategies when you can’t use temporary tables
+        jpaProperties.setProperty(AvailableSettings.GLOBALLY_QUOTED_IDENTIFIERS, Boolean.toString(true));
+        jpaProperties.setProperty(AvailableSettings.SHOW_SQL, Boolean.toString(log.isDebugEnabled()));
+        jpaProperties.setProperty(AvailableSettings.FORMAT_SQL, Boolean.toString(true));
+        jpaProperties.setProperty(AvailableSettings.USE_SQL_COMMENTS, Boolean.toString(true));
+        jpaProperties.setProperty(AvailableSettings.ENABLE_LAZY_LOAD_NO_TRANS, Boolean.toString(true));
+
+        // cache configuration
+        jpaProperties.setProperty(AvailableSettings.USE_SECOND_LEVEL_CACHE, Boolean.toString(true));
+        jpaProperties.setProperty(AvailableSettings.USE_QUERY_CACHE, Boolean.toString(true));
+        jpaProperties.setProperty(AvailableSettings.CACHE_REGION_FACTORY, org.hibernate.cache.jcache.internal.JCacheRegionFactory.class.getName());
+
+        // return
+        entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
+        entityManagerFactory.setJpaProperties(jpaProperties);
+        return entityManagerFactory;
+    }
+
     @Bean
-    @Primary
-    public PlatformTransactionManager transactionManager(DataSource dataSource) throws Exception {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+    public PlatformTransactionManager transactionManager(DataSource dataSource, LocalContainerEntityManagerFactoryBean entityManagerFactory) throws Exception {
+        Assert.notNull(entityManagerFactory, "entityManagerFactory must not be null.");
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setDataSource(dataSource);
+        transactionManager.setEntityManagerFactory(entityManagerFactory.getObject());
+        transactionManager.setGlobalRollbackOnParticipationFailure(false);
         return transactionManager;
     }
 
+    /**
+     * sqlSessionFactory
+     * @param dataSource
+     * @param coreConfig
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource, CoreConfig coreConfig) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
@@ -144,6 +194,7 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         sqlSessionFactoryBean.setConfiguration(configuration);
         return sqlSessionFactoryBean;
     }
+
 
 
 }

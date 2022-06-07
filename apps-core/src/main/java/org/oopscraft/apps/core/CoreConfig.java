@@ -16,8 +16,4 @@ public class CoreConfig {
 
     private final Map<String, HikariConfig> datasource;
 
-    private final boolean initializeSchema = false;
-
-    private final String dataSql;
-
 }

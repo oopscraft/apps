@@ -1,9 +1,9 @@
-
 # batch
 batch:
   enableDatasource: false
   datasource:
+    driverClassName:
     jdbcUrl:
     username:
     password:
-
+    connectionTestQuery:

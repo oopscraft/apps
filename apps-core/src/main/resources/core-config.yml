@@ -1,24 +1,27 @@
 # logging
 logging:
   level:
-    root: debug
-    org.apache.catalina.core.aprlifecyclelistener: info
-    org.apache.tomcat.util.compat: info
-    jdbc: off
-    jdbc.sqltiming: debug
-    jdbc.resultsettable: debug
-    org.springframework: info
-    com.zaxxer.hikari: info
-    org.hibernate: info
-    org.hibernate.sql: debug
-    org.hibernate.type.descriptor.sql.basicbinder: trace
+    root: INFO
+    org.apache.catalina.core.aprlifecyclelistener: INFO
+    org.apache.tomcat.util.compat: INFO
+    jdbc: OFF
+    jdbc.sqltiming: DEBUG
+    jdbc.resultsettable: DEBUG
+    org.springframework: INFO
+    com.zaxxer.hikari: INFO
+    org.hibernate: INFO
+    org.hibernate.sql: DEBUG
+    org.hibernate.type.descriptor.sql.basicbinder: TRACE
 
 # spring
 spring:
   profiles:
-    default: local
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    active: local
+  main:
+    web-application-type: none
+  output:
+    ansi:
+      enabled: DETECT
 
 # core
 core:
@@ -37,6 +40,3 @@ core:
       username: sa
       password:
       connectionTestQuery: select 1 from dual
-  initializeSchema: false
-  dataSql: /db/data-h2.sql
-

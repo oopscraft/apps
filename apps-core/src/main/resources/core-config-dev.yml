@@ -1,0 +1,29 @@
+# logging
+logging:
+  level:
+    root: DEBUG
+
+# spring
+spring:
+  output:
+    ansi:
+      enabled: DETECT
+
+# core
+core:
+  datasource:
+    # default
+    default:
+      driverClassName: org.mariadb.jdbc.Driver
+      jdbcUrl: jdbc:mariadb://192.168.0.2:3306/apps?characterEncoding=utf-8
+      username: apps
+      password: abcd1234
+      connectionTestQuery: select 1 from dual
+    # readonly
+    readonly:
+      driverClassName: org.mariadb.jdbc.Driver
+      jdbcUrl: jdbc:mariadb://192.168.0.2:3306/apps?characterEncoding=utf-8
+      username: apps
+      password: abcd1234
+      connectionTestQuery: select 1 from dual
+

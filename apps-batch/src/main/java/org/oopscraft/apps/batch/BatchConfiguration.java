@@ -70,10 +70,10 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
         Arrays.stream(environment.getActiveProfiles())
                 .sorted(Comparator.reverseOrder())
                 .forEach(profile -> {
-                    String location = String.format("classpath:core-config-%s.yml", profile);
+                    String location = String.format("classpath:batch-config-%s.yml", profile);
                     environment.getPropertySources().addLast(parseYamlResource(location));
                 });
-        environment.getPropertySources().addLast(parseYamlResource(("classpath:core-config.yml")));
+        environment.getPropertySources().addLast(parseYamlResource(("classpath:batch-config.yml")));
     }
 
     /**
