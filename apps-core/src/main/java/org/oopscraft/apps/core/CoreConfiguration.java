@@ -125,7 +125,8 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
      * @return
      * @throws Exception
      */
-    @Bean public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, CoreConfig coreConfig) throws Exception {
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, CoreConfig coreConfig) throws Exception {
 
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setDataSource(dataSource);
