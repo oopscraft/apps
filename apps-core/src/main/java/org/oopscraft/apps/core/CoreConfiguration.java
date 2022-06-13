@@ -132,7 +132,7 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         entityManagerFactory.setDataSource(dataSource);
 
         // package to scan
-        entityManagerFactory.setPackagesToScan(AppsPackage.class.getPackageName());
+        entityManagerFactory.setPackagesToScan(AppsPackage.class.getPackage().getName());
 
         // defines vendor adapter
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
