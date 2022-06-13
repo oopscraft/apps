@@ -24,8 +24,8 @@ pipeline {
                     cd apps-web
                     echo ${DOCKER_CREDENTIALS_PSW} | sudo docker login --username ${DOCKER_CREDENTIALS_USR} --password-stdin ${DOCKER_HOST}
                     sudo docker rmi $(sudo docker images ${DOCKER_IMAGE} -q) || true
-                    sudo docker build -t ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE} --build-arg BASE_IMAGE=${BASE_IMAGE} .
-                    sudo docker push ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE}
+                    sudo docker build -t ${DOCKER_IMAGE}:${STAGE} .
+                    sudo docker push ${DOCKER_IMAGE}:${STAGE}
                 '''.stripIndent()
             }
         }
