@@ -1,16 +1,28 @@
+# logging
 logging:
   level:
     root: DEBUG
 
+# server
 server:
   port: 8080
 
+# management
 management:
   endpoints:
     web:
       exposure:
         include: '*'
 
+# spring
+spring:
+  main:
+    web-application-type: servlet
+  output:
+    ansi:
+      enabled: DETECT
+
+# springdoc
 springdoc:
   version: '@springdoc.version@'
   api-docs:
@@ -21,3 +33,5 @@ springdoc:
   group-configs:
     - group: version 1.0
       paths-to-match: /api/v1/**
+
+

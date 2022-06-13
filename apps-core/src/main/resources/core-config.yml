@@ -15,8 +15,6 @@ logging:
 
 # spring
 spring:
-  profiles:
-    active: local
   main:
     web-application-type: none
   output:
@@ -28,15 +26,15 @@ core:
   datasource:
     # default
     default:
-      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
-      username: sa
-      password:
-      connectionTestQuery: select 1 from dual
+      driverClassName: ~
+      jdbcUrl: ~
+      username: ~
+      password: ~
+      connectionTestQuery: ~
     # readonly
     readonly:
-      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
-      username: sa
-      password:
-      connectionTestQuery: select 1 from dual
+      driverClassName: ~
+      jdbcUrl: ~
+      username: ~
+      password: ~
+      connectionTestQuery: ~

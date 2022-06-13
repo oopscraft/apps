@@ -148,6 +148,10 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         jpaProperties.setProperty(AvailableSettings.USE_QUERY_CACHE, Boolean.toString(true));
         jpaProperties.setProperty(AvailableSettings.CACHE_REGION_FACTORY, org.hibernate.cache.jcache.internal.JCacheRegionFactory.class.getName());
 
+        if(EmbeddedDatabaseConnection.isEmbedded(dataSource)) {
+            vendorAdapter.setGenerateDdl(true);
+        }
+
         // return
         entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
         entityManagerFactory.setJpaProperties(jpaProperties);
