@@ -1,14 +1,15 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'STAGE', defaultValue: params.STAGE ?:'dev', description: 'stage')
-        string(name: 'GRADLE_EXTRA_OPTION', defaultValue: params.GRADLE_EXTRA_OPTION ?:'--init-script init.gradle --stacktrace', description:'gradle extra option')
-        string(name: 'DOCKER_HOST', defaultValue: params.DOCKER_HOST ?:'__.docker.io', description: 'Docker host')
-        string(name: 'DOCKER_IMAGE', defaultValue: params.DOCKER_IMAGE ?:'___', description: 'Docker image repository')
+        string(name: 'STAGE', defaultValue: params.STAGE ?: 'dev', description: 'stage')
+        string(name: 'GRADLE_EXTRA_OPTION', defaultValue: params.GRADLE_EXTRA_OPTION ?: '--init-script init.gradle --stacktrace', description: 'gradle extra option')
+        string(name: 'DOCKER_HOST', defaultValue: params.DOCKER_HOST ?: '__.docker.io', description: 'Docker host')
+        string(name: 'DOCKER_IMAGE', defaultValue: params.DOCKER_IMAGE ?: '___', description: 'Docker image repository')
         credentials(credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
                 name: 'DOCKER_CREDENTIALS',
-                defaultValue: params.DOCKER_CREDENTIALS ?:'___',
+                defaultValue: params.DOCKER_CREDENTIALS ?: '___',
                 description: 'Docker credentials')
+    }
     stages {
         stage('publish') {
             environment {
