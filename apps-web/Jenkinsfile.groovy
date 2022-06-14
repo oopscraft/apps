@@ -31,21 +31,8 @@ pipeline {
         }
         stage("deploy") {
             steps {
-                sh '''
-                    cat <<EOF | kubectl apply -f -
-                    apiVersion: apps/v1
-                    kind: Deployment
-                    metadata:
-                        name: apps-web
-                    spec:
-                        replicas: 2
-                        containers:
-                            - name: apps-web
-                                image: ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE}    
-                                imagePullPolicy: Always
-                    EOF
-                '''.stripIndent()
-            }
+                sh "kubectl apply -f ./Deployment.yml"
+           }
         }
     }
 }
