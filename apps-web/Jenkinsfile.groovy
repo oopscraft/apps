@@ -31,7 +31,11 @@ pipeline {
         }
         stage("deploy") {
             steps {
-                sh "kubectl apply -f ./Deployment.yml"
+                sh '''
+                    cd apps-web
+                    kubectl apply -f ./Deployment.yml
+                    kubectl get pods,services
+                '''.stripIndent()
            }
         }
     }
