@@ -40,7 +40,7 @@ pipeline {
                         spec: 
                             containers: 
                             - name: apps-web 
-                                image: ${DOCKER_IMAGE}
+                                image: ${DOCKER_HOST}/${DOCKER_IMAGE}
                                 imagePullPolicy: Always
                     EOF
                 '''.stripIndent()
