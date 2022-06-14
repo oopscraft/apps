@@ -40,4 +40,5 @@ hs_err_pid*
 **/logs/
 **/dat/
 
-
+# temp
+*.swap
