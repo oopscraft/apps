@@ -11,7 +11,7 @@ pipeline {
                 description: 'Docker credentials')
     }
     stages {
-        stage('publish') {
+        stage("build") {
             environment {
                 DOCKER_CREDENTIALS = credentials('DOCKER_CREDENTIALS')
             }
@@ -26,6 +26,23 @@ pipeline {
                     sudo docker rmi $(sudo docker images ${DOCKER_IMAGE} -q) || true
                     sudo docker build -t ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE} .
                     sudo docker push ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE}
+                '''.stripIndent()
+            }
+        }
+        stage("deploy") {
+            steps {
+                sh '''
+                    cat > EOF | kubectl apply -f -
+                        apiVersion: v1 
+                        kind: Deployment 
+                        metadata: 
+                            name: apps-web 
+                        spec: 
+                            containers: 
+                            - name: apps-web 
+                                image: ${DOCKER_IMAGE}
+                                imagePullPolicy: Always
+                    EOF
                 '''.stripIndent()
             }
         }
