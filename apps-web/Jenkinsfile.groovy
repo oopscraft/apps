@@ -10,6 +10,7 @@ pipeline {
                 defaultValue: params.DOCKER_CREDENTIALS ?: '___',
                 description: 'Docker credentials')
         string(name: 'DOCKER_REPOSITORY', defaultValue: params.DOCKER_REPOSITORY ?: '___/___', description: 'docker repository')
+        string(name: 'SERVICE_PORT', defaultValue: params.SERVICE_PORT, description: 'service port')
     }
     stages {
 //        stage("build") {
@@ -68,9 +69,12 @@ pipeline {
                         app: apps-web
                       ports:
                         - protocol: TCP
-                          port: 10000 
+                          port: ${SERVICE_PORT} 
                           targetPort: 8080
                     EOF
+                    
+                    # port forward
+                    kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT}
                     
                     # print status
                     kubectl get pods,services
