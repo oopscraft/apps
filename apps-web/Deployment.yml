@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: apps-web
-        image: 192.168.0.2:9996/apps-web:dev
-        #image: $(CONTAINER_IMAGE}
+        #image: 192.168.0.2:9996/apps-web:dev
+        image: $(CONTAINER_IMAGE}
         ports:
         - containerPort: 8080
         env:
