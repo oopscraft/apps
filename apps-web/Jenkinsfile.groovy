@@ -74,6 +74,7 @@ pipeline {
                     EOF
                     
                     # port forward
+                    BUILD_ID=dontkillme
                     kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT} &
                     
                     # print status
