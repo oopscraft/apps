@@ -10,27 +10,27 @@ pipeline {
                 defaultValue: params.DOCKER_CREDENTIALS ?: '___',
                 description: 'Docker credentials')
         string(name: 'DOCKER_REPOSITORY', defaultValue: params.DOCKER_REPOSITORY ?: '___/___', description: 'docker repository')
-        string(name: 'SERVICE_PORT', defaultValue: params.SERVICE_PORT ?: '8080', description: 'service port')
+        string(name: 'SERVICE_PORT', defaultValue: params.SERVICE_PORT, description: 'service port')
     }
     stages {
-        stage("build") {
-            environment {
-                DOCKER_CREDENTIALS = credentials('DOCKER_CREDENTIALS')
-            }
-            steps {
-                cleanWs()
-                checkout scm
-                sh "./gradlew :apps-web:build -x test ${GRADLE_BUILD_OPTION}"
-                sh '''
-                    # docker builds and push
-                    cd apps-web
-                    echo ${DOCKER_CREDENTIALS_PSW} | sudo docker login --username ${DOCKER_CREDENTIALS_USR} --password-stdin ${DOCKER_HOST}
-                    sudo docker rmi $(sudo docker images ${DOCKER_REPOSITORY} -q) || true
-                    sudo docker build -t ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE} .
-                    sudo docker push ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}
-                '''.stripIndent()
-            }
-        }
+//        stage("build") {
+//            environment {
+//                DOCKER_CREDENTIALS = credentials('DOCKER_CREDENTIALS')
+//            }
+//            steps {
+//                cleanWs()
+//                checkout scm
+//                sh "./gradlew :apps-web:build -x test ${GRADLE_BUILD_OPTION}"
+//                sh '''
+//                    # docker builds and push
+//                    cd apps-web
+//                    echo ${DOCKER_CREDENTIALS_PSW} | sudo docker login --username ${DOCKER_CREDENTIALS_USR} --password-stdin ${DOCKER_HOST}
+//                    sudo docker rmi $(sudo docker images ${DOCKER_REPOSITORY} -q) || true
+//                    sudo docker build -t ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE} .
+//                    sudo docker push ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}
+//                '''.stripIndent()
+//            }
+//        }
         stage("deploy") {
             steps {
                 sh '''
@@ -74,7 +74,7 @@ pipeline {
                     EOF
                     
                     # port forward
-                    kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT} &
+                    nohup kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT} > /dev/null &
                     
                     # print status
                     kubectl get pods,services
