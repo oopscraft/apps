@@ -70,7 +70,7 @@ pipeline {
                               port: 10000 
                               targetPort: 8080
                     EOF
-                '''
+                '''.stripIndent()
 
 
 
