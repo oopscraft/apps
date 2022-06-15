@@ -10,7 +10,7 @@ pipeline {
                 defaultValue: params.DOCKER_CREDENTIALS ?: '___',
                 description: 'Docker credentials')
         string(name: 'DOCKER_REPOSITORY', defaultValue: params.DOCKER_REPOSITORY ?: '___/___', description: 'docker repository')
-        string(name: 'SERVICE_PORT', defaultValue: params.SERVICE_PORT, description: 'service port')
+        string(name: 'SERVICE_PORT', defaultValue: params.SERVICE_PORT ?: '8080', description: 'service port')
     }
     stages {
 //        stage("build") {
