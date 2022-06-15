@@ -56,7 +56,7 @@ pipeline {
                                 env:
                                 - name: SPRING_PROFILES_ACTIVE
                                   value: "local"
-                        ---
+                    ---
                         apiVersion: v1
                         kind: Service
                         metadata:
