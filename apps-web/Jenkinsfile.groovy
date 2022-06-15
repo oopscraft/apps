@@ -33,7 +33,6 @@ pipeline {
         stage("deploy") {
             steps {
                 sh '''
-                    // apply
                     cat <<EOF | kubectl apply -f -
                     apiVersion: apps/v1
                     kind: Deployment
@@ -71,9 +70,6 @@ pipeline {
                           port: 10000 
                           targetPort: 8080
                     EOF
-                    
-                    // print status
-                    kubectl get pods,services
                 '''.stripIndent()
            }
         }
