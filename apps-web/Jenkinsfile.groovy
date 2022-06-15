@@ -3,13 +3,13 @@ pipeline {
     parameters {
         string(name: 'STAGE', defaultValue: params.STAGE ?: 'dev', description: 'stage')
         string(name: 'PROFILE', defaultValue: params.PROFILE ?: 'dev', description: 'profile')
-        string(name: 'GRADLE_EXTRA_OPTION', defaultValue: params.GRADLE_EXTRA_OPTION ?: '--init-script init.gradle --stacktrace', description: 'gradle extra option')
-        string(name: 'DOCKER_HOST', defaultValue: params.DOCKER_HOST ?: '__.docker.io', description: 'Docker host')
-        string(name: 'DOCKER_IMAGE', defaultValue: params.DOCKER_IMAGE ?: '___', description: 'Docker image repository')
+        string(name: 'GRADLE_BUILD_OPTION', defaultValue: params.GRADLE_BUILD_OPTION ?: '--init-script init.gradle --stacktrace', description: 'gradle build option')
+        string(name: 'DOCKER_HOST', defaultValue: params.DOCKER_HOST ?: '___.dockerhub.io', description: 'docker host')
         credentials(credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
                 name: 'DOCKER_CREDENTIALS',
                 defaultValue: params.DOCKER_CREDENTIALS ?: '___',
                 description: 'Docker credentials')
+        string(name: 'DOCKER_REPOSITORY', defaultValue: params.DOCKER_REPOSITORY ?: '___/___', description: 'docker repository')
     }
     stages {
         stage("build") {
@@ -19,20 +19,20 @@ pipeline {
             steps {
                 cleanWs()
                 checkout scm
-                sh "./gradlew :apps-web:build -x test ${GRADLE_EXTRA_OPTION}"
+                sh "./gradlew :apps-web:build -x test ${GRADLE_BUILD_OPTION}"
                 sh '''        
                     # docker builds and push
                     cd apps-web
                     echo ${DOCKER_CREDENTIALS_PSW} | sudo docker login --username ${DOCKER_CREDENTIALS_USR} --password-stdin ${DOCKER_HOST}
-                    sudo docker rmi $(sudo docker images ${DOCKER_IMAGE} -q) || true
-                    sudo docker build -t ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE} .
-                    sudo docker push ${DOCKER_HOST}/${DOCKER_IMAGE}:${STAGE}
+                    sudo docker rmi $(sudo docker images ${DOCKER_REPOSITORY} -q) || true
+                    sudo docker build -t ${DOCKER_REPOSITORY}:${PROFILE} .
+                    sudo docker push ${DOCKER_REPOSITORY}:${PROFILE}
                 '''.stripIndent()
             }
         }
         stage("deploy") {
             environment {
-                CONTAINER_IMAGE = "${DOCKER_HOST}/${DOCKER_IMAGE}:${PROFILE}"
+                CONTAINER_IMAGE = "${DOCKER_REPOSITORY}:${PROFILE}"
             }
             steps {
                 sh '''
