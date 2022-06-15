@@ -2,6 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'STAGE', defaultValue: params.STAGE ?: 'dev', description: 'stage')
+        string(name: 'PROFILE', defaultValue: params.PROFILE ?: 'dev', description: 'profile')
         string(name: 'GRADLE_EXTRA_OPTION', defaultValue: params.GRADLE_EXTRA_OPTION ?: '--init-script init.gradle --stacktrace', description: 'gradle extra option')
         string(name: 'DOCKER_HOST', defaultValue: params.DOCKER_HOST ?: '__.docker.io', description: 'Docker host')
         string(name: 'DOCKER_IMAGE', defaultValue: params.DOCKER_IMAGE ?: '___', description: 'Docker image repository')
@@ -30,6 +31,9 @@ pipeline {
             }
         }
         stage("deploy") {
+            environment {
+                CONTAINER_IMAGE = "${DOCKER_HOST}/${DOCKER_IMAGE}:${PROFILE}"
+            }
             steps {
                 sh '''
                     cd apps-web
