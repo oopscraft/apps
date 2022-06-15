@@ -37,7 +37,7 @@ pipeline {
             steps {
                 sh '''
                     cd apps-web
-                    kubectl apply -f ./Deployment.yml
+                    kubectl apply -f ./Deployment.yml -v
                     kubectl get pods,services
                     kubectl port-forward --address 0.0.0.0 service/apps-web 10000:10000 || true
                 '''.stripIndent()
