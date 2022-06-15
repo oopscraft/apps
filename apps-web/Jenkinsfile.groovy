@@ -73,12 +73,8 @@ pipeline {
                           targetPort: 8080
                     EOF
                     
-                    # port forward
-                    BUILD_ID=dontkillme
-                    nohup kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT} > /dev/null &
-                    
                     # print status
-                    kubectl get pods,services
+                    kubectl get pods,services,ingress
                 '''.stripIndent()
            }
         }
