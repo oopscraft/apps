@@ -56,7 +56,7 @@ pipeline {
                             - containerPort: 8080
                             env:
                             - name: SPRING_PROFILES_ACTIVE
-                              value: "local"
+                              value: "${PROFILE}"
                     ---
                     apiVersion: v1
                     kind: Service
