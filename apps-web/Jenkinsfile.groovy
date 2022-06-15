@@ -32,8 +32,46 @@ pipeline {
 //        }
         stage("deploy") {
             steps {
-                def test = "test"
-                println(test)
+                sh '''
+                    cat <<EOF | kubectl apply -f -
+                        apiVersion: apps/v1
+                        kind: Deployment
+                        metadata:
+                            name: apps-web 
+                        spec:
+                          selector:
+                            matchLabels:
+                              app: apps-web 
+                          replicas: 2
+                          template:
+                            metadata:
+                              labels:
+                                app: apps-web
+                            spec:
+                              containers:
+                              - name: apps-web
+                                image: "${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}"
+                                ports:
+                                - containerPort: 8080
+                                env:
+                                - name: SPRING_PROFILES_ACTIVE
+                                  value: "local"
+                        ---
+                        apiVersion: v1
+                        kind: Service
+                        metadata:
+                          name: apps-web
+                        spec:
+                          type: LoadBalancer 
+                          selector:
+                            app: apps-web
+                          ports:
+                            - protocol: TCP
+                              port: 10000 
+                              targetPort: 8080
+                    EOF
+                '''
+
 
 
 //                sh '''
