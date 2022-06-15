@@ -37,7 +37,7 @@ pipeline {
                         apiVersion: apps/v1
                         kind: Deployment
                         metadata:
-                          name: apps-web 
+                            name: apps-web 
                         spec:
                           selector:
                             matchLabels:
@@ -71,7 +71,7 @@ pipeline {
                               port: 10000 
                               targetPort: 8080
                     EOF
-                '''.stripIndent()
+                '''
 
 
 
