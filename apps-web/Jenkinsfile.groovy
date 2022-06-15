@@ -74,7 +74,7 @@ pipeline {
                     EOF
                     
                     # port forward
-                    nohup kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT} > /dev/null &
+                    kubectl port-forward --address 0.0.0.0 service/apps-web ${SERVICE_PORT}:${SERVICE_PORT} &
                     
                     # print status
                     kubectl get pods,services
