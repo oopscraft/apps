@@ -13,24 +13,24 @@ pipeline {
         string(name: 'SERVICE_PORT', defaultValue: params.SERVICE_PORT ?: '8080', description: 'service port')
     }
     stages {
-//        stage("build") {
-//            environment {
-//                DOCKER_CREDENTIALS = credentials('DOCKER_CREDENTIALS')
-//            }
-//            steps {
-//                cleanWs()
-//                checkout scm
-//                sh "./gradlew :apps-web:build -x test ${GRADLE_BUILD_OPTION}"
-//                sh '''
-//                    # docker builds and push
-//                    cd apps-web
-//                    echo ${DOCKER_CREDENTIALS_PSW} | sudo docker login --username ${DOCKER_CREDENTIALS_USR} --password-stdin ${DOCKER_HOST}
-//                    sudo docker rmi $(sudo docker images ${DOCKER_REPOSITORY} -q) || true
-//                    sudo docker build -t ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE} .
-//                    sudo docker push ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}
-//                '''.stripIndent()
-//            }
-//        }
+        stage("build") {
+            environment {
+                DOCKER_CREDENTIALS = credentials('DOCKER_CREDENTIALS')
+            }
+            steps {
+                cleanWs()
+                checkout scm
+                sh "./gradlew :apps-web:build -x test ${GRADLE_BUILD_OPTION}"
+                sh '''
+                    # docker builds and push
+                    cd apps-web
+                    echo ${DOCKER_CREDENTIALS_PSW} | sudo docker login --username ${DOCKER_CREDENTIALS_USR} --password-stdin ${DOCKER_HOST}
+                    sudo docker rmi $(sudo docker images ${DOCKER_REPOSITORY} -q) || true
+                    sudo docker build -t ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE} .
+                    sudo docker push ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}
+                '''.stripIndent()
+            }
+        }
         stage("deploy") {
             steps {
                 sh '''
