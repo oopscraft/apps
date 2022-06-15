@@ -56,6 +56,19 @@ pipeline {
                                 env:
                                 - name: SPRING_PROFILES_ACTIVE
                                   value: "local"
+                        ---
+                        apiVersion: v1
+                        kind: Service
+                        metadata:
+                          name: apps-web
+                        spec:
+                          type: LoadBalancer 
+                          selector:
+                            app: apps-web
+                          ports:
+                            - protocol: TCP
+                              port: 10000 
+                              targetPort: 8080
                     EOF
                 '''
 
