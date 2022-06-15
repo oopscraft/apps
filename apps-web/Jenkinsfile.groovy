@@ -50,8 +50,8 @@ pipeline {
                             spec:
                               containers:
                               - name: apps-web
-                                #image: 192.168.0.2:9996/apps-web:dev
-                                image: ${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}
+                                image: 192.168.0.2:9996/apps-web:dev
+                                #image: "${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}"
                                 ports:
                                 - containerPort: 8080
                                 env:
