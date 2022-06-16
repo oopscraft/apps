@@ -3,16 +3,13 @@ ARG BASE_IMAGE=adoptopenjdk/openjdk11
 FROM ${BASE_IMAGE}
 
 # set envrionment
-ENV APP_HOME /apps-web
+ENV APP_HOME /apps-batch
 
 # copy resources
 RUN mkdir {APP_HOME}
-COPY build/libs/apps-web-*-boot.jar ${APP_HOME}/apps-web-boot.jar
-
-# expose
-EXPOSE 8080
+COPY build/libs/apps-batch-*-boot.jar ${APP_HOME}/apps-batch-boot.jar
 
 # entry point
 WORKDIR ${APP_HOME}
-ENTRYPOINT ["java","-jar","apps-web-boot.jar"]
+ENTRYPOINT ["java","-jar","apps-batch-boot.jar"]
 
