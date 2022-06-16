@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "apps_code")
+@Table(name = "code")
 @Data
 @EqualsAndHashCode(callSuper=false)
 @SuperBuilder

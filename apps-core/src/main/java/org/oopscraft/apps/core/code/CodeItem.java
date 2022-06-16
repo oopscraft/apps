@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "apps_code_item")
+@Table(name = "code_item")
 @IdClass(CodeItem.Pk.class)
 @Data
 @EqualsAndHashCode(callSuper = false)

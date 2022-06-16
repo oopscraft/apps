@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 
 @Entity
-@Table(name = "apps_user")
+@Table(name = "user")
 @Data
 @EqualsAndHashCode(callSuper=false)
 @SuperBuilder
