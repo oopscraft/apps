@@ -3,6 +3,7 @@ package org.oopscraft.apps.batch.job;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.internal.util.Assert;
 import org.oopscraft.apps.batch.BatchApplication;
 import org.oopscraft.apps.batch.context.BatchContext;
 import org.springframework.batch.core.Step;
@@ -40,6 +41,7 @@ public class AbstractJobTest {
         public Tasklet tasklet(@Value("#{jobParameters[message]}")String message) {
             return (contribution, chunkContext) -> {
                 log.info("== message: {}", message);
+                Assert.notNull(message);
                 return RepeatStatus.FINISHED;
             };
         }
