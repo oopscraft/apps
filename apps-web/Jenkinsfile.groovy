@@ -53,6 +53,7 @@ pipeline {
                           containers:
                           - name: apps-web
                             image: "${DOCKER_HOST}/${DOCKER_REPOSITORY}:${PROFILE}"
+                            imagePullPolicy: Always
                             ports:
                             - containerPort: 8080
                             env:
