@@ -31,16 +31,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.Arrays;
@@ -106,8 +111,6 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
     @RequiredArgsConstructor
     public static class SpringBatchConfiguration implements InitializingBean, DisposableBean {
 
-        private static final String META_TABLE_PREFIX = "SPRING_BATCH_";
-
         private static StepScope stepScope;
 
         private static JobScope jobScope;
@@ -163,7 +166,6 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
                 jobRepositoryFactoryBean.setDataSource(batchDataSource);
                 jobRepositoryFactoryBean.setTransactionManager(batchTransactionManager);
                 jobRepositoryFactoryBean.setIsolationLevelForCreate("ISOLATION_REPEATABLE_READ");
-                jobRepositoryFactoryBean.setTablePrefix(META_TABLE_PREFIX);
                 jobRepositoryFactoryBean.setMaxVarCharLength(1024);
                 jobRepositoryFactoryBean.afterPropertiesSet();
                 return jobRepositoryFactoryBean.getObject();
@@ -181,7 +183,6 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
             if(batchDataSource != null) {
                 JobExplorerFactoryBean jobExplorerFactoryBean = new JobExplorerFactoryBean();
                 jobExplorerFactoryBean.setDataSource(batchDataSource);
-                jobExplorerFactoryBean.setTablePrefix(META_TABLE_PREFIX);
                 jobExplorerFactoryBean.afterPropertiesSet();
                 return jobExplorerFactoryBean.getObject();
             }else{

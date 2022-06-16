@@ -1,7 +1,7 @@
 # logging
 logging:
   level:
-    root: INFO
+    root: DEBUG
 
 # spring
 spring:
