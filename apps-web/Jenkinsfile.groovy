@@ -35,7 +35,7 @@ pipeline {
             steps {
                 sh '''
                     # apply resources
-                    cat <<EOF | kubectl replace -f -
+                    cat <<EOF | kubectl apply -f -
                     apiVersion: apps/v1
                     kind: Deployment
                     metadata:
@@ -44,7 +44,7 @@ pipeline {
                       selector:
                         matchLabels:
                           app: apps-web 
-                      replicas: 2
+                      replicas: 1 
                       template:
                         metadata:
                           labels:
