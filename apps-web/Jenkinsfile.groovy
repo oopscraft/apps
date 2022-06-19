@@ -44,7 +44,7 @@ pipeline {
                       selector:
                         matchLabels:
                           app: apps-web 
-                      replicas: 1 
+                      replicas: 2 
                       template:
                         metadata:
                           labels:
