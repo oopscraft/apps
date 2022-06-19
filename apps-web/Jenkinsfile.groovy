@@ -20,7 +20,7 @@ pipeline {
             steps {
                 cleanWs()
                 checkout scm
-                sh "./gradlew :apps-web:build -x test ${GRADLE_BUILD_OPTION}"
+                sh "./gradlew :apps-web:build -x test -DincludeSubmodule=true ${GRADLE_BUILD_OPTION}"
                 sh '''
                     # docker builds and push
                     cd apps-web
