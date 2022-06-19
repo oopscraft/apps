@@ -77,6 +77,7 @@ pipeline {
                     # print status
                     kubectl get pods,services,ingress
                 '''.stripIndent()
+                sh("kubectl rollout restart deployment/apps-web")
            }
         }
     }
