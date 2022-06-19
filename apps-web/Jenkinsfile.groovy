@@ -34,7 +34,6 @@ pipeline {
         stage("deploy") {
             steps {
                 sh '''
-                    # apply resources
                     cat <<EOF | kubectl apply -f -
                     apiVersion: apps/v1
                     kind: Deployment
