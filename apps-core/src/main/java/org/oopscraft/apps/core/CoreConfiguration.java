@@ -1,5 +1,6 @@
 package org.oopscraft.apps.core;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.*;
 
@@ -200,6 +204,14 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         return sqlSessionFactoryBean;
     }
 
-
+    /**
+     * jpaQueryFactory
+     * @param entityManagerFactory
+     * @return
+     */
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(EntityManagerFactory entityManagerFactory) {
+       return new JPAQueryFactory(entityManagerFactory.createEntityManager());
+    }
 
 }

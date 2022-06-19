@@ -44,6 +44,11 @@ dependencies {
 	api 'org.springframework.boot:spring-boot-starter-websocket'
 	api 'org.springframework.boot:spring-boot-starter-actuator'
 
+	// spring doc
+	api "org.springdoc:springdoc-openapi-data-rest:1.5.9"
+	api "org.springdoc:springdoc-openapi-ui:1.5.9"
+	api "io.swagger.core.v3:swagger-annotations:2.1.9"
+
 	// annotationProcessor
 	annotationProcessor 'javax.annotation:javax.annotation-api'
 	compileOnly 'org.projectlombok:lombok'
@@ -63,7 +68,8 @@ dependencies {
 	// include module
 	println("== includeSubmodule:${includeSubmodule}")
 	if(includeSubmodule == true) {
-		runtimeOnly 'org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar'
+		runtimeOnly "org.oopscraft.apps:apps-module-core:1.0.0-SNAPSHOT@jar"
+		runtimeOnly "org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar"
 	}
 }
 
