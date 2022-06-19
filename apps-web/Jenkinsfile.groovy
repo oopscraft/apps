@@ -35,7 +35,7 @@ pipeline {
             steps {
                 sh '''
                     # apply resources
-                    cat <<EOF | kubectl apply -f -
+                    cat <<EOF | kubectl replace -f -
                     apiVersion: apps/v1
                     kind: Deployment
                     metadata:
