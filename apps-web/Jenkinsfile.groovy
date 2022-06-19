@@ -59,6 +59,8 @@ pipeline {
                             env:
                             - name: SPRING_PROFILES_ACTIVE
                               value: "${PROFILE}"
+                            - name: BUILD_TIME
+                              value: ${currentBuild.startTimeInMillis}
                     ---
                     apiVersion: v1
                     kind: Service
