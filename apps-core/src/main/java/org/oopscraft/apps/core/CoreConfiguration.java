@@ -170,6 +170,7 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         transactionManager.setDataSource(dataSource);
         transactionManager.setEntityManagerFactory(entityManagerFactory.getObject());
         transactionManager.setGlobalRollbackOnParticipationFailure(false);
+        transactionManager.setFailEarlyOnGlobalRollbackOnly(true);
         return transactionManager;
     }
 

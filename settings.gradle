@@ -6,7 +6,7 @@ include 'apps-batch'
 
 // defines module
 gradle.ext.submodules = [
-        'apps-module'
+        'apps-sandbox'
 ]
 
 // load submodules

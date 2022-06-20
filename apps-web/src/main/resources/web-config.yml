@@ -2,6 +2,7 @@
 logging:
   level:
     root: DEBUG
+    org.apache.coyote.http11: DEBUG
 
 # server
 server:

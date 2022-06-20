@@ -1,6 +1,6 @@
 [submodule "batman"]
 	path = batman
 	url = https://github.com/oopscraft/batman.git
-[submodule "apps-module"]
-	path = apps-module
-	url = https://github.com/oopscraft/apps-module.git
+[submodule "apps-sandbox"]
+	path = apps-sandbox
+	url = https://github.com/oopscraft/apps-sandbox.git
