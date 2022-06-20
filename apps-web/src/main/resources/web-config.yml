@@ -18,6 +18,10 @@ management:
 spring:
   main:
     web-application-type: servlet
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
 # springdoc
 springdoc:
@@ -30,5 +34,6 @@ springdoc:
   group-configs:
     - group: version 1.0
       paths-to-match: /api/v1/**
+
 
 
