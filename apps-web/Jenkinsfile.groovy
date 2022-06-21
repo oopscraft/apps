@@ -71,6 +71,22 @@ pipeline {
                         - protocol: TCP
                           port: ${SERVICE_PORT} 
                           targetPort: 8080
+                    ---
+                    apiVersion: networking.k8s.io/v1
+                    kind: Ingress
+                    metadata:
+                        name: apps-web
+                    spec:
+                        rules:
+                        - http:
+                            paths:
+                            - pathType: Prefix
+                              path: "/"
+                              backend: 
+                                service:
+                                    name: apps-web
+                                    port:
+                                        name: ${SERVICE_PORT}
                     EOF
                     
                     # print status
