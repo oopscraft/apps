@@ -60,7 +60,7 @@ dependencies {
 	println("== includeSubmodule:${includeSubmodule}")
 	if(includeSubmodule == true) {
 		runtimeOnly "org.oopscraft.apps:apps-sandbox-core:1.0.0-SNAPSHOT@jar"
-		runtimeOnly "org.oopscraft.apps:apps-module-web:1.0.0-SNAPSHOT@jar"
+		runtimeOnly "org.oopscraft.apps:apps-sandbox-batch:1.0.0-SNAPSHOT@jar"
 	}
 }
 
