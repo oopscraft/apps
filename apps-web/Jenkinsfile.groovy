@@ -77,9 +77,8 @@ pipeline {
                     metadata:
                         name: apps-web
                         annotations:
-                            nginx.ingress.kubernetes.io/rewrite-target: /
+                            nginx.ingress.kubernetes.io/rewrite-target: /$1
                     spec:
-                        ingressClassName: apps-web
                         rules:
                         - http:
                             paths:
