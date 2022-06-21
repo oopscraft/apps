@@ -84,9 +84,9 @@ dependencies {
 	api "com.amazonaws:aws-java-sdk-logs"
 	api "com.amazonaws:aws-java-sdk-lambda"
 
-	// spring doc
-	api 'org.springdoc:springdoc-openapi-data-rest:1.5.9'
-	api 'org.springdoc:springdoc-openapi-ui:1.5.9'
+	// spring web
+	api "org.springframework:spring-web"
+	api "io.swagger.core.v3:swagger-annotations:2.1.12"
 
 	// annotationProcessor
 	annotationProcessor 'javax.annotation:javax.annotation-api'
