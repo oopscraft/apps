@@ -76,19 +76,12 @@ pipeline {
                     kind: Ingress
                     metadata:
                         name: apps-web
-                        annotations:
-                            nginx.ingress.kubernetes.io/rewrite-target: /$1
                     spec:
-                        rules:
-                        - http:
-                            paths:
-                            - path: /
-                              pathType: Prefix
-                              backend: 
-                                service:
-                                    name: apps-web
-                                    port:
-                                        name: ${SERVICE_PORT}
+                        defaultBackend:
+                            service: 
+                                name: apps-web
+                                port: 
+                                    number: ${SERVICE_PORT}
                     EOF
                     
                     # print status
