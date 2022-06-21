@@ -76,12 +76,15 @@ pipeline {
                     kind: Ingress
                     metadata:
                         name: apps-web
+                        annotations:
+                            nginx.ingress.kubernetes.io/rewrite-target: /
                     spec:
+                        ingressClassName: apps-web
                         rules:
                         - http:
                             paths:
-                            - pathType: Prefix
-                              path: "/"
+                            - path: /
+                              pathType: Prefix
                               backend: 
                                 service:
                                     name: apps-web
