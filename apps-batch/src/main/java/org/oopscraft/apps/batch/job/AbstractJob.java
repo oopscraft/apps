@@ -1,5 +1,6 @@
 package org.oopscraft.apps.batch.job;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.batch.context.BatchContext;
@@ -43,6 +44,10 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     @Autowired
     @Getter
     protected EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    @Getter
+    protected JPAQueryFactory jpaQueryFactory;
 
     @Autowired
     @Getter
