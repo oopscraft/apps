@@ -39,7 +39,7 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     private DataSource dataSource;
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    protected PlatformTransactionManager transactionManager;
 
     @Autowired
     @Getter
