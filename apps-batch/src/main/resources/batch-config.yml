@@ -8,3 +8,16 @@ batch:
     password:
     connectionTestQuery: select 1 from dual
 
+# core
+core:
+  datasource:
+    # default
+    default:
+      minimumIdle: 1
+      maximumPoolSize: 4
+    # readonly
+#    readonly:
+#      minimumIdle: 1
+#      maximumPoolSize: 2
+
+
