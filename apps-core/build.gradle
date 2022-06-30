@@ -12,21 +12,6 @@ configurations {
 	}
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs += ['src/main/java']
-			exclude "**/*.java"
-		}
-	}
-	test {
-		resources {
-			srcDirs += ['src/test/java']
-			exclude "**/*.java"
-		}
-	}
-}
-
 dependencies {
 
 	// platform

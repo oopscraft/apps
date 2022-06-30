@@ -4,26 +4,12 @@ plugins {
 	id 'org.springframework.boot' version '2.5.2'
 	id 'maven-publish'
 	id 'idea'
+	id 'com.google.cloud.tools.jib' version '3.1.2'
 }
 
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
-	}
-}
-
-sourceSets {
-	main {
-		resources {
-			srcDirs += ['src/main/java']
-			exclude "**/*.java"
-		}
-	}
-	test {
-		resources {
-			srcDirs += ['src/test/java']
-			exclude "**/*.java"
-		}
 	}
 }
 
@@ -92,5 +78,29 @@ publishing {
 		mavenJava(MavenPublication) {
 			from components.java
 		}
+	}
+}
+
+jib {
+	def imageTag = findProperty('imageTag') ?: 'latest'
+	def ecrPass = findProperty("ecrPass") ?: ""
+	from {
+		image = '705228377258.dkr.ecr.ap-northeast-2.amazonaws.com/amazoncorretto:11.0.14-alpine3.15'
+	}
+	to {
+		image = '705228377258.dkr.ecr.ap-northeast-2.amazonaws.com/core/kis-online-api'
+		auth {
+			username = 'AWS'
+			password = "$ecrPass"
+			//credHelper = 'ecr-login'
+		}
+		tags = ["$imageTag"]
+	}
+	container {
+		// jvmFlags = ['-Dmy.property=example.value', '-Xms512m', '-Xdebug']
+		// args = ['some', 'args']
+		ports = ['8080']
+		// labels = [key1:'value1', key2:'value2']
+		format = 'OCI'
 	}
 }

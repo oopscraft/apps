@@ -5,15 +5,15 @@ include 'apps-web'
 include 'apps-batch'
 
 // defines module
-gradle.ext.submodules = [
+def submodules = [
         'apps-sandbox'
 ]
 
 // load submodules
-gradle.ext.submodules.each { submodule ->
+submodules.each { submodule ->
     def directory = file(submodule)
     if(directory.exists() && directory.listFiles({it.getName() == "build.gradle"} as FileFilter).length) {
-        System.setProperty('includeSubmodule','true')
+        System.setProperty("includeSubmodule", "true")
         includeBuild(submodule)
     }
 }
