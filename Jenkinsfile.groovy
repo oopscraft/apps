@@ -17,7 +17,7 @@ pipeline {
             steps {
                 cleanWs()
                 checkout scm
-                sh "./gradlew publish -DmavenPublishUrl=${MAVEN_PUBLISH_URL} -DmavenUsername=${MAVEN_CREDENTIALS_USR} -DmavenPassword=${MAVEN_CREDENTIALS_PSW} ${GRADLE_EXTRA_OPTION}"
+                sh "./gradlew publish -PmavenPublishUrl=${MAVEN_PUBLISH_URL} -PmavenUsername=${MAVEN_CREDENTIALS_USR} -PmavenPassword=${MAVEN_CREDENTIALS_PSW} ${GRADLE_EXTRA_OPTION}"
             }
         }
     }

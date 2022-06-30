@@ -1,7 +1,6 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'STAGE', defaultValue: params.STAGE ?: 'dev', description: 'stage')
         string(name: 'PROFILE', defaultValue: params.PROFILE ?: 'dev', description: 'profile')
         string(name: 'GRADLE_BUILD_OPTION', defaultValue: params.GRADLE_BUILD_OPTION ?: '--stacktrace', description: 'gradle build option')
         string(name: 'DOCKER_HOST', defaultValue: params.DOCKER_HOST ?: '___.dockerhub.io', description: 'docker host')
