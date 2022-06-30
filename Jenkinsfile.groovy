@@ -1,7 +1,6 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'STAGE', defaultValue: params.STAGE ?:'dev', description: 'stage')
         string(name: 'GRADLE_EXTRA_OPTION', defaultValue: params.GRADLE_EXTRA_OPTION ?:'--stacktrace', description:'gradle extra option')
         string(name: 'MAVEN_PUBLISH_URL', defaultValue: params.MAVEN_PUBLISH_URL ?:'http://___/repository/maven-snapshot/', description: 'Maven publish URL')
         credentials(credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
