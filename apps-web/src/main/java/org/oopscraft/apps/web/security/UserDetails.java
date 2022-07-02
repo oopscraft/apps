@@ -9,9 +9,7 @@ import java.util.Collection;
 
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor(access= AccessLevel.PROTECTED)
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
 	private String username;
