@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=2048,initial-scale=1">
+        <title>duice.integrate.Simplemde</title>
+        <link rel="stylesheet" type="text/css" href="../polyfill/normalize.css">
+        <script src="../polyfill/dataset.js"></script>
+        <script src="../polyfill/classList.js"></script>
+        <script src="../duice.js"></script>
+        <link rel="stylesheet" type="text/css" href="../duice.css">
+
+        <!-- simplemde -->
+        <script src="./marked/marked.min.js"></script>
+        <script src="./prism/prism.js"></script>
+        <link rel="stylesheet" type="text/css" href="./prism/prism.css">
+        <link rel="stylesheet" type="text/css" href="./simplemde/simplemde.min.css">
+        <script src="./simplemde/simplemde.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./duice-plugin-simplemde.css">
+        <script src="./duice-plugin-simplemde.js"></script>
+        <script>
+        const map = new duice.Map();
+        map.fromJson({
+            contents:"# dddddd\n**fdfdsa**\n\nds***DSADSDS***ADSA\n*  목록1\n*  목록2\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| John     | Doe      | Male     |\n| Mary     | Smith    | Female   |\n\nOr without aligning the columns...\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| John | Doe | Male |\n| Mary | Smith | Female |\n\n------------------------------------\n\n```java\n\tsuper(div);\n\tthis.div = div;\n\tthis.textarea = document.createElement('textarea');\n\tthis.div.appendChild(this.textarea);\n\t/*\n\tthis.config = config;\n\tif (!this.config) {\n\t\tthis.config = new Object();\n\t}\n\tthis.config.element = this.textarea;\n\tthis.config.tabSize = 4;\n\tthis.config.toolbar = false;\n\t*/\n\tthis.config = {\n\t\telement: this.textarea,\n\t\ttabSize: 4,\n\t\trenderingConfig: {\n\t\t\tsingleLineBreaks: false,\n\t\t\tcodeSyntaxHighlighting: true,\n\t\t},\n\t}\n                \n```"
+        });
+        </script>
+    </head>
+    <body style="padding:1rem;">
+        <h1>
+            duice.integrate.Simplemde
+            <small>(https://github.com/sparksuite/simplemde-markdown-editor)</small>
+        </h1>
+        <div>
+            <button onclick="map.setReadonlyAll(true);">setReadyonlyAll(true);</button>
+            <button onclick="map.setReadonlyAll(false);">setReadyonlyAll(false);</button>
+        </div>
+        <div style="display:flex;">
+            <div style="width:40%;">
+                <textarea is="duice-textarea" data-duice-bind="map,contents" style="width:100%; height:100%;"></textarea>
+            </div>
+            <div style="width:40%; padding-left:1rem;">
+                <div is="duice-plugin-simplemde" data-duice-bind="map,contents" style="width:100%;"></div>
+            </div>
+        </div>
+    </body>
+</html>

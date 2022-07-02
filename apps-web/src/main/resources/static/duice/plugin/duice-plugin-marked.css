@@ -1,0 +1,36 @@
+.duice-plugin-marked {
+	width: inherit;
+}
+.duice-plugin-marked table {
+    border-collapse: collapse;
+}
+.duice-plugin-marked table th {
+    background-color: #eee;
+}
+.duice-plugin-marked table th,
+.duice-plugin-marked table td {
+    border: solid 1px #aaa;
+    padding: 0.2rem 0.5rem;
+}
+.duice-plugin-marked blockquote {
+    padding: 0 1rem;
+    margin-left: 0;
+    color: #819198;
+    border-left: .3rem solid #dce6f0;
+}
+.duice-plugin-marked blockquote p {
+    white-space: pre-line;
+}
+.duice-plugin-marked pre,
+.duice-plugin-marked code {
+	overflow: auto;
+}
+.duice-plugin-marked pre[class*="language-"] {
+	background: #2d2d2d !important;
+	line-height: 1rem;
+	padding-top: 10px;
+    padding-bottom: 10px;
+}
+.duice-plugin-marked pre[class*="language-"] .line-numbers-rows > span {
+	display: initial;
+}

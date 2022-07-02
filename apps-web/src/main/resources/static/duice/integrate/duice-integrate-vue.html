@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../polyfill/normalize.css">
+        <script src="../polyfill/dataset.js"></script>
+        <script src="../polyfill/classList.js"></script>
+        <link rel="stylesheet" type="text/css" href="../polyfill/dialog.css">
+        <script src="../polyfill/dialog.js"></script>
+        <script src="../duice.js"></script>
+        <link rel="stylesheet" type="text/css" href="../duice.css">
+        <!-- <script src="vue/vue.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="duice-integrate-vue.js"></script>
+        <script>
+
+        const map = new duice.Map({
+            name:'Apple'
+        });
+        const list = new duice.List([
+            {id:'orange', name:'Orange'},
+            {id:'red', name:'Red', active:true},
+            {id:'blue', name:'Blue', active:true},
+            {id:'green', name:'Green', active:false},
+            {id:'sky', name:'Sky', active:true}
+        ]);
+        duice.vue.data.map = map;
+        duice.vue.data.list = list;
+        </script>
+    </head>
+
+    <body>
+
+        <input is="duice-input" id="test1" type="text" :bind-map="map" bind-name="name" style="background-color:red;" readonly="true"/>
+        <table is="duice-table" :bind-list="list" bind-item="item" style="border:solid 3px red;" data-test="fdsafdas">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>name</th>
+              <th>active</th>
+            </tr>
+          </thead>
+          <tbody v-pre>
+            <tr>
+              <td>
+                <input is="duice-input" type="text" :bind-map="item" bind-name="id"/>
+              </td>
+              <td>
+                <input is="duice-input" type="text" :bind-map="item" bind-name="name"/>
+              </td>
+              <td>
+                <input is="duice-input" type="checkbox" :bind-map="item" bind-name="active"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        
+        <button onclick="alert(JSON.stringify(map.toJson(),null,2));">
+         print map
+        </button>
+        
+        <button onclick="alert(JSON.stringify(list.toJson(),null,2));">
+          print list
+        </button>
+    </body>
+</html>

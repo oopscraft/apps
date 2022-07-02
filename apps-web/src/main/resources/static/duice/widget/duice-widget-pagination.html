@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=2048,initial-scale=1">
+        <title>duice.widget.pagination</title>
+        <link rel="stylesheet" type="text/css" href="../polyfill/normalize.css">
+        <script src="../polyfill/dataset.js"></script>
+        <script src="../polyfill/classList.js"></script>
+        <script src="../duice.js"></script>
+        <link rel="stylesheet" type="text/css" href="../duice.css">
+        <script src="duice-widget-pagination.js"></script>
+        <link rel="stylesheet" type="text/css" href="duice-widget-pagination.css">
+        <script>
+        const map = new duice.Map();
+        map.fromJson({
+            page: 0,
+            size: 10,
+            totalCount: 89
+        });
+        map.onAfterChange(function(name, value){
+            mapTextarea.value = JSON.stringify(map.toJson(),null,2);
+        });
+        document.addEventListener("DOMContentLoaded", function(event) {
+            var mapTextarea = document.getElementById('mapTextarea');
+            mapTextarea.value = JSON.stringify(map.toJson(),null,2);
+
+            // text change
+            mapTextarea.addEventListener('change', function(event){
+                map.fromJson(JSON.parse(this.value));
+            });
+        });
+        </script>
+    </head>
+    <body>
+        <center>
+            <h1>duice.widget.pagination</h1>
+            <textarea id="mapTextarea" style="width:800px; height:150px;"></textarea>
+            <ul is="duice-widget-pagination" data-duice-bind="map,page,size,totalCount">
+                <li data-page="[@duice[$context.page]]" onclick="alert(this.dataset.page);map.set('page',this.dataset.page);" class="page-item page-link"></li>
+            </ul>
+        </center>
+    </body>
+
+</html>

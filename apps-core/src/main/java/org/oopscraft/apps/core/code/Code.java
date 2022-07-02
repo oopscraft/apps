@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "code")
 @Data
-@EqualsAndHashCode(callSuper=false)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

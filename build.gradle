@@ -1,10 +1,11 @@
 ext {
     includeSubmodule = System.getProperty("includeSubmodule")?System.getProperty("includeSubmodule").toBoolean():false
-    jdkVersion = System.getProperty("jdkVersion")
+    jdkVersion = System.getProperty("jdkVersion")?:"1.8"
     mavenPublishUrl = System.getProperty("mavenPublishUrl")
     mavenUsername = System.getProperty("mavenUsername")
     mavenPassword = System.getProperty("mavenPassword")
 }
+print("==ext: ${ext.getProperties()}")
 
 allprojects {
     afterEvaluate { project ->

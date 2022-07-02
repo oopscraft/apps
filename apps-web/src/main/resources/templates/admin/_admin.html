@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    	<title>Application</title>
+		<script th:src="@{/static/duice/duice.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/duice/duice.css}">
+		<script th:src="@{/static/duice/widget/duice-widget-pagination.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/duice/widget/duice-widget-pagination.css}">
+    	<script th:src="@{/static/jquery/jquery.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/nprogress/nprogress.css}">
+		<script th:src="@{/static/nprogress/nprogress.js}"></script>
+		<script th:src="@{/static/chartjs/chart.min.js}"></script>
+		<script th:src="@{/static/moment/moment.js}"></script>
+		<script th:src="@{/static/stomp/stomp.js}"></script>
+		<script th:src="@{/static/core.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/core.css}">
+		<script>
+			// menu
+			const _menus = new core.List();
+			_menus.setReadonly('icon', true);
+			_menus.fromJson([
+				{ name:'[[#{web.menu.monitor}]]', icon:'[[@{/static/image/icon-monitor.png}]]', link:'[[@{/admin/monitor}]]' },
+				{ name:'[[#{web.menu.user}]]', icon:'[[@{/static/image/icon-user.png}]]', link:'[[@{/admin/user}]]' },
+				{ name:'[[#{web.menu.property}]]', icon:'[[@{/static/image/icon-property.png}]]', link:'[[@{/admin/property}]]' },
+				{ name:'[[#{web.menu.message}]]', icon:'[[@{/static/image/icon-message.png}]]', link:'[[@{/admin/message}]]' },
+				{ name:'[[#{web.menu.code}]]', icon:'[[@{/static/image/icon-code.png}]]', link:'[[@{/admin/code}]]' },
+				{ name:'[[#{web.menu.menu}]]', icon:'[[@{/static/image/icon-menu.png}]]', link:'[[@{/admin/menu}]]' },
+				{ name:'[[#{web.menu.page}]]', icon:'[[@{/static/image/icon-page.png}]]', link:'[[@{/admin/page}]]' },
+				{ name:'[[#{web.menu.board}]]', icon:'[[@{/static/image/icon-board.png}]]', link:'[[@{/admin/board}]]' }
+			]);
+			
+			// home
+			function _home() {
+				document.location.href = '[[@{/}]]';
+			}
+			
+			// logout
+			function _logout() {
+				let url = new URL('[[@{/logout}]]', document.location.origin);
+				_fetch(url,{
+					method: 'POST'
+				}).then(function(response){
+					if(response.ok){
+						location.href='[[@{/}]]';
+					}
+				});
+			}
+			
+			// toggleNav 
+			function _toggleNav() {
+				$('nav').slideToggle(200);
+			}
+			
+		</script>
+		<style>
+			body {
+				display: grid;
+				grid-template-areas:
+				  'header header header'
+				  'nav main aside'
+				  'footer footer footer';
+				grid-template-columns: 1fr 8fr 1fr;
+				grid-template-rows: 70px 1fr 50px;
+				padding: 0;
+			}
+			header {
+				grid-area: header;
+				padding:0px 10px;
+				height:70px;
+				background-color:#fafafa;
+				border-bottom:groove 2px #eee;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			#_header__user {
+				display: block;
+			}
+			#_header__navButton {
+				display: none;
+			}
+			nav {
+				grid-area: nav;
+				display: block;
+				padding: 10px;
+			}
+			#_nav__user {
+				display: none;
+			}
+			main {
+				grid-area: main;
+				padding: 5px;
+			}
+			aside {
+				grid-area: aside;
+				padding: 10px;
+			}
+			footer {
+				grid-area: footer;
+				border-top: dotted 1px #ccc;
+				background-color: #fafafa;
+			}
+			
+			/* Mobile */
+			@media screen and (max-width: 1023px) {
+				body {
+					display: grid;
+					grid-template-areas:
+					  'header'
+					  'nav'
+					  'main'
+					  'footer';
+					grid-template-columns: 1fr;
+					grid-template-rows: 70px auto 1fr 50px;
+					padding: 0;
+				}
+				header {
+					padding:0px 10px;
+				}
+				#_header__user {
+					display: none;
+				}
+				#_header__navButton {
+					display: block;
+				}
+				nav {
+					display: none;
+					padding: 10px;
+				}
+				#_nav__user {
+					display: block;
+				}
+				main {
+					align-content: flex-start;
+				}
+				aside {
+					display: none;
+				}
+				footer {
+					border-top: dotted 1px #ccc;
+					background-color: #fafafa;
+				}
+			}
+		</style>
+    </head>
+    <body>
+		<!-- ================================================== -->
+		<!-- START: header										-->
+		<!-- ================================================== -->
+		<header>
+			<div class="core-box">
+				<h1 class="core-logo" onclick="_home();" style="cursor:pointer;">
+					<img th:src="@{/static/image/logo.png}"/>
+					<span th:text="#{web.title.logo}"></span>
+				</h1>
+			</div>
+			<div id="_header__user">
+				<span>
+					<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="core-icon" style="border-radius:50%;"/>
+					<span data-th-text="${_user.name}" class="core-text-bold"></span>
+				</span>
+				&nbsp;&nbsp;|&nbsp;&nbsp;
+				<span onclick="_logout();" class="core-link">
+					<img th:src="@{/static/image/icon-logout.png}" class="core-icon"/>
+					<span data-th-text="#{logout}" class="core-text-bold"></span>
+				</span>
+				&nbsp;&nbsp;|&nbsp;&nbsp;
+				<span>
+					<img th:src="@{/static/image/icon-locale.png}" class="core-icon"/>
+					<select class="duice-select" onchange="_changeLocale(this.value);" style="width:100px;">
+						<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
+					</select>
+				</span>
+			</div>
+			<div id="_header__navButton">
+				<img th:src="@{/static/image/icon-menu.png}" class="core-icon core-link" onclick="_toggleNav();"/>
+			</div>
+		</header>
+		<!-- ================================================== -->
+		<!-- END: header										-->
+		<!-- ================================================== -->
+		
+		<!-- ================================================== -->
+		<!-- START: nav											-->
+		<!-- ================================================== -->
+		<nav>
+			<div id="_nav__user">
+				<div class="core-container">
+					<span>
+						<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="core-icon" style="border-radius:50%;"/>
+						<span data-th-text="${_user.name}" class="core-text-bold"></span>
+					</span>
+					<span class="core-text-small">|</span>
+					<span onclick="_logout();" class="core-link">
+						<img th:src="@{/static/image/icon-logout.png}" class="core-icon"/>
+						<span data-th-text="#{logout}" class="core-text-bold"></span>
+					</span>
+					<span class="core-text-small">|</span>
+					<span>
+						<img th:src="@{/static/image/icon-locale.png}" class="core-icon"/>
+						<select class="duice-select" onchange="_changeLocale(this.value);" style="width:100px;">
+							<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
+						</select>
+					</span>
+				</div>
+				<hr class="core-hr"/>
+			</div>
+			<div id="_navi__menu">
+				<ul is="core-ul"
+					data-core-bind="_menus,_menu" 
+					data-core-hierarchy="id,upperId"
+					data-core-foldable="false">
+					<li style="cursor:pointer; border-bottom:dotted 1px #ccc; padding:0.2rem;"
+					data-link="[@core[$context._menu.get('link')]]" 
+					data-target="[@core[$context._menu.get('target')]]"
+					onclick="javascript:_openLink(this.dataset.link, this.dataset.target);">
+						<img is="core-img" data-core-bind="_menu,icon" th:src="@{/static/image/icon-menu.png}" class="core-icon"/>
+						<span is="core-span" data-core-bind="_menu,name" style="font-weight:bold;"></span>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<!-- ================================================== -->
+		<!-- START: nav											-->
+		<!-- ================================================== -->
+		
+		<!-- ================================================== -->
+		<!-- START: main										-->
+		<!-- ================================================== -->
+		<main layout:fragment="_main">
+		</main>
+		<!-- ================================================== -->
+		<!-- END: main											-->
+		<!-- ================================================== -->
+		
+		<!-- ================================================== -->
+		<!-- START: aside										-->
+		<!-- ================================================== -->
+		<aside>
+		</aside>
+		<!-- ================================================== -->
+		<!-- END: aside											-->
+		<!-- ================================================== -->
+		
+		<!-- ================================================== -->
+		<!-- START: footer										-->
+		<!-- ================================================== -->
+		<footer class="core-container core-container--center core-container--middle">
+			<span class="core-copyright">License: LGPL(GNU Lesser General Public License version 3) copyright(c) 2016</span>
+		</footer>
+		<!-- ================================================== -->
+		<!-- END: footer										-->
+		<!-- ================================================== -->
+		
+	</body>
+</html>

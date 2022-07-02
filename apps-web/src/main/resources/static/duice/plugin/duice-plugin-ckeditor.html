@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=2048,initial-scale=1">
+        <title>duice.integrate.Ckeditor</title>
+        <link rel="stylesheet" type="text/css" href="../polyfill/normalize.css">
+        <script src="../polyfill/dataset.js"></script>
+        <script src="../polyfill/classList.js"></script>
+        <script src="../duice.js"></script>
+        <link rel="stylesheet" type="text/css" href="../duice.css">
+        <script src="./ckeditor/ckeditor.js"></script>
+        <script src="./duice-plugin-ckeditor.js"></script>
+        <script>
+        const map = new duice.Map();
+        map.fromJson({
+            contents:'Contents'
+        });
+        map.onAfterChange(function(name, value){
+            mapTextarea.value = JSON.stringify(map.toJson(),null,2);
+        });
+        document.addEventListener("DOMContentLoaded", function(event) {
+            var mapTextarea = document.getElementById('mapTextarea');
+            mapTextarea.value = JSON.stringify(map.toJson(),null,2);
+        });
+        </script>
+    </head>
+    <body style="padding:1rem;">
+        <h1>
+            duice.integrate.Ckeditor
+            <small>(https://ckeditor.com/ckeditor-4)</small>
+        </h1>
+        <div style="display:flex;">
+            <div style="width:40%;">
+                <textarea id="mapTextarea" style="width:100%; height:600px"></textarea>
+            </div>
+            <div style="width:40%; padding-left:1rem;">
+                <div is="duice-plugin-ckeditor" data-duice-if="return true;" data-duice-bind="map,contents" style="width:100%; height:600px;" data-duice-config="{'height':500}"></div>
+            </div>
+        </div>
+    </body>
+</html>

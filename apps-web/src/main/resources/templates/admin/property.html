@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/_admin.html">
+	<main layout:fragment="_main">
+		<script>
+			// properties
+			const properties = new core.List();
+			properties.setReadonlyAll(true);
+			const propertiesSearch = new core.Map({
+				_page: 1,
+				_rows: 20,
+				_totalCount: -1,
+				key: null,
+				value: null,
+				status: null
+			});
+			propertiesSearch.onAfterChange(function(name,value){
+				if(name === 'key' && !value){
+					this.set('value',null);
+				}
+			});
+			
+
+			// load event
+			window.addEventListener('load', function(){
+				getProperties(1);
+			});
+			
+			// getProperties
+			function getProperties(page) {
+				if(page) {
+					propertiesSearch.set('page', page);
+				}
+				let url = new URL('[[@{/admin/property/get-properties}]]', document.location.origin);
+				url.searchParams.append('_page', propertiesSearch.get('_page'));
+				url.searchParams.append('_rows', propertiesSearch.get('_rows'));
+				if(propertiesSearch.get('key')){
+					url.searchParams.append(propertiesSearch.get('key'), propertiesSearch.get('value'));	
+				}
+				url.searchParams.append('status', propertiesSearch.get('status') || '');
+				_fetch(url)
+				.then(function(response){
+					propertiesSearch.set('_totalCount', _getTotalCount(response));
+					return response.json();
+				})
+				.then(function(data){
+					properties.fromJson(data);
+				});
+			}
+			
+			// getUser
+			function getProperty(id) {
+				propertyDetail.open(id)
+				.then(function(){
+					getProperties();
+				});
+			}
+			
+			// addUser
+			function addProperty() {
+				propertyDetail.open()
+				.then(function(){
+					getProperties();
+				});
+			}
+		</script>
+		<h1 class="core-title">
+			<img th:src="@{/static/image/icon-property.png}"/>
+			<span data-th-text="#{web.title.property}"></span>
+		</h1>
+		<hr class="core-hr"/>
+		
+		<!-- ================================================== -->
+		<!-- START: properties									-->
+		<!-- ================================================== -->
+		<div class="core-container core-container--fluid">
+			<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
+				<div class="core-container" style="width:300px;">
+					<select is="core-select" data-core-bind="propertiesSearch,key" style="width:40%;">
+						<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
+						<option value="id" data-th-text="#{core.property.id}">Id</option>
+						<option value="name" data-th-text="#{core.property.name}">Name</option>
+					</select>
+					<input is="core-input" type="text" data-core-bind="propertiesSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+				</div>
+				<button onclick="getProperties(1);" class="core-button">
+					<img th:src="@{/static/image/icon-search.png}"/>
+					<span data-th-text="#{web.label.search}"></span>
+				</button>
+			</form>
+			<div class="core-container core-container--gap core-container--fluid">
+				<button onclick="addProperty();" class="core-button"
+				th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_PROPERTY_EDIT'')')}?'core-button--lock'">
+					<img th:src="@{/static/image/icon-add.png}"/>
+					<span data-th-text="#{web.label.create}"></span>
+				</button>
+			</div>
+		</div>
+		<div class="core-container">
+			<table is="core-table" data-core-bind="properties,property">
+				<colgroup>
+					<col style="width:5%;"/>
+					<col/>
+					<col/>
+					<col/>
+					<col style="width:10%;"/>
+				</colgroup>
+				<thead class="thead-light">
+					<tr>
+						<th><span th:text="#{web.label.no}"></span></th>
+						<th><span th:text="#{core.property.id}"></span></th>
+						<th><span th:text="#{core.property.name}"></span></th>
+						<th><span th:text="#{core.property.value}"></span></th>
+						<th>-</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<span is="core-scriptlet" data-core-bind="property" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="property,id" class="core-text-bold [@core[$context.property.get('systemData')?'core-tag-system':'']]"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="property,name"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="property,value"></span>
+						</td>
+						<td>
+							<button class="core-button" 
+							data-id="[@core[$context.property.get('id')]]" 
+							onclick="getProperty(this.dataset.id)">
+								<img th:src="@{/static/image/icon-detail.png}"/>
+								<span data-th-text="#{web.label.detail}"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="core-container">
+			<div></div>
+			<ul is="core-widget-pagination" data-core-bind="propertiesSearch,page,rows,totalCount" data-core-size="5">
+				<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
+			</ul>
+			<div class="core-text-small core-text-bold">
+				<span th:text="#{web.label.totalCount}"></span>
+				<span is="core-span" data-core-bind="propertiesSearch,totalCount" data-core-format="number,0"></span>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- END: properties									-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: propertyDetail							    -->
+		<!-- ================================================== -->
+		<div id="propertyDetail" th:fragment="propertyDetail(mode)" style="display:none;">
+			<style>
+				#propertyDetail {
+					width:800px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#propertyDetail {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const propertyDetail = {
+					dialog: new core.Dialog(document.getElementById('propertyDetail')),
+					property: new core.Map(),
+					// open
+					open: async function(id){
+						let _this = this;
+						// prepare
+						this.property.clear();
+						this.property.onBeforeChange(function(name,value){
+							if(name === 'id'){
+								return _this.validatePropertyId(value);
+							}
+						});
+
+						// checks authorization
+						if([[${!#authorization.expression('hasAuthority("ADMIN_PROPERTY_EDIT")')}]]){
+							this.property.setReadonlyAll(true);
+						}
+
+						// new
+						if(id){
+							let url = new URL('[[@{/admin/property/get-property}]]', document.location.origin);
+							url.searchParams.append('id',id);
+							let response = await _fetch(url);
+							if(response.ok){
+								let json = await response.json();
+								console.log(json);
+								this.property.fromJson(json);
+								this.property.setReadonly('id', true);
+							}
+						}
+						// modify
+						else{
+							this.property.fromJson({
+								_new: true,
+								status: 'ACTIVE'
+							});
+							this.property.setReadonly('id', false);
+						}
+
+						// open dialog
+						return this.dialog.open();
+					},
+					// validatePropertyId
+					validatePropertyId: async function(id) {
+						// checks id is empty
+						if(!id || id.length < 1){
+							await _alert('[[#{web.message.emptyValue(#{core.property.id})}]]');
+							this.property.setFocus('id');
+							return false;
+						}
+
+						// validate id pattern
+						if(!_isIdFormat(id)){
+							await _alert('[[#{web.message.invalidFormat(#{core.property.id})}]]');
+							this.property.setFocus('id');
+							return false;
+						}
+
+						// checks existed id
+						let url = new URL('[[@{/property/get-property}]]', document.location.origin);
+						url.searchParams.append('id', id);
+						let response = await _fetch(url);
+						if(response.ok){
+							let text = await response.text();
+							let json = (text.length == 0 ? null : JSON.parse(text));
+							if(json != null && json.id === id){
+								await _alert('[[#{web.message.alreadyExist(#{core.property.id})}]]');
+								this.property.setFocus('id');
+								return false;
+							}
+						}
+
+						// when all passed
+						return true;
+					},
+					// saveProperty
+					saveProperty: async function() {
+
+						// checks id
+						if(this.property.get('_new')){
+							if(!await this.validatePropertyId(this.property.get('id'))){
+								return false;
+							}
+						}
+
+						// checks name
+						if(_isEmpty(this.property.get('name'))){
+							await _alert('[[#{web.message.emptyValue(#{core.property.name})}]]');
+							this.property.setFocus('name');
+							return false;
+						}
+
+						// confirm
+						if(await _confirm("[[#{web.message.saveConfirm(#{core.property})}]]")){
+							let data = this.property.toJson();
+							var url = new URL('[[@{/property/save-property}]]', document.location.origin);
+							let response = await _fetch(url, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(data)
+							});
+							if(response.ok){
+								await _alert("[[#{web.message.saveComplete(#{core.property})}]]");
+								this.dialog.resolve(true);
+							}
+						}
+					},
+					// deleteProperty
+					deleteProperty: async function() {
+						if(await _confirm('[[#{web.message.deleteConfirm(#{core.property})}]]')){
+							let url = new URL('[[@{/property/delete-property}]]', document.location.origin);
+							let response = await _fetch(url,{
+								method:'DELETE',
+							});
+							if(response.ok){
+								await _alert('[[#{web.message.deleteComplete(#{core.property})}]]');
+								this.dialog.resolve(true);
+							}
+						}
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-property.png}"/>
+				<span data-th-text="#{web.title.property}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-form">
+				<div>
+					<div>
+						<span th:text="#{core.property.id}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="propertyDetail.property,id" class="core-text-bold"/>
+					</div>
+					<div>
+						<span th:text="#{core.property.name}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="propertyDetail.property,name"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.property.note}"></span>
+					</div>
+					<div>
+						<textarea is="core-textarea" data-core-bind="propertyDetail.property,note"></textarea>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.property.value}"></span>
+					</div>
+					<div>
+						<textarea is="core-textarea" data-core-bind="propertyDetail.property,value" rows="5"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="core-container core-container--gap core-container--right">
+				<button class="core-button" onclick="propertyDetail.deleteProperty();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_PROPERTY_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+					<span th:text="#{web.label.delete}"></span>
+				</button>
+				<button class="core-button" onclick="propertyDetail.saveProperty();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_PROPERTY_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+					<span th:text="#{web.label.save}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: propertyDetail								-->
+		<!-- ================================================== -->
+
+	</main>
+</html>
+

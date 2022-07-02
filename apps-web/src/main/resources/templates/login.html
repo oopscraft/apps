@@ -1,0 +1,99 @@
+<html
+	xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    	<title>Application</title>
+		<script th:src="@{/static/duice/duice.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/duice/duice.css}">
+		<script th:src="@{/static/duice/widget/duice-widget-pagination.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/duice/widget/duice-widget-pagination.css}">
+		<script th:src="@{/static/jquery/jquery.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/nprogress/nprogress.css}">
+		<script th:src="@{/static/nprogress/nprogress.js}"></script>
+		<script th:src="@{/static/core.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/core.css}">
+		<script>
+			// variables
+			const user = new core.Map({
+				username: null,
+				password: null,
+				message: null
+			});
+			
+			window.addEventListener('load', function(){
+				user.setFocus('username');
+			});
+
+			// process
+			async function login() {
+				let username = user.get('username');
+				let password = user.get('password');
+				if(!username){
+					await _alert('[[#{core.core.emptyValue(#{core.user.id})}]]');
+					user.setFocus('username');
+					return false;
+				}
+				if(!password){
+					await _alert('패스워드를 입력해주십시요.');
+					user.setFocus('password');
+					return false;
+				}
+				
+				// request login
+				let url = new URL('[[@{/login/process}]]', document.location.origin);
+				let payload = new URLSearchParams();
+				payload.append('username', username);
+				payload.append('password', password);
+				_fetch(url, {
+					method: 'POST',
+					body: payload
+				}, true)
+				.then(async function(response){
+					if(response.ok){
+						location.href='[[@{/}]]';
+					}else{
+						let json = await response.json();
+						user.set('message', json.message);
+						user.setFocus('username');
+					}
+				});
+			}
+		</script>
+		<style>
+			#message {
+				min-height: 32px;
+				font-weight: bold;
+				color: orangered;
+			}
+		</style>
+    </head>
+	<body>
+		<main class="core-container core-container--center core-container--middle" style="height:100%;">
+			<form onsubmit="return false;" style="width:80%; max-width:300px;">
+				<div class="core-container core-container--gap core-container--center">
+					<h1 class="core-logo">
+						<img th:src="@{/static/image/logo.png}"/>
+						<span th:text="#{server.title.logo}"></span>
+					</h1>
+				</div>
+				<div class="core-container core-container--gap core-container--center">
+					<input is="core-input" type="text" data-core-bind="user,username" th:placeholder="#{core.user.id}" class="core-align-center core-text-bold"/>
+				</div>
+				<div class="core-container core-container--gap core-container--center">
+					<input is="core-input" type="password" data-core-bind="user,password" th:placeholder="#{core.user.password}" class="core-align-center core-text-bold"/>
+				</div>
+				<div class="core-container core-container--gap core-container--center">
+					<button class="core-button" onclick="login();" style="width:100%;">
+						<img th:src="@{/static/image/icon-login.png}"/>
+						<span th:text="#{server.label.login}">Login</span>
+					</button>
+				</div>
+				<div id="message" class="core-container core-container--gap core-container--center">
+					<span is="core-span" data-core-bind="user,message">Message</span>
+				</div>
+			</form>
+		</main>
+	</body>
+</html>

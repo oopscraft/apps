@@ -73,6 +73,13 @@ dependencies {
 	api "org.springframework:spring-web"
 	api "io.swagger.core.v3:swagger-annotations:2.1.12"
 
+	// spring security
+	api "org.springframework.security:spring-security-core"
+	api "org.springframework.security:spring-security-crypto"
+
+	// thumbnail
+	api 'org.imgscalr:imgscalr-lib:4.2'
+
 	// annotationProcessor
 	annotationProcessor 'javax.annotation:javax.annotation-api'
 	compileOnly 'org.projectlombok:lombok'

@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/_admin.html">
+	<main layout:fragment="_main">
+		<style>
+			.core-user-type--GENERAL {
+				background-color: deepskyblue;
+			}
+			.core-user-type--SYSTEM {
+				background-color: orangered;
+			}
+			.core-user-status--ACTIVE {
+				background-color: deepskyblue;
+			}
+			.core-user-status--LOCKED {
+				background-color: lightgray;
+			}
+			.core-user-status--EXPIRED {
+				background-color: lightgray;
+			}
+		</style>
+		<script>
+			const tabFolder = new core.TabFolder();
+			
+			// users
+			const users = new core.List();
+			users.setReadonlyAll(true);
+			const userSearch = new core.Map({
+				_page: 0,
+				_size: 20,
+				_totalCount: -1,
+				key: null,
+				value: null,
+				status: null
+			});
+			userSearch.onAfterChange(function(name,value){
+				if(name === 'key' && !value){
+					this.set('value',null);
+				}
+			});
+			
+			// roles
+			const roles = new core.List();
+			roles.setReadonlyAll(true);
+			const roleSearch = new core.Map({
+				_page: 0,
+				_size: 20,
+				_totalCount: -1,
+				key: null,
+				value: null
+			});
+			roleSearch.onAfterChange(function(name,value){
+				if(name === 'key' && !value){
+					this.set('value',null);
+				}
+			});
+
+			// authorities
+			const authorities = new core.List();
+			authorities.setReadonlyAll(true);
+			const authoritySearch = new core.Map({
+				_page: 0,
+				_size: 20,
+				_totalCount: -1,
+				key: null,
+				value: null
+			});
+			authoritySearch.onAfterChange(function(name,value){
+				if(name === 'key' && !value){
+					this.set('value',null);
+				}
+			});
+			
+			// load event
+			window.addEventListener('load', function(){
+
+				// adds tab
+				let userTab = new core.Tab(document.getElementById('userTabButton'), document.getElementById('userTabContent'));
+				let roleTab = new core.Tab(document.getElementById('roleTabButton'), document.getElementById('roleTabContent'));
+				let authorityTab = new core.Tab(document.getElementById('authorityTabButton'), document.getElementById('authorityTabContent'));
+				tabFolder.addTab(userTab);
+				tabFolder.addTab(roleTab);
+				tabFolder.addTab(authorityTab);
+				tabFolder.onAfterSelectTab(function(selectedTab){
+					if(selectedTab === userTab){
+						getUsers();
+					}else if(selectedTab === roleTab){
+						getRoles();
+					}else if(selectedTab === authorityTab){
+						getAuthorities();
+					}
+				});
+				tabFolder.selectTab(0);
+			});
+			
+			// getUsers
+			function getUsers(page) {
+				if(page) {
+					userSearch.set('_page', page);
+				}
+				let url = new URL('[[@{/admin/user/get-users}]]', document.location.origin);
+				url.searchParams.append('_page', userSearch.get('_page'));
+				url.searchParams.append('_size', userSearch.get('_size'));
+				if(userSearch.get('key')){
+					url.searchParams.append(userSearch.get('key'), userSearch.get('value'));	
+				}
+				url.searchParams.append('status', userSearch.get('status') || '');
+				_fetch(url)
+				.then(function(response){
+					userSearch.set('_totalCount', _getTotalCount(response));
+					return response.json();
+				})
+				.then(function(data){
+					users.fromJson(data);
+				});
+			}
+			
+			// getUser
+			function getUser(id) {
+				userDetail.open(id)
+				.then(function(){
+					getUsers();
+				});
+			}
+			
+			// createUser
+			function createUser() {
+				userDetail.open()
+				.then(function(){
+					getUsers();		
+				});
+			}
+			
+			// getRoles
+			function getRoles(page) {
+				if(page) {
+					roleSearch.set('page', page);
+				}
+				let url = new URL('[[@{/admin/user/get-roles}]]', document.location.origin);
+				url.searchParams.append('_page', roleSearch.get('_page'));
+				url.searchParams.append('_size', roleSearch.get('_size'));
+				if(roleSearch.get('key')){
+					url.searchParams.append(roleSearch.get('key'), roleSearch.get('value'));	
+				}
+				_fetch(url)
+				.then(function(response){
+					roleSearch.set('_totalCount', _getTotalCount(response));
+					return response.json();
+				})
+				.then(function(data){
+					roles.fromJson(data);
+				});
+			}
+			
+			// getRole
+			function getRole(id){
+				roleDetail.open(id).then(()=>{
+					getRoles();
+				});
+			}
+			
+			// createRole
+			function createRole() {
+				roleDetail.open().then(()=>{
+					getRoles();
+				});
+			}
+			
+			// getAuthorities
+			function getAuthorities(page){
+				if(page) {
+					authoritySearch.set('page', page);
+				}
+				var url = new URL('[[@{/admin/user/get-authorities}]]', document.location.origin);
+				url.searchParams.append('_page', authoritySearch.get('_page'));
+				url.searchParams.append('_size', authoritySearch.get('_size'));
+				if(authoritySearch.get('key')){
+					url.searchParams.append(authoritySearch.get('key'), authoritySearch.get('value'));	
+				}
+				_fetch(url)
+				.then(function(response){
+					authoritySearch.set('_totalCount', _getTotalCount(response));
+					return response.json();
+				})
+				.then(function(data){
+					authorities.fromJson(data);
+				});
+			}
+			
+			// getAuthority
+			function getAuthority(id){
+				authorityDetail.open(id).then(()=>{
+					getAuthorities();
+				});
+			}
+			
+			// createAuthority
+			function createAuthority() {
+				authorityDetail.open().then(()=>{
+					getAuthorities();
+				});
+			}
+		</script>
+		<h1 class="core-title">
+			<img th:src="@{/static/image/icon-user.png}"/>
+			<span data-th-text="#{web.title.user}"></span>
+		</h1>
+		<div>
+			<span id="userTabButton" class="core-tab">
+				<img th:src="@{/static/image/icon-user.png}"/>
+				<span data-th-text="#{core.user}"></span>
+			</span>
+			<span id="roleTabButton" class="core-tab">
+				<img th:src="@{/static/image/icon-role.png}"/>
+				<span data-th-text="#{core.role}"></span>
+			</span>
+			<span id="authorityTabButton" class="core-tab">
+				<img th:src="@{/static/image/icon-authority.png}"/>
+				<span data-th-text="#{core.authority}"></span>
+			</span>
+		</div>
+		<hr class="core-hr"/>
+
+		<!-- ================================================== -->
+		<!-- START: userTabContent								-->
+		<!-- ================================================== -->
+		<div id="userTabContent">
+			<div class="core-container core-container--fluid">
+				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
+					<div class="core-container" style="width:300px;">
+						<select is="core-select" data-core-bind="userSearch,key" style="width:40%;">
+							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
+							<option value="id" data-th-text="#{core.user.id}"></option>
+							<option value="name" data-th-text="#{core.user.name}"></option>
+							<option value="email" data-th-text="#{core.user.email}"></option>
+							<option value="mobile" data-th-text="#{core.user.mobile}"></option>
+						</select>
+						<input is="core-input" type="text" data-core-bind="userSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+					</div>
+					<select is="core-select" data-core-bind="userSearch,status" style="width:120px;">
+						<option value data-th-text="'- '+#{core.user.status}+' -'"></option>
+						<option th:each="userStatus:${userStatuses}" th:value="${userStatus}" th:text="${userStatus}"></option>
+					</select>
+					<button onclick="getUsers(0);" class="core-button">
+						<img th:src="@{/static/image/icon-search.png}"/>
+						<span data-th-text="#{web.label.search}"></span>
+					</button>
+				</form>
+				<div class="core-container core-container--gap core-container--fluid">
+					<button onclick="createUser();" class="core-button"
+					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+						<img th:src="@{/static/image/icon-create.png}"/>
+						<span data-th-text="#{web.label.create}"></span>
+					</button>
+				</div>
+			</div>
+			<div class="core-container">
+				<table is="core-table" data-core-bind="users,user">
+					<colgroup>
+						<col style="width:5%;"/>
+						<col/>
+						<col/>
+						<col/>
+						<col/>
+						<col/>
+						<col/>
+						<col style="width:10%;"/>
+					</colgroup>
+					<thead class="thead-light">
+						<tr>
+							<th><span th:text="#{web.label.no}"></span></th>
+							<th><span th:text="#{core.user.id}"></span></th>
+							<th><span th:text="#{core.user.name}"></span></th>
+							<th><span th:text="#{core.user.type}"></span></th>
+							<th><span th:text="#{core.user.status}"></span></th>
+							<th><span th:text="#{core.user.email}"></span></th>
+							<th><span th:text="#{core.user.mobile}"></span></th>
+							<th><span th:text="#{core.user.roles}"></span></th>
+							<th>-</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<span is="core-scriptlet" data-core-bind="user" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							</td>
+							<td>
+								<img is="core-img" data-core-bind="user,icon" th:src="@{/static/image/icon-null.png}" class="core-icon"/>
+								<span is="core-span" data-core-bind="user,id" class="core-text-bold [@core[$context.user.get('systemData')?'core-tag-system':'']]"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="user,name"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="user,type" class="core-user-type core-user-type--[@core[$context.user.get('type')]]"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="user,status" class="core-user-status core-user-status--[@core[$context.user.get('status')]]"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="user,email"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="user,mobile"></span>
+							</td>
+							<td>
+								<span is="core-scriptlet"
+								data-core-bind="user"
+								data-core-script="this.innerHTML = $context.user.get('roles').length;"
+								class="core-badge"
+								>0</span>
+							</td>
+							<td>
+								<button class="core-button" data-id="[@core[$context.user.get('id')]]" onclick="getUser(this.dataset.id)">
+									<img th:src="@{/static/image/icon-view.png}"/>
+									<span data-th-text="#{web.label.view}"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container">
+				<div></div>
+				<ul is="core-widget-pagination" data-core-bind="userSearch,_page,_size,_totalCount">
+					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
+				</ul>
+				<div class="core-text-small core-text-bold">
+					<span th:text="#{web.label.totalCount}"></span>
+					<span is="core-span" data-core-bind="userSearch,_totalCount" data-core-format="number,0"></span>
+				</div>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- END: userTabContent								-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: roleTabContent								-->
+		<!-- ================================================== -->
+		<div id="roleTabContent" style="display:none;">
+			<div class="core-container core-container--fluid">
+				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
+					<div class="core-container" style="width:300px;">
+						<select is="core-select" data-core-bind="roleSearch,key" style="width:40%;">
+							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
+							<option value="id" data-th-text="#{core.role.id}">Id</option>
+							<option value="name" data-th-text="#{core.role.name}">Name</option>
+						</select>
+						<input is="core-input" type="text" data-core-bind="roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+					</div>
+					<button onclick="getRoles(0);" class="core-button">
+						<img th:src="@{/static/image/icon-search.png}"/>
+						<span data-th-text="#{web.label.search}"></span>
+					</button>
+				</form>
+				<div class="core-container core-container--gap core-container--fluid">
+					<button onclick="createRole();" class="core-button"
+					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+						<img th:src="@{/static/image/icon-create.png}"/>
+						<span data-th-text="#{web.label.create}"></span>
+					</button>
+				</div>
+			</div>
+			<div class="core-container">
+				<table is="core-table" data-core-bind="roles,role">
+					<colgroup>
+						<col style="width:5%;"/>
+						<col/>
+						<col/>
+						<col/>
+						<col style="width:10%;"/>
+					</colgroup>
+					<thead class="thead-light">
+						<tr>
+							<th><span th:text="#{web.label.no}"></span></th>
+							<th><span th:text="#{core.role.id}"></span></th>
+							<th><span th:text="#{core.role.name}"></span></th>
+							<th><span th:text="#{core.role.authorities}"></span></th>
+							<th>-</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<span is="core-scriptlet" data-core-bind="role" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							</td>
+							<td>
+								<img is="core-img" data-core-bind="role,icon" th:src="@{/static/image/icon-null.png}" class="core-icon"/>
+								<span is="core-span" data-core-bind="role,id" class="core-text-bold [@core[$context.role.get('systemData')?'core-tag-system':'']]"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="role,name"></span>
+							</td>
+							<td>
+								<span is="core-scriptlet"
+								data-core-bind="role"
+								data-core-script="this.innerHTML = $context.role.get('authorities').length;"
+								class="core-badge"
+								>0</span>
+							</td>
+							<td>
+								<button class="core-button" data-id="[@core[$context.role.get('id')]]" onclick="getRole(this.dataset.id)">
+									<img th:src="@{/static/image/icon-view.png}"/>
+									<span data-th-text="#{web.label.view}"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container">
+				<div></div>
+				<ul is="core-widget-pagination" data-core-bind="roleSearch,_page,_size,_totalCount">
+					<li data-page="[@core[$context.page]]" onclick="getRoles(this.dataset.page);"></li>
+				</ul>
+				<div class="core-text-small core-text-bold">
+					<span th:text="#{web.label.totalCount}"></span>
+					<span is="core-span" data-core-bind="roleSearch,_totalCount" data-core-format="number,0"></span>
+				</div>
+			</div>
+		</div>		
+		<!-- ================================================== -->
+		<!-- END: roleTabContent								-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: authorityTabContent							-->
+		<!-- ================================================== -->
+		<div id="authorityTabContent" style="display:none;">
+			<div class="core-container core-container--fluid">
+				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
+					<div class="core-container" style="width:300px;">
+						<select is="core-select" data-core-bind="authoritySearch,key" style="width:40%;">
+							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
+							<option value="id" data-th-text="#{core.authority.id}">Id</option>
+							<option value="name" data-th-text="#{core.authority.name}">Name</option>
+						</select>
+						<input is="core-input" type="text" data-core-bind="authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+					</div>
+					<button onclick="getAuthorities(0);" class="core-button">
+						<img th:src="@{/static/image/icon-search.png}"/>
+						<span data-th-text="#{web.label.search}"></span>
+					</button>
+				</form>
+				<div class="core-container core-container--gap core-container--fluid">
+					<button onclick="createAuthority();" class="core-button"
+					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+						<img th:src="@{/static/image/icon-create.png}"/>
+						<span data-th-text="#{web.label.create}"></span>
+					</button>
+				</div>
+			</div>
+			<div class="core-container">
+				<table is="core-table" data-core-bind="authorities,authority">
+					<colgroup>
+						<col style="width:5%;"/>
+						<col/>
+						<col/>
+						<col style="width:10%;"/>
+					</colgroup>
+					<thead class="thead-light">
+						<tr>
+							<th><span th:text="#{web.label.no}"></span></th>
+							<th><span th:text="#{core.authority.id}"></span></th>
+							<th><span th:text="#{core.authority.name}"></span></th>
+							<th>-</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<span is="core-scriptlet" data-core-bind="authority" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							</td>
+							<td>
+								<img is="core-img" data-core-bind="authority,icon" th:src="@{/static/image/icon-null.png}" class="core-icon"/>
+								<span is="core-span" data-core-bind="authority,id" class="core-text-bold [@core[$context.authority.get('systemData')?'core-tag-system':'']]"></span>
+							</td>
+							<td>
+								<span is="core-span" data-core-bind="authority,name"></span>
+							</td>
+							<td>
+								<button class="core-button" data-id="[@core[$context.authority.get('id')]]" onclick="getAuthority(this.dataset.id)">
+									<img th:src="@{/static/image/icon-view.png}"/>
+									<span data-th-text="#{web.label.view}"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container">
+				<div></div>
+				<ul is="core-widget-pagination" data-core-bind="authoritySearch,_page,_size,_totalCount">
+					<li data-page="[@core[$context.page]]" onclick="getAuthorities(this.dataset.page);"></li>
+				</ul>
+				<div class="core-text-small core-text-bold">
+					<span th:text="#{web.label.totalCount}"></span>
+					<span is="core-span" data-core-bind="authoritySearch,_totalCount" data-core-format="number,0"></span>
+				</div>
+			</div>
+		</div>		
+		<!-- ================================================== -->
+		<!-- START: authorityTabContent							-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: userView							-->
+		<!-- ================================================== -->
+		<div id="userDetail" th:fragment="userDetail(mode)" style="display:none;">
+			<style>
+				#userDetail {
+					width:800px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#userDetail {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const userDetail = {
+					dialog: new core.Dialog(document.getElementById('userDetail')),
+					user: new core.Map(),
+					userRoles: new core.List(),
+					// open
+					open: async function(id){
+						let _this = this;
+						// prepare
+						this.user.clear();
+						this.userRoles.clear();
+						this.user.onBeforeChange(function(name,value){
+							if(name === 'id'){
+								return _this.validateUserId(value);
+							}
+						});
+
+						// checks authorization
+						if([[${!#authorization.expression('hasAuthority("ADMIN_USER_EDIT")')}]]){
+							this.user.setReadonlyAll(true);
+							this.userRoles.setReadonlyAll(true);
+						}
+
+						// new
+						if(id){
+							document.getElementById('userDetail_passwordDiv').style.display = 'none';
+							document.getElementById('userDetail_changePasswordDiv').style.display = '';
+							let url = new URL('[[@{/admin/user/get-user}]]', document.location.origin);
+							url.searchParams.append('id',id);
+							let response = await _fetch(url);
+							if(response.ok){
+								let json = await response.json();
+								console.log(json);
+								this.user.fromJson(json);
+								this.userRoles.fromJson(json.roles);
+								this.user.setReadonly('id', true);
+							}
+						}
+						// modify
+						else{
+							this.user.fromJson({
+								_new: true,
+								status: 'ACTIVE'
+							});
+							this.user.setReadonly('id', false);
+							document.getElementById('userDetail_passwordDiv').style.display = '';
+							document.getElementById('userDetail_changePasswordDiv').style.display = 'none';
+						}
+
+						// open dialog
+						return this.dialog.open();
+					},
+					// validateUserId
+					validateUserId: async function(id) {
+						// checks id is empty
+						if(!id || id.length < 1){
+							await _alert('[[#{web.message.emptyValue(#{core.user.id})}]]');
+							this.user.setFocus('id');
+							return false;
+						}
+
+						// validate id pattern
+						if(!_isIdFormat(id)){
+							await _alert('[[#{web.message.invalidFormat(#{core.user.id})}]]');
+							this.user.setFocus('id');
+							return false;
+						}
+
+						// checks existed id
+						let url = new URL('[[@{/admin/user/get-user}]]', document.location.origin);
+						url.searchParams.append('id', id);
+						let response = await _fetch(url);
+						if(response.ok){
+							let text = await response.text();
+							let json = (text.length == 0 ? null : JSON.parse(text));
+							if(json != null && json.id === id){
+								await _alert('[[#{web.message.alreadyExist(#{core.user.id})}]]');
+								this.user.setFocus('id');
+								return false;
+							}
+						}
+
+						// when all passed
+						return true;
+					},
+					// saveUser
+					saveUser: async function() {
+
+						// checks id
+						if(this.user.get('_new')){
+							if(!await this.validateUserId(this.user.get('id'))){
+								return false;
+							}
+						}
+
+						// checks name
+						if(_isEmpty(this.user.get('name'))){
+							await _alert('[[#{web.message.emptyValue(#{core.user.name})}]]');
+							this.user.setFocus('name');
+							return false;
+						}
+
+						// checks password
+						if(this.user.get('_new')){
+							if(_isEmpty(this.user.get('password'))){
+								await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+								this.user.setFocus('password');
+								return false;
+							}
+							if(_isEmpty(this.user.get('passwordConfirm'))){
+								await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+								this.user.setFocus('passwordConfirm');
+								return false;
+							}
+							if(this.user.get('password') !== this.user.get('passwordConfirm')){
+								await _alert('[[#{web.message.notMatch(#{core.user.password})}]]');
+								this.user.setFocus('password');
+								return false;
+							}
+						}
+
+						// confirm
+						if(await _confirm("[[#{web.message.saveConfirm(#{core.user})}]]")){
+							let data = this.user.toJson();
+							data.roles = this.userRoles.toJson();
+							var url = new URL('[[@{/admin/user/save-user}]]', document.location.origin);
+							let response = await _fetch(url, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(data)
+							});
+							if(response.ok){
+								await _alert("[[#{web.message.saveComplete(#{core.user})}]]");
+								this.dialog.resolve(true);
+							}
+						}
+					},
+					// deleteUser
+					deleteUser: async function() {
+						if(await _confirm('[[#{web.message.deleteConfirm(#{core.user})}]]')){
+							let url = new URL('[[@{/admin/user/delete-user}]]', document.location.origin);
+							url.searchParams.append('id', this.user.get('id'));
+							let response = await _fetch(url,{
+								method:'DELETE'
+							});
+							if(response.ok){
+								await _alert('[[#{web.message.deleteComplete(#{core.user})}]]');
+								this.dialog.resolve(true);
+							}
+						}
+					},
+					// open roleSelect
+					addUserRole: async function(){
+						let _this = this;
+
+						// makes already existed role to be disabled
+						let disabledIds = new Array();
+						this.userRoles.forEach(function(element){
+							disabledIds.push(element.get('id'));
+						});
+
+						// open dialog
+						let roles = await roleSelect.open(disabledIds)
+						roles.forEach(function(role){
+							_this.userRoles.addRow(role);
+						});
+					},
+					removeUserRole: function(index){
+						this.userRoles.removeRow(index);
+					},
+					// change password
+					changePassword: function () {
+						let id = this.user.get('id');
+						userChangePassword.open(id);
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-user.png}"/>
+				<span data-th-text="#{web.title.userDetail}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-form">
+				<div>
+					<div>
+						<span th:text="#{core.user.id}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="userDetail.user,id" class="core-text-bold"/>
+					</div>
+					<div>
+						<span th:text="#{core.user.name}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="userDetail.user,name"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.user.type}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<select is="core-select" data-core-bind="userDetail.user,type">
+							<option th:each="type:${T(net.chomookun.apps.core.user.User.Type).values}" th:value="${type}" th:text="#{'core.user.type.'+${type}}"></option>
+						</select>
+					</div>
+					<div>
+						<span th:text="#{core.user.status}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<select is="core-select" data-core-bind="userDetail.user,status">
+							<option th:each="status:${T(net.chomookun.apps.core.user.User.Status).values}" th:value="${status}" th:text="#{'core.user.status.'+${status}}"></option>
+						</select>
+					</div>
+				</div>
+				<div id="userDetail_passwordDiv">
+					<div>
+						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="password" data-core-bind="userDetail.user,password"/>
+					</div>
+					<div>
+						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="password" data-core-bind="userDetail.user,passwordConfirm"/>
+					</div>
+				</div>
+				<div id="userDetail_changePasswordDiv">
+					<div>
+						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<button class="core-button" onclick="userDetail.changePassword();">
+							<img class="icon" th:src="@{/static/image/icon-password.png}">
+							<span th:text="#{web.label.changePassword}"></span>
+						</button>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.user.email}"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="userDetail.user,email"/>
+					</div>
+					<div>
+						<span th:text="#{core.user.mobile}"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="userDetail.user,mobile"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.user.locale}"></span>
+					</div>
+					<div>
+						<select is="core-select" data-core-bind="userDetail.user,locale">
+							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
+							<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
+						</select>
+					</div>
+					<div></div>
+					<div></div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.user.photo}"></span>
+					</div>
+					<div class="core-container">
+						<img is="core-img" data-core-bind="userDetail.user,photo" data-core-size="64,64" th:src="@{/static/image/icon-null.png}"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.user.profile}"></span>
+					</div>
+					<div>
+						<textarea is="core-textarea" data-core-bind="userDetail.user,profile"></textarea>
+					</div>
+				</div>
+				<div>
+					<div>
+						<img class="core-icon" th:src="@{/static/image/icon-role.png}"/>
+						<span th:text="#{core.user.roles}"></span>
+					</div>
+					<div style="max-height:300px; overflow-y:scroll; border: solid 1px #ccc;">
+						<table is="core-table" data-core-bind="userDetail.userRoles,userRole" style="border:none;">
+							<colgroup>
+								<col/>
+								<col/>
+								<col style="width:50px;"/>
+							</colgroup>
+							<thead>
+							<tr>
+								<th><span th:text="#{core.role.id}">Id</span></th>
+								<th><span th:text="#{core.role.name}">Name</span></th>
+								<th>
+									<button class="core-button" onclick="userDetail.addUserRole();"
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+										<img th:src="@{/static/image/icon-add.png}"/>
+									</button>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<img is="core-img" data-core-bind="userRole,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
+									<span is="core-span" data-core-bind="userRole,id" class="core-text-bold [@core[$context.userRole.get('systemData')?'core-tag-system':'']]"></span>
+								</td>
+								<td>
+									<span is="core-span" data-core-bind="userRole,name"></span>
+								</td>
+								<td>
+									<button class="core-button" data-index="[@core[$context.index]]" onclick="userDetail.removeUserRole(this.dataset.index);"
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+										<img th:src="@{/static/image/icon-remove.png}"/>
+									</button>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="core-container core-container--gap core-container--right">
+				<button class="core-button" onclick="userDetail.deleteUser();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+					<span th:text="#{web.label.delete}"></span>
+				</button>
+				<button class="core-button" onclick="userDetail.saveUser();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+					<span th:text="#{web.label.save}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: userDetail									-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: roleSelect							        -->
+		<!-- ================================================== -->
+		<div id="userChangePassword" th:fragment="userChangePassword()" style="display:none;">
+			<style>
+				#userChangePassword {
+					width:600px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#userChangePassword {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const userChangePassword = {
+					dialog: new core.Dialog(document.getElementById('userChangePassword')),
+					user: new core.Map({
+						id: null,
+						password: null,
+						passwordConfirm: null
+					}),
+					open: async function (id) {
+						this.user.set('id', id);
+						return this.dialog.open();
+					},
+					changePassword: async function () {
+
+						// checks validation
+						if(_isEmpty(this.user.get('password'))){
+							await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+							this.user.setFocus('password');
+							return false;
+						}
+						if(_isEmpty(this.user.get('passwordConfirm'))){
+							await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+							this.user.setFocus('passwordConfirm');
+							return false;
+						}
+						if(this.user.get('password') !== this.user.get('passwordConfirm')){
+							await _alert('[[#{web.message.notMatch(#{core.user.password})}]]');
+							this.user.setFocus('password');
+							return false;
+						}
+
+						// confirm
+						if(await _confirm("[[#{web.message.changeConfirm(#{core.user.password})}]]")){
+							let data = this.user.toJson();
+							var url = new URL('[[@{/admin/user/change-password}]]', document.location.origin);
+							let response = await _fetch(url, {
+								method: 'PUT',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(data)
+							});
+							if(response.ok){
+								await _alert("[[#{web.message.changeComplete#{core.user.password})}]]");
+								this.dialog.resolve(true);
+							}
+						}
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-password.png}"/>
+				<span data-th-text="#{web.title.changePassword}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-form">
+				<div>
+					<div>
+						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="password" data-core-bind="userChangePassword.user,password"/>
+					</div>
+					<div>
+						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="password" data-core-bind="userChangePassword.user,passwordConfirm"/>
+					</div>
+				</div>
+			</div>
+			<div class="core-container core-container--gap core-container--right">
+				<button class="core-button" onclick="userChangePassword.changePassword();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+					<span th:text="#{web.label.save}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: roleSelect									-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: roleDetail							-->
+		<!-- ================================================== -->
+		<div id="roleDetail" th:fragment="roleDetail(mode)" style="display:none;">
+			<style>
+				#roleDetail {
+					width:800px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#roleDetail {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const roleDetail = {
+					dialog: new core.Dialog(document.getElementById('roleDetail')),
+					role: new core.Map(),
+					roleAuthorities: new core.List(),
+					// open
+					open: async function(id){
+						let _this = this;
+
+						// prepare
+						this.role.clear();
+						this.roleAuthorities.clear();
+						this.role.onBeforeChange(function(name,value){
+							if(name === 'id'){
+								return _this.validateRoleId(value);
+							}
+						});
+
+						// checks authorization
+						if([[${!#authorization.expression('hasAuthority("ADMIN_USER_EDIT")')}]]){
+							this.role.setReadonlyAll(true);
+							this.roleAuthorities.setReadonlyAll(true);
+						}
+
+						// new
+						if(id){
+							let url = new URL('[[@{/admin/user/get-role}]]', document.location.origin);
+							url.searchParams.append('id',id);
+							let response = await _fetch(url);
+							if(response.ok){
+								let data = await response.json();
+								this.role.fromJson(data);
+								this.role.setReadonly('id', true);
+								this.roleAuthorities.fromJson(data.authorities);
+							}
+						}
+						// modify
+						else{
+							this.role.fromJson({
+								_new: true
+							});
+							this.role.setReadonly('id', false);
+						}
+
+						// opens dialog
+						return this.dialog.open();
+					},
+					// validateRoleId
+					validateRoleId: async function(id) {
+						// checks id is empty
+						if(!id || id.length < 1){
+							await _alert('[[#{web.message.emptyValue(#{core.role.id})}]]');
+							this.role.setFocus('id');
+							return false;
+						}
+
+						// validate id pattern
+						if(!_isIdFormat(id)){
+							await _alert('[[#{web.message.invalidFormat(#{core.role.id})}]]');
+							this.role.setFocus('id');
+							return false;
+						}
+
+						// checks duplicated id
+						let url = new URL('[[@{/admin/user/get-role}]]', document.location.origin);
+						url.searchParams.append('id', id);
+						let response = await _fetch(url);
+						if(response.ok){
+							let text = await response.text();
+							let json = (text.length == 0 ? null : JSON.parse(text));
+							if(json != null && json.id === id){
+								await _alert('[[#{web.message.alreadyExist(#{core.role.id})}]]');
+								this.role.setFocus('id');
+								return false;
+							}
+						}
+
+						// when all passed
+						return true;
+					},
+					// saveRole
+					saveRole: async function() {
+
+						// checks id
+						if(this.role.get('_new')){
+							if(!await this.validateRoleId(this.role.get('id'))){
+								return false;
+							}
+						}
+
+						// checks name
+						if(_isEmpty(this.role.get('name'))){
+							await _alert('[[#{web.message.emptyValue(#{core.role.name})}]]');
+							this.role.setFocus('name');
+							return false;
+						}
+
+						// confirm
+						if(await _confirm("[[#{web.message.saveConfirm(#{core.role})}]]")){
+							let data = this.role.toJson();
+							data.authorities = this.roleAuthorities.toJson();
+							var url = new URL('[[@{/admin/user/save-role}]]', document.location.origin);
+							let response = await _fetch(url, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(data)
+							});
+							if(response.ok){
+								await _alert("[[#{web.message.saveComplete(#{core.role})}]]");
+								this.dialog.resolve(true);
+							}
+						}
+					},
+					// deleteRole
+					deleteRole: async function() {
+						if(await _confirm('[[#{web.message.deleteConfirm(#{core.role})}]]')){
+							let url = new URL('[[@{/admin/user/delete-role}]]', document.location.origin);
+							let response = await _fetch(url,{
+								method:'DELETE'
+							});
+							if(response.ok){
+								await _alert('[[#{web.message.deleteComplete(#{core.role})}]]');
+								this.dialog.resolve(true);
+							}
+						}
+					},
+					// open authoritySelect
+					addRoleAuthority: async function(){
+						// makes already existed role to be disabled
+						let disabledIds = new Array();
+						this.roleAuthorities.forEach(function(element){
+							disabledIds.push(element.get('id'));
+						});
+
+						// open dialog
+						let authorities = await authoritySelect.open(disabledIds)
+						let _this = this;
+						authorities.forEach(function(authority){
+							_this.roleAuthorities.addRow(authority);
+						});
+					},
+					removeRoleAuthority: function(index){
+						this.roleAuthorities.removeRow(index);
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-role.png}"/>
+				<span data-th-text="#{web.title.roleDetail}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-form">
+				<div>
+					<div>
+						<span th:text="#{core.role.id}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="roleDetail.role,id" class="core-text-bold"/>
+					</div>
+					<div>
+						<span th:text="#{core.role.name}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="roleDetail.role,name"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.role.icon}"></span>
+					</div>
+					<div class="core-container">
+						<img is="core-img" data-core-bind="roleDetail.role,icon" data-core-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.role.note}"></span>
+					</div>
+					<div>
+						<textarea is="core-textarea" data-core-bind="roleDetail.role,note"></textarea>
+					</div>
+				</div>
+				<div>
+					<div>
+						<img class="core-icon" th:src="@{/static/image/icon-authority.png}"/>
+						<span th:text="#{core.role.authorities}"></span>
+					</div>
+					<div style="max-height:300px; overflow-y:scroll; border: solid 1px #ccc;">
+						<table is="core-table" data-core-bind="roleDetail.roleAuthorities,roleAuthority" style="border:none;">
+							<colgroup>
+								<col/>
+								<col/>
+								<col style="width:50px;"/>
+							</colgroup>
+							<thead>
+							<tr>
+								<th><span th:text="#{core.authority.id}"></span></th>
+								<th><span th:text="#{core.authority.name}"></span></th>
+								<th>
+									<button class="core-button"
+											onclick="roleDetail.addRoleAuthority();"
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+										<img th:src="@{/static/image/icon-add.png}"/>
+									</button>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<img is="core-img" data-core-bind="roleAuthority,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
+									<span is="core-span" data-core-bind="roleAuthority,id" class="core-text-bold [@core[$context.roleAuthority.get('systemData')?'core-tag-system':'']]"></span>
+								</td>
+								<td>
+									<span is="core-span" data-core-bind="roleAuthority,name"></span>
+								</td>
+								<td>
+									<button class="core-button" data-index="[@core[$context.index]]"
+											onclick="roleDetail.removeRoleAuthority(this.dataset.index);"
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+										<img th:src="@{/static/image/icon-remove.png}"/>
+									</button>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="core-container core-container--right core-container--gap">
+				<button class="core-button"
+						onclick="roleDetail.deleteRole();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+					<span th:text="#{web.label.delete}"></span>
+				</button>
+				<button class="core-button"
+						onclick="roleDetail.saveRole();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+					<span th:text="#{web.label.save}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: roleDetail									-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: roleSelect									-->
+		<!-- ================================================== -->
+		<div id="roleSelect" th:fragment="roleSelect(mode)" style="display:none;">
+			<style>
+				#roleSelect {
+					width:600px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#roleSelect {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const roleSelect = {
+					dialog: new core.Dialog(document.getElementById('roleSelect')),
+					alreadySelectedIds: new Array(),
+					roleSearch: new core.Map({
+						_page: 0,
+						_size: 10,
+						_totalCount: -1,
+						key: null,
+						value: null
+					}),
+					roles: new core.List(),
+					selectedRoles: new core.List(),
+					// open
+					open: async function(alreadySelectedIds){
+						// sets already selected ids
+						if(alreadySelectedIds){
+							this.alreadySelectedIds = alreadySelectedIds;
+						}else{
+							this.alreadySelectedIds = new Array();
+						}
+
+						// roleSearch
+						this.roleSearch.reset();
+						this.roleSearch.onAfterChange(function(name,value){
+							if(name === 'key' && !value){
+								this.set('value',null);
+							}
+						});
+
+						// retrieves
+						this.selectedRoles.clear();
+						await this.getRoles(1);
+						return this.dialog.open();
+					},
+					// getRoles
+					getRoles: async function(page) {
+						let _this = this;
+						var url = new URL('[[@{/admin/user/get-roles}]]', document.location.origin);
+						url.searchParams.append('_page', this.roleSearch.get('_page'));
+						url.searchParams.append('_size', this.roleSearch.get('_size'));
+						if(this.roleSearch.get('key')){
+							url.searchParams.append(this.roleSearch.get('key'), this.roleSearch.get('value'));
+						}
+						return _fetch(url)
+								.then(function(response){
+									_this.roleSearch.set('_totalCount', _getTotalCount(response));
+									return response.json();
+								})
+								.then(function(data){
+									_this.roles.fromJson(data);
+									// checks disabled id
+									_this.roles.forEach(function(role){
+										if(_this.alreadySelectedIds.includes(role.get('id'))){
+											role.set('_select', true);
+											role.setDisableAll(true);
+										}
+									});
+								});
+					},
+					selectRole: function(index){
+						let role = this.roles.getRow(index);
+						console.log(role);
+						// check already selected
+						if(role.get('_select')){
+							new core.Alert("[[#{web.message.alreadySelected(#{core.role})}]]").open();
+							return;
+						}
+						role.set('_select', true);
+						this.selectedRoles.addRow(role);
+					},
+					deselectRole: function(index){
+						let role = this.selectedRoles.getRow(index);
+						role.set('_select', false);
+						this.selectedRoles.removeRow(index);
+					},
+					// selectRoles
+					confirm: function(){
+						this.dialog.resolve(this.selectedRoles);
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-role.png}"/>
+				<span data-th-text="#{web.title.roleSelect}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-container core-container--fluid">
+				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
+					<div class="core-container" style="width:300px;">
+						<select is="core-select" data-core-bind="roleSelect.roleSearch,key" style="width:40%;">
+							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
+							<option value="id" data-th-text="#{core.role.id}">Id</option>
+							<option value="name" data-th-text="#{core.role.name}">Name</option>
+						</select>
+						<input is="core-input" type="text" data-core-bind="roleSelect.roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+					</div>
+					<button onclick="roleSelect.getRoles(0);" class="core-button">
+						<img th:src="@{/static/image/icon-search.png}"/>
+						<span data-th-text="#{web.label.search}"></span>
+					</button>
+				</form>
+			</div>
+			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
+				<table is="core-table" data-core-bind="roleSelect.roles,role" style="border:none;">
+					<colgroup>
+						<col style="width:50px;"/>
+						<col/>
+						<col/>
+						<col style="width:50px;"/>
+					</colgroup>
+					<thead>
+					<tr>
+						<th><span>-</span></th>
+						<th><span th:text="#{core.role.id}">Id</span></th>
+						<th><span th:text="#{core.role.name}">Name</span></th>
+						<th>-</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<span is="core-scriptlet" data-core-bind="role" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+						</td>
+						<td>
+							<img is="core-img" data-core-bind="role,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
+							<span is="core-span" data-core-bind="role,id" class="core-text-bold [@core[$context.role.get('systemData')?'core-text--system':'']] id"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="role,name"></span>
+						</td>
+						<td>
+							<button is="core-scriptlet"
+									data-core-bind="role"
+									data-core-script="this.disabled = $context.role.get('_select');"
+									data-index="[@core[$context.index]]"
+									onclick="roleSelect.selectRole(this.dataset.index);"
+									class="core-button">
+								<img th:src="@{/static/image/icon-add.png}"/>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container core-container--center">
+				<ul is="core-widget-pagination" data-core-bind="roleSelect.roleSearch,_page,_size,_totalCount">
+					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
+				</ul>
+			</div>
+			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
+				<table is="core-table" data-core-bind="roleSelect.selectedRoles,role" style="border:none;">
+					<colgroup>
+						<col style="width:50px;"/>
+						<col/>
+						<col/>
+						<col style="width:50px;"/>
+					</colgroup>
+					<thead>
+					<tr>
+						<th><span>-</span></th>
+						<th><span th:text="#{core.role.id}">Id</span></th>
+						<th><span th:text="#{core.role.name}">Name</span></th>
+						<th>-</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<span is="core-scriptlet" data-core-bind="role" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+						</td>
+						<td>
+							<img is="core-img" data-core-bind="role,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
+							<span is="core-span" data-core-bind="role,id" class="core-text-bold [@core[$context.role.get('systemData')?'system':'']] id"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="role,name"></span>
+						</td>
+						<td>
+							<button class="core-button" data-index="[@core[$context.index]]" onclick="roleSelect.deselectRole(this.dataset.index);">
+								<img th:src="@{/static/image/icon-remove.png}"/>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container core-container--gap core-container--right">
+				<button class="core-button" onclick="roleSelect.confirm();">
+					<img class="core-icon" th:src="@{/static/image/icon-confirm.png}"/>
+					<span th:text="#{web.label.confirm}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: roleSelect									-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: authorityDetail								-->
+		<!-- ================================================== -->
+		<div id="authorityDetail" th:fragment="authorityDetail(mode)" style="display:none;">
+			<style>
+				#authorityDetail {
+					width:800px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#authorityDetail {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const authorityDetail = {
+					dialog: new core.Dialog(document.getElementById('authorityDetail')),
+					authority: new core.Map(),
+					// open
+					open: async function(id){
+						let _this = this;
+
+						// prepare
+						this.authority.clear();
+						this.authority.onBeforeChange(function(name,value){
+							if(name === 'id'){
+								return _this.validateAuthorityId(value);
+							}
+						});
+
+						// checks authorization
+						if([[${!#authorization.expression('hasAuthority("ADMIN_USER_EDIT")')}]]){
+							this.authority.setReadonlyAll(true);
+						}
+
+						// new
+						if(id){
+							let url = new URL('[[@{/admin/user/get-authority}]]', document.location.origin);
+							url.searchParams.append('id',id);
+							let response = await _fetch(url);
+							if(response.ok){
+								let data = await response.json();
+								this.authority.fromJson(data);
+								this.authority.setReadonly('id', true);
+							}
+						}
+						// modify
+						else{
+							this.authority.fromJson({
+								_new: true
+							});
+							this.authority.setReadonly('id', false);
+						}
+
+						// open dialog
+						return this.dialog.open();
+					},
+					validateAuthorityId: async function(id){
+						// checks id is empty
+						if(!id || id.length < 1){
+							await _alert('[[#{web.message.emptyValue(#{core.authority.id})}]]');
+							this.authority.setFocus('id');
+							return false;
+						}
+
+						// validate id pattern
+						if(!_isIdFormat(id)){
+							await _alert('[[#{web.message.invalidFormat(#{core.authority.id})}]]');
+							this.authority.setFocus('id');
+							return false;
+						}
+
+						// checks duiplicated id
+						let url = new URL('[[@{/admin/user/get-authority}]]', document.location.origin);
+						url.searchParams.append('id', id);
+						let response = await _fetch(url);
+						if(response.ok){
+							let text = await response.text();
+							let json = (text.length == 0 ? null : JSON.parse(text));
+							if(json != null && json.id === id){
+								await _alert('[[#{web.message.alreadyExist(#{core.authority.id})}]]');
+								this.authority.setFocus('id');
+								return false;
+							}
+						}
+
+						// when all passed
+						return true;
+					},
+					// saveAuthority
+					saveAuthority: async function() {
+
+						// checks id
+						if(this.authority.get('_new')){
+							if(!await this.validateAuthorityId(this.authority.get('id'))){
+								return false;
+							}
+						}
+
+						// checks name
+						if(_isEmpty(this.authority.get('name'))){
+							await _alert('[[#{web.message.emptyValue(#{core.authority.name})}]]');
+							this.authority.setFocus('name');
+							return false;
+						}
+
+						// confirm
+						if(await _confirm("[[#{web.message.saveConfirm(#{core.authority})}]]")){
+							let data = this.authority.toJson();
+							var url = new URL('[[@{/admin/user/save-authority}]]', document.location.origin);
+							let response = await _fetch(url, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(data)
+							});
+							if(response.ok){
+								await _alert("[[#{web.message.saveComplete(#{core.authority})}]]");
+								this.dialog.resolve(true);
+							}
+						}
+					},
+					// deleteAuthority
+					deleteAuthority: async function() {
+						if(await _confirm('[[#{web.message.deleteConfirm(#{core.authority})}]]')){
+							let url = new URL('[[@{/admin/user/delete-authority}]]', document.location.origin);
+							let response = await _fetch(url,{
+								method:'DELETE'
+							});
+							if(response.ok){
+								await _alert('[[#{web.message.deleteComplete(#{core.authority})}]]');
+								this.dialog.resolve(true);
+							}
+						}
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-authority.png}"/>
+				<span data-th-text="#{web.title.authorityDetail}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-form">
+				<div>
+					<div>
+						<span th:text="#{core.authority.id}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="authorityDetail.authority,id" class="core-text-bold"/>
+					</div>
+					<div>
+						<span th:text="#{core.authority.name}" class="core-tag-mandatory"></span>
+					</div>
+					<div>
+						<input is="core-input" type="text" data-core-bind="authorityDetail.authority,name"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.authority.icon}"></span>
+					</div>
+					<div class="core-container">
+						<img is="core-img" data-core-bind="authorityDetail.authority,icon" data-core-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<span th:text="#{core.authority.note}"></span>
+					</div>
+					<div>
+						<textarea is="core-textarea" data-core-bind="authorityDetail.authority,note"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="core-container core-container--right core-container--gap">
+				<button class="core-button"
+						onclick="authorityDetail.deleteAuthority();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+					<span th:text="#{web.label.delete}"></span>
+				</button>
+				<button class="core-button"
+						onclick="authorityDetail.saveAuthority();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+					<span th:text="#{web.label.save}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: authorityDetail								-->
+		<!-- ================================================== -->
+
+		<!-- ================================================== -->
+		<!-- START: authoritySelect							-->
+		<!-- ================================================== -->
+		<div id="authoritySelect" th:fragment="authoritySelect(mode)" style="display:none;">
+			<style>
+				#authoritySelect {
+					width:600px;
+				}
+				/* Mobile */
+				@media screen and (max-width: 1023px) {
+					#authoritySelect {
+						width:100%;
+					}
+				}
+			</style>
+			<script>
+				const authoritySelect = {
+					dialog: new core.Dialog(document.getElementById('authoritySelect')),
+					alreadySelectedIds: new Array(),
+					authoritySearch: new core.Map({
+						_page: 0,
+						_size: 10,
+						_totalCount: -1,
+						key: null,
+						value: null
+					}),
+					authorities: new core.List(),
+					selectedAuthorities: new core.List(),
+					// open
+					open: async function(alreadySelectedIds){
+						// sets already selected ids
+						if(alreadySelectedIds){
+							this.alreadySelectedIds = alreadySelectedIds;
+						}else{
+							this.alreadySelectedIds = new Array();
+						}
+
+						// roleSearch
+						this.authoritySearch.reset();
+						this.authoritySearch.onAfterChange(function(name,value){
+							if(name === 'key' && !value){
+								this.set('value',null);
+							}
+						});
+
+						// retrieves authorities
+						this.authorities.setReadonlyAll(true);
+						this.authorities.clear();
+						this.selectedAuthorities.setReadonlyAll(true);
+						this.selectedAuthorities.clear();
+						await this.getAuthorities(1);
+						return this.dialog.open();
+					},
+					// getAuthorities
+					getAuthorities: async function(page) {
+						let _this = this;
+						var url = new URL('[[@{/admin/user/get-authorities}]]', document.location.origin);
+						url.searchParams.append('_page', this.authoritySearch.get('_page'));
+						url.searchParams.append('_size', this.authoritySearch.get('_size'));
+						if(this.authoritySearch.get('key')){
+							url.searchParams.append(this.authoritySearch.get('key'), this.authoritySearch.get('value'));
+						}
+						return _fetch(url)
+								.then(function(response){
+									_this.authoritySearch.set('_totalCount', _getTotalCount(response));
+									return response.json();
+								})
+								.then(function(data){
+									_this.authorities.fromJson(data);
+									// checks disabled id
+									_this.authorities.forEach(function(authority){
+										if(_this.alreadySelectedIds.includes(authority.get('id'))){
+											authority.set('_select', true);
+											authority.setDisableAll(true);
+										}
+									});
+								});
+					},
+					selectAuthority: function(index){
+						let authority = this.authorities.getRow(index);
+						// check already selected
+						if(authority.get('_select')){
+							new core.Alert("[[#{web.message.alreadySelected(#{core.authority})}]]").open();
+							return;
+						}
+						authority.set('_select', true);
+						this.selectedAuthorities.addRow(authority);
+					},
+					deselectAuthority: function(index){
+						let authority = this.selectedAuthorities.getRow(index);
+						authority.set('_select', false);
+						this.selectedAuthorities.removeRow(index);
+					},
+					// selectRoles
+					confirm: function(){
+						this.dialog.resolve(this.selectedAuthorities);
+					}
+				}
+			</script>
+			<h1 class="core-title">
+				<img th:src="@{/static/image/icon-authority.png}"/>
+				<span data-th-text="#{web.title.authoritySelect}"></span>
+			</h1>
+			<hr class="core-hr"/>
+			<div class="core-container core-container--gap core-container--fluid">
+				<form onsubmit="return false;" class="core-container gap">
+					<div class="core-container" style="width:300px;">
+						<select is="core-select" data-core-bind="authoritySelect.authoritySearch,key" style="width:40%;">
+							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
+							<option value="id" data-th-text="#{core.authority.id}">Id</option>
+							<option value="name" data-th-text="#{core.authority.name}">Name</option>
+						</select>
+						<input is="core-input" type="text" data-core-bind="authoritySelect.authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+					</div>
+					<button onclick="authoritySelect.getAuthorities(1);" class="core-button">
+						<img th:src="@{/static/image/icon-search.png}"/>
+						<span data-th-text="#{web.label.search}"></span>
+					</button>
+				</form>
+			</div>
+			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
+				<table is="core-table" data-core-bind="authoritySelect.authorities,authority" style="border:none;">
+					<colgroup>
+						<col style="width:50px;"/>
+						<col/>
+						<col/>
+						<col style="width:50px;"/>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>-</th>
+						<th><span th:text="#{core.authority.id}">Id</span></th>
+						<th><span th:text="#{core.authority.name}">Name</span></th>
+						<th>-</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<span is="core-scriptlet" data-core-bind="authority" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+						</td>
+						<td>
+							<img is="core-img" data-core-bind="authority,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
+							<span is="core-span" data-core-bind="authority,id" class="[@core[$context.authority.get('systemData')?'system':'']] id"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="authority,name"></span>
+						</td>
+						<td>
+							<button is="core-scriptlet"
+									data-core-bind="authority"
+									data-core-script="this.disabled = $context.authority.get('_select');"
+									data-index="[@core[$context.index]]"
+									onclick="authoritySelect.selectAuthority(this.dataset.index);"
+									class="core-button">
+								<img th:src="@{/static/image/icon-plus.png}"/>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container core-container--center">
+				<ul is="core-widget-pagination" data-core-bind="authoritySelect.authoritySearch,_page,_size,_totalCount">
+					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
+				</ul>
+			</div>
+			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
+				<table is="core-table" data-core-bind="authoritySelect.selectedAuthorities,authority" style="border:none;">
+					<colgroup>
+						<col style="width:50px;"/>
+						<col/>
+						<col/>
+						<col style="width:50px;"/>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>-</th>
+						<th><span th:text="#{core.authority.id}">Id</span></th>
+						<th><span th:text="#{core.authority.name}">Name</span></th>
+						<th>-</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<span is="core-scriptlet" data-core-bind="authority" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+						</td>
+						<td>
+							<img is="core-img" data-core-bind="authority,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
+							<span is="core-span" data-core-bind="authority,id" class="[@core[$context.authority.get('systemData')?'system':'']] id"></span>
+						</td>
+						<td>
+							<span is="core-span" data-core-bind="authority,name"></span>
+						</td>
+						<td>
+							<button
+									data-index="[@core[$context.index]]"
+									onclick="authoritySelect.deselectAuthority(this.dataset.index);"
+									class="core-button">
+								<img th:src="@{/static/image/icon-minus.png}"/>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="core-container core-container--gap core-container--right">
+				<button class="core-button" onclick="authoritySelect.confirm();">
+					<img class="core-icon" th:src="@{/static/image/icon-confirm.png}"/>
+					<span th:text="#{web.label.confirm}"></span>
+				</button>
+			</div>
+		</div>
+		<!-- ================================================== -->
+		<!-- START: authoritySelect								-->
+		<!-- ================================================== -->
+
+	</main>
+</html>
+
