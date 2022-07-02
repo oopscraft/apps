@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "role")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor

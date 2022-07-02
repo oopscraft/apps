@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "authority")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
