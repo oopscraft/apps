@@ -1,11 +1,14 @@
 package org.oopscraft.apps.web.security;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.oopscraft.apps.core.message.MessageSource;
 import org.oopscraft.apps.web.WebConfig;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -36,12 +39,19 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
 
 	private final LocaleResolver localeResolver;
 
+	RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException {
 		try {
 			UserDetails userDetails = (UserDetails)authentication.getPrincipal();
 			issueAccessToken(userDetails, response);
-			response.setStatus(HttpServletResponse.SC_OK);
+			String referer = request.getHeader("referer");
+			if(StringUtils.isNotBlank(referer)) {
+				redirectStrategy.sendRedirect(request, response, referer);
+			}else{
+				response.setStatus(HttpServletResponse.SC_OK);
+			}
 		}catch(Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
