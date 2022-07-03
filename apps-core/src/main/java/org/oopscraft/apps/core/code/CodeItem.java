@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "code_item")
+@Table(name = "apps_code_item")
 @IdClass(CodeItem.Pk.class)
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -25,7 +25,7 @@ public class CodeItem extends BaseEntity {
 	}
 
 	@Id
-	@Column(name = "code_id")
+	@Column(name = "code_id", length = 64)
 	private String codeId;
 	
 	@Id

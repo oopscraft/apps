@@ -7,7 +7,7 @@ import org.oopscraft.apps.core.data.BaseEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "authority")
+@Table(name = "apps_authority")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class Authority extends BaseEntity {
 
     @Id
-    @Column(name = "id", length = 32)
+    @Column(name = "id", length = 64)
     private String id;
 
     @Column(name = "name")

@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "code")
+@Table(name = "apps_code")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
@@ -20,7 +20,7 @@ import java.util.List;
 public class Code extends BaseEntity {
 	
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", length = 64)
 	private String id;
 	
 	@Column(name = "name")

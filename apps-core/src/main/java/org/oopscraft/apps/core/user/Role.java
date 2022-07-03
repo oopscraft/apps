@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "role")
+@Table(name = "apps_role")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
@@ -18,7 +18,7 @@ import java.util.List;
 public class Role extends BaseEntity {
 
     @Id
-    @Column(name = "id", length = 32)
+    @Column(name = "id", length = 64)
     private String id;
     
     @Column(name = "name")
@@ -34,7 +34,7 @@ public class Role extends BaseEntity {
     
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
-		name = "role_authority",
+		name = "apps_role_authority",
 		joinColumns = @JoinColumn(name = "role_id"), 
 		foreignKey = @ForeignKey(name = "none"),
 		inverseJoinColumns = @JoinColumn(name = "authority_id"),

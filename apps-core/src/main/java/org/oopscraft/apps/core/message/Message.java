@@ -7,7 +7,7 @@ import org.oopscraft.apps.core.data.BaseEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "message")
+@Table(name = "apps_message")
 @Data
 @SuperBuilder
 @NoArgsConstructor

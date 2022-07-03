@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "apps_user")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
@@ -28,7 +28,7 @@ public class User extends BaseEntity {
 	}
 
     @Id
-    @Column(name = "id", length=32)
+    @Column(name = "id", length=64)
     private String id;
 
     @Column(name = "password", nullable = false)
@@ -38,12 +38,12 @@ public class User extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-	@Column(name = "type", length = 16, nullable = false)
+	@Column(name = "type", length = 32, nullable = false)
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
 	private Type type = Type.GENERAL;
 
-	@Column(name = "status", length = 16, nullable = false)
+	@Column(name = "status", length = 32, nullable = false)
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
 	private Status status = Status.ACTIVE;
@@ -66,12 +66,12 @@ public class User extends BaseEntity {
     @Lob
     private String profile;
     
-    @Column(name = "locale", length = 16)
+    @Column(name = "locale", length = 32)
     private String locale;
     
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
-		name = "user_role",
+		name = "apps_user_role",
 		joinColumns = @JoinColumn(name = "user_id"), 
 		foreignKey = @ForeignKey(name = "none"),
 		inverseJoinColumns = @JoinColumn(name = "role_id"), 
