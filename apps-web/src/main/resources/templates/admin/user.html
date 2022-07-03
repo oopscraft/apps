@@ -5,29 +5,29 @@
 	layout:decorate="admin/_admin.html">
 	<main layout:fragment="_main">
 		<style>
-			.core-user-type--GENERAL {
+			.apps-user-type--GENERAL {
 				background-color: deepskyblue;
 			}
-			.core-user-type--SYSTEM {
+			.apps-user-type--SYSTEM {
 				background-color: orangered;
 			}
-			.core-user-status--ACTIVE {
+			.apps-user-status--ACTIVE {
 				background-color: deepskyblue;
 			}
-			.core-user-status--LOCKED {
+			.apps-user-status--LOCKED {
 				background-color: lightgray;
 			}
-			.core-user-status--EXPIRED {
+			.apps-user-status--EXPIRED {
 				background-color: lightgray;
 			}
 		</style>
 		<script>
-			const tabFolder = new core.TabFolder();
+			const tabFolder = new apps.TabFolder();
 			
 			// users
-			const users = new core.List();
+			const users = new apps.List();
 			users.setReadonlyAll(true);
-			const userSearch = new core.Map({
+			const userSearch = new apps.Map({
 				_page: 0,
 				_size: 20,
 				_totalCount: -1,
@@ -42,9 +42,9 @@
 			});
 			
 			// roles
-			const roles = new core.List();
+			const roles = new apps.List();
 			roles.setReadonlyAll(true);
-			const roleSearch = new core.Map({
+			const roleSearch = new apps.Map({
 				_page: 0,
 				_size: 20,
 				_totalCount: -1,
@@ -58,9 +58,9 @@
 			});
 
 			// authorities
-			const authorities = new core.List();
+			const authorities = new apps.List();
 			authorities.setReadonlyAll(true);
-			const authoritySearch = new core.Map({
+			const authoritySearch = new apps.Map({
 				_page: 0,
 				_size: 20,
 				_totalCount: -1,
@@ -77,9 +77,9 @@
 			window.addEventListener('load', function(){
 
 				// adds tab
-				let userTab = new core.Tab(document.getElementById('userTabButton'), document.getElementById('userTabContent'));
-				let roleTab = new core.Tab(document.getElementById('roleTabButton'), document.getElementById('roleTabContent'));
-				let authorityTab = new core.Tab(document.getElementById('authorityTabButton'), document.getElementById('authorityTabContent'));
+				let userTab = new apps.Tab(document.getElementById('userTabButton'), document.getElementById('userTabContent'));
+				let roleTab = new apps.Tab(document.getElementById('roleTabButton'), document.getElementById('roleTabContent'));
+				let authorityTab = new apps.Tab(document.getElementById('authorityTabButton'), document.getElementById('authorityTabContent'));
 				tabFolder.addTab(userTab);
 				tabFolder.addTab(roleTab);
 				tabFolder.addTab(authorityTab);
@@ -203,61 +203,61 @@
 				});
 			}
 		</script>
-		<h1 class="core-title">
+		<h1 class="apps-title">
 			<img th:src="@{/static/image/icon-user.png}"/>
 			<span data-th-text="#{web.title.user}"></span>
 		</h1>
 		<div>
-			<span id="userTabButton" class="core-tab">
+			<span id="userTabButton" class="apps-tab">
 				<img th:src="@{/static/image/icon-user.png}"/>
 				<span data-th-text="#{core.user}"></span>
 			</span>
-			<span id="roleTabButton" class="core-tab">
+			<span id="roleTabButton" class="apps-tab">
 				<img th:src="@{/static/image/icon-role.png}"/>
 				<span data-th-text="#{core.role}"></span>
 			</span>
-			<span id="authorityTabButton" class="core-tab">
+			<span id="authorityTabButton" class="apps-tab">
 				<img th:src="@{/static/image/icon-authority.png}"/>
 				<span data-th-text="#{core.authority}"></span>
 			</span>
 		</div>
-		<hr class="core-hr"/>
+		<hr class="apps-hr"/>
 
 		<!-- ================================================== -->
 		<!-- START: userTabContent								-->
 		<!-- ================================================== -->
 		<div id="userTabContent">
-			<div class="core-container core-container--fluid">
-				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
-					<div class="core-container" style="width:300px;">
-						<select is="core-select" data-core-bind="userSearch,key" style="width:40%;">
+			<div class="apps-container apps-container--fluid">
+				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
+					<div class="apps-container" style="width:300px;">
+						<select is="apps-select" data-apps-bind="userSearch,key" style="width:40%;">
 							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
 							<option value="id" data-th-text="#{core.user.id}"></option>
 							<option value="name" data-th-text="#{core.user.name}"></option>
 							<option value="email" data-th-text="#{core.user.email}"></option>
 							<option value="mobile" data-th-text="#{core.user.mobile}"></option>
 						</select>
-						<input is="core-input" type="text" data-core-bind="userSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="userSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
 					</div>
-					<select is="core-select" data-core-bind="userSearch,status" style="width:120px;">
+					<select is="apps-select" data-apps-bind="userSearch,status" style="width:120px;">
 						<option value data-th-text="'- '+#{core.user.status}+' -'"></option>
 						<option th:each="userStatus:${userStatuses}" th:value="${userStatus}" th:text="${userStatus}"></option>
 					</select>
-					<button onclick="getUsers(0);" class="core-button">
+					<button onclick="getUsers(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
 						<span data-th-text="#{web.label.search}"></span>
 					</button>
 				</form>
-				<div class="core-container core-container--gap core-container--fluid">
-					<button onclick="createUser();" class="core-button"
-					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+				<div class="apps-container apps-container--gap apps-container--fluid">
+					<button onclick="createUser();" class="apps-button"
+					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 						<img th:src="@{/static/image/icon-create.png}"/>
 						<span data-th-text="#{web.label.create}"></span>
 					</button>
 				</div>
 			</div>
-			<div class="core-container">
-				<table is="core-table" data-core-bind="users,user">
+			<div class="apps-container">
+				<table is="apps-table" data-apps-bind="users,user">
 					<colgroup>
 						<col style="width:5%;"/>
 						<col/>
@@ -284,36 +284,36 @@
 					<tbody>
 						<tr>
 							<td>
-								<span is="core-scriptlet" data-core-bind="user" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+								<span is="apps-scriptlet" data-apps-bind="user" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 							</td>
 							<td>
-								<img is="core-img" data-core-bind="user,icon" th:src="@{/static/image/icon-null.png}" class="core-icon"/>
-								<span is="core-span" data-core-bind="user,id" class="core-text-bold [@core[$context.user.get('systemData')?'core-tag-system':'']]"></span>
+								<img is="apps-img" data-apps-bind="user,icon" th:src="@{/static/image/icon-null.png}" class="apps-icon"/>
+								<span is="apps-span" data-apps-bind="user,id" class="apps-text-bold [@core[$context.user.get('systemData')?'apps-tag-system':'']]"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="user,name"></span>
+								<span is="apps-span" data-apps-bind="user,name"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="user,type" class="core-user-type core-user-type--[@core[$context.user.get('type')]]"></span>
+								<span is="apps-span" data-apps-bind="user,type" class="apps-user-type apps-user-type--[@core[$context.user.get('type')]]"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="user,status" class="core-user-status core-user-status--[@core[$context.user.get('status')]]"></span>
+								<span is="apps-span" data-apps-bind="user,status" class="apps-user-status apps-user-status--[@core[$context.user.get('status')]]"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="user,email"></span>
+								<span is="apps-span" data-apps-bind="user,email"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="user,mobile"></span>
+								<span is="apps-span" data-apps-bind="user,mobile"></span>
 							</td>
 							<td>
-								<span is="core-scriptlet"
-								data-core-bind="user"
-								data-core-script="this.innerHTML = $context.user.get('roles').length;"
-								class="core-badge"
+								<span is="apps-scriptlet"
+								data-apps-bind="user"
+								data-apps-script="this.innerHTML = $context.user.get('roles').length;"
+								class="apps-badge"
 								>0</span>
 							</td>
 							<td>
-								<button class="core-button" data-id="[@core[$context.user.get('id')]]" onclick="getUser(this.dataset.id)">
+								<button class="apps-button" data-id="[@core[$context.user.get('id')]]" onclick="getUser(this.dataset.id)">
 									<img th:src="@{/static/image/icon-view.png}"/>
 									<span data-th-text="#{web.label.view}"></span>
 								</button>
@@ -322,14 +322,14 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container">
+			<div class="apps-container">
 				<div></div>
-				<ul is="core-widget-pagination" data-core-bind="userSearch,_page,_size,_totalCount">
+				<ul is="apps-widget-pagination" data-apps-bind="userSearch,_page,_size,_totalCount">
 					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
 				</ul>
-				<div class="core-text-small core-text-bold">
+				<div class="apps-text-small apps-text-bold">
 					<span th:text="#{web.label.totalCount}"></span>
-					<span is="core-span" data-core-bind="userSearch,_totalCount" data-core-format="number,0"></span>
+					<span is="apps-span" data-apps-bind="userSearch,_totalCount" data-apps-format="number,0"></span>
 				</div>
 			</div>
 		</div>
@@ -341,31 +341,31 @@
 		<!-- START: roleTabContent								-->
 		<!-- ================================================== -->
 		<div id="roleTabContent" style="display:none;">
-			<div class="core-container core-container--fluid">
-				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
-					<div class="core-container" style="width:300px;">
-						<select is="core-select" data-core-bind="roleSearch,key" style="width:40%;">
+			<div class="apps-container apps-container--fluid">
+				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
+					<div class="apps-container" style="width:300px;">
+						<select is="apps-select" data-apps-bind="roleSearch,key" style="width:40%;">
 							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
 							<option value="id" data-th-text="#{core.role.id}">Id</option>
 							<option value="name" data-th-text="#{core.role.name}">Name</option>
 						</select>
-						<input is="core-input" type="text" data-core-bind="roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
 					</div>
-					<button onclick="getRoles(0);" class="core-button">
+					<button onclick="getRoles(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
 						<span data-th-text="#{web.label.search}"></span>
 					</button>
 				</form>
-				<div class="core-container core-container--gap core-container--fluid">
-					<button onclick="createRole();" class="core-button"
-					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+				<div class="apps-container apps-container--gap apps-container--fluid">
+					<button onclick="createRole();" class="apps-button"
+					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 						<img th:src="@{/static/image/icon-create.png}"/>
 						<span data-th-text="#{web.label.create}"></span>
 					</button>
 				</div>
 			</div>
-			<div class="core-container">
-				<table is="core-table" data-core-bind="roles,role">
+			<div class="apps-container">
+				<table is="apps-table" data-apps-bind="roles,role">
 					<colgroup>
 						<col style="width:5%;"/>
 						<col/>
@@ -385,24 +385,24 @@
 					<tbody>
 						<tr>
 							<td>
-								<span is="core-scriptlet" data-core-bind="role" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+								<span is="apps-scriptlet" data-apps-bind="role" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 							</td>
 							<td>
-								<img is="core-img" data-core-bind="role,icon" th:src="@{/static/image/icon-null.png}" class="core-icon"/>
-								<span is="core-span" data-core-bind="role,id" class="core-text-bold [@core[$context.role.get('systemData')?'core-tag-system':'']]"></span>
+								<img is="apps-img" data-apps-bind="role,icon" th:src="@{/static/image/icon-null.png}" class="apps-icon"/>
+								<span is="apps-span" data-apps-bind="role,id" class="apps-text-bold [@core[$context.role.get('systemData')?'apps-tag-system':'']]"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="role,name"></span>
+								<span is="apps-span" data-apps-bind="role,name"></span>
 							</td>
 							<td>
-								<span is="core-scriptlet"
-								data-core-bind="role"
-								data-core-script="this.innerHTML = $context.role.get('authorities').length;"
-								class="core-badge"
+								<span is="apps-scriptlet"
+								data-apps-bind="role"
+								data-apps-script="this.innerHTML = $context.role.get('authorities').length;"
+								class="apps-badge"
 								>0</span>
 							</td>
 							<td>
-								<button class="core-button" data-id="[@core[$context.role.get('id')]]" onclick="getRole(this.dataset.id)">
+								<button class="apps-button" data-id="[@core[$context.role.get('id')]]" onclick="getRole(this.dataset.id)">
 									<img th:src="@{/static/image/icon-view.png}"/>
 									<span data-th-text="#{web.label.view}"></span>
 								</button>
@@ -411,14 +411,14 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container">
+			<div class="apps-container">
 				<div></div>
-				<ul is="core-widget-pagination" data-core-bind="roleSearch,_page,_size,_totalCount">
+				<ul is="apps-widget-pagination" data-apps-bind="roleSearch,_page,_size,_totalCount">
 					<li data-page="[@core[$context.page]]" onclick="getRoles(this.dataset.page);"></li>
 				</ul>
-				<div class="core-text-small core-text-bold">
+				<div class="apps-text-small apps-text-bold">
 					<span th:text="#{web.label.totalCount}"></span>
-					<span is="core-span" data-core-bind="roleSearch,_totalCount" data-core-format="number,0"></span>
+					<span is="apps-span" data-apps-bind="roleSearch,_totalCount" data-apps-format="number,0"></span>
 				</div>
 			</div>
 		</div>		
@@ -430,31 +430,31 @@
 		<!-- START: authorityTabContent							-->
 		<!-- ================================================== -->
 		<div id="authorityTabContent" style="display:none;">
-			<div class="core-container core-container--fluid">
-				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
-					<div class="core-container" style="width:300px;">
-						<select is="core-select" data-core-bind="authoritySearch,key" style="width:40%;">
+			<div class="apps-container apps-container--fluid">
+				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
+					<div class="apps-container" style="width:300px;">
+						<select is="apps-select" data-apps-bind="authoritySearch,key" style="width:40%;">
 							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
 							<option value="id" data-th-text="#{core.authority.id}">Id</option>
 							<option value="name" data-th-text="#{core.authority.name}">Name</option>
 						</select>
-						<input is="core-input" type="text" data-core-bind="authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
 					</div>
-					<button onclick="getAuthorities(0);" class="core-button">
+					<button onclick="getAuthorities(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
 						<span data-th-text="#{web.label.search}"></span>
 					</button>
 				</form>
-				<div class="core-container core-container--gap core-container--fluid">
-					<button onclick="createAuthority();" class="core-button"
-					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+				<div class="apps-container apps-container--gap apps-container--fluid">
+					<button onclick="createAuthority();" class="apps-button"
+					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 						<img th:src="@{/static/image/icon-create.png}"/>
 						<span data-th-text="#{web.label.create}"></span>
 					</button>
 				</div>
 			</div>
-			<div class="core-container">
-				<table is="core-table" data-core-bind="authorities,authority">
+			<div class="apps-container">
+				<table is="apps-table" data-apps-bind="authorities,authority">
 					<colgroup>
 						<col style="width:5%;"/>
 						<col/>
@@ -472,17 +472,17 @@
 					<tbody>
 						<tr>
 							<td>
-								<span is="core-scriptlet" data-core-bind="authority" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+								<span is="apps-scriptlet" data-apps-bind="authority" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 							</td>
 							<td>
-								<img is="core-img" data-core-bind="authority,icon" th:src="@{/static/image/icon-null.png}" class="core-icon"/>
-								<span is="core-span" data-core-bind="authority,id" class="core-text-bold [@core[$context.authority.get('systemData')?'core-tag-system':'']]"></span>
+								<img is="apps-img" data-apps-bind="authority,icon" th:src="@{/static/image/icon-null.png}" class="apps-icon"/>
+								<span is="apps-span" data-apps-bind="authority,id" class="apps-text-bold [@core[$context.authority.get('systemData')?'apps-tag-system':'']]"></span>
 							</td>
 							<td>
-								<span is="core-span" data-core-bind="authority,name"></span>
+								<span is="apps-span" data-apps-bind="authority,name"></span>
 							</td>
 							<td>
-								<button class="core-button" data-id="[@core[$context.authority.get('id')]]" onclick="getAuthority(this.dataset.id)">
+								<button class="apps-button" data-id="[@core[$context.authority.get('id')]]" onclick="getAuthority(this.dataset.id)">
 									<img th:src="@{/static/image/icon-view.png}"/>
 									<span data-th-text="#{web.label.view}"></span>
 								</button>
@@ -491,14 +491,14 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container">
+			<div class="apps-container">
 				<div></div>
-				<ul is="core-widget-pagination" data-core-bind="authoritySearch,_page,_size,_totalCount">
+				<ul is="apps-widget-pagination" data-apps-bind="authoritySearch,_page,_size,_totalCount">
 					<li data-page="[@core[$context.page]]" onclick="getAuthorities(this.dataset.page);"></li>
 				</ul>
-				<div class="core-text-small core-text-bold">
+				<div class="apps-text-small apps-text-bold">
 					<span th:text="#{web.label.totalCount}"></span>
-					<span is="core-span" data-core-bind="authoritySearch,_totalCount" data-core-format="number,0"></span>
+					<span is="apps-span" data-apps-bind="authoritySearch,_totalCount" data-apps-format="number,0"></span>
 				</div>
 			</div>
 		</div>		
@@ -523,9 +523,9 @@
 			</style>
 			<script>
 				const userDetail = {
-					dialog: new core.Dialog(document.getElementById('userDetail')),
-					user: new core.Map(),
-					userRoles: new core.List(),
+					dialog: new apps.Dialog(document.getElementById('userDetail')),
+					user: new apps.Map(),
+					userRoles: new apps.List(),
 					// open
 					open: async function(id){
 						let _this = this;
@@ -700,64 +700,64 @@
 					}
 				}
 			</script>
-			<h1 class="core-title">
+			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-user.png}"/>
 				<span data-th-text="#{web.title.userDetail}"></span>
 			</h1>
-			<hr class="core-hr"/>
-			<div class="core-form">
+			<hr class="apps-hr"/>
+			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.user.id}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.id}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="userDetail.user,id" class="core-text-bold"/>
+						<input is="apps-input" type="text" data-apps-bind="userDetail.user,id" class="apps-text-bold"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.name}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.name}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="userDetail.user,name"/>
+						<input is="apps-input" type="text" data-apps-bind="userDetail.user,name"/>
 					</div>
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.user.type}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.type}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<select is="core-select" data-core-bind="userDetail.user,type">
+						<select is="apps-select" data-apps-bind="userDetail.user,type">
 							<option th:each="type:${T(net.chomookun.apps.core.user.User.Type).values}" th:value="${type}" th:text="#{'core.user.type.'+${type}}"></option>
 						</select>
 					</div>
 					<div>
-						<span th:text="#{core.user.status}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.status}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<select is="core-select" data-core-bind="userDetail.user,status">
+						<select is="apps-select" data-apps-bind="userDetail.user,status">
 							<option th:each="status:${T(net.chomookun.apps.core.user.User.Status).values}" th:value="${status}" th:text="#{'core.user.status.'+${status}}"></option>
 						</select>
 					</div>
 				</div>
 				<div id="userDetail_passwordDiv">
 					<div>
-						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="password" data-core-bind="userDetail.user,password"/>
+						<input is="apps-input" type="password" data-apps-bind="userDetail.user,password"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="password" data-core-bind="userDetail.user,passwordConfirm"/>
+						<input is="apps-input" type="password" data-apps-bind="userDetail.user,passwordConfirm"/>
 					</div>
 				</div>
 				<div id="userDetail_changePasswordDiv">
 					<div>
-						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<button class="core-button" onclick="userDetail.changePassword();">
+						<button class="apps-button" onclick="userDetail.changePassword();">
 							<img class="icon" th:src="@{/static/image/icon-password.png}">
 							<span th:text="#{web.label.changePassword}"></span>
 						</button>
@@ -768,13 +768,13 @@
 						<span th:text="#{core.user.email}"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="userDetail.user,email"/>
+						<input is="apps-input" type="text" data-apps-bind="userDetail.user,email"/>
 					</div>
 					<div>
 						<span th:text="#{core.user.mobile}"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="userDetail.user,mobile"/>
+						<input is="apps-input" type="text" data-apps-bind="userDetail.user,mobile"/>
 					</div>
 				</div>
 				<div>
@@ -782,7 +782,7 @@
 						<span th:text="#{core.user.locale}"></span>
 					</div>
 					<div>
-						<select is="core-select" data-core-bind="userDetail.user,locale">
+						<select is="apps-select" data-apps-bind="userDetail.user,locale">
 							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
 							<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
 						</select>
@@ -794,8 +794,8 @@
 					<div>
 						<span th:text="#{core.user.photo}"></span>
 					</div>
-					<div class="core-container">
-						<img is="core-img" data-core-bind="userDetail.user,photo" data-core-size="64,64" th:src="@{/static/image/icon-null.png}"/>
+					<div class="apps-container">
+						<img is="apps-img" data-apps-bind="userDetail.user,photo" data-apps-size="64,64" th:src="@{/static/image/icon-null.png}"/>
 					</div>
 				</div>
 				<div>
@@ -803,16 +803,16 @@
 						<span th:text="#{core.user.profile}"></span>
 					</div>
 					<div>
-						<textarea is="core-textarea" data-core-bind="userDetail.user,profile"></textarea>
+						<textarea is="apps-textarea" data-apps-bind="userDetail.user,profile"></textarea>
 					</div>
 				</div>
 				<div>
 					<div>
-						<img class="core-icon" th:src="@{/static/image/icon-role.png}"/>
+						<img class="apps-icon" th:src="@{/static/image/icon-role.png}"/>
 						<span th:text="#{core.user.roles}"></span>
 					</div>
 					<div style="max-height:300px; overflow-y:scroll; border: solid 1px #ccc;">
-						<table is="core-table" data-core-bind="userDetail.userRoles,userRole" style="border:none;">
+						<table is="apps-table" data-apps-bind="userDetail.userRoles,userRole" style="border:none;">
 							<colgroup>
 								<col/>
 								<col/>
@@ -823,8 +823,8 @@
 								<th><span th:text="#{core.role.id}">Id</span></th>
 								<th><span th:text="#{core.role.name}">Name</span></th>
 								<th>
-									<button class="core-button" onclick="userDetail.addUserRole();"
-											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+									<button class="apps-button" onclick="userDetail.addUserRole();"
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 										<img th:src="@{/static/image/icon-add.png}"/>
 									</button>
 								</th>
@@ -833,15 +833,15 @@
 							<tbody>
 							<tr>
 								<td>
-									<img is="core-img" data-core-bind="userRole,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
-									<span is="core-span" data-core-bind="userRole,id" class="core-text-bold [@core[$context.userRole.get('systemData')?'core-tag-system':'']]"></span>
+									<img is="apps-img" data-apps-bind="userRole,icon" th:src="@{/static/image/icon-blank.png}" class="apps-icon"/>
+									<span is="apps-span" data-apps-bind="userRole,id" class="apps-text-bold [@core[$context.userRole.get('systemData')?'apps-tag-system':'']]"></span>
 								</td>
 								<td>
-									<span is="core-span" data-core-bind="userRole,name"></span>
+									<span is="apps-span" data-apps-bind="userRole,name"></span>
 								</td>
 								<td>
-									<button class="core-button" data-index="[@core[$context.index]]" onclick="userDetail.removeUserRole(this.dataset.index);"
-											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+									<button class="apps-button" data-index="[@core[$context.index]]" onclick="userDetail.removeUserRole(this.dataset.index);"
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 										<img th:src="@{/static/image/icon-remove.png}"/>
 									</button>
 								</td>
@@ -851,15 +851,15 @@
 					</div>
 				</div>
 			</div>
-			<div class="core-container core-container--gap core-container--right">
-				<button class="core-button" onclick="userDetail.deleteUser();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+			<div class="apps-container apps-container--gap apps-container--right">
+				<button class="apps-button" onclick="userDetail.deleteUser();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-delete.png}"/>
 					<span th:text="#{web.label.delete}"></span>
 				</button>
-				<button class="core-button" onclick="userDetail.saveUser();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+				<button class="apps-button" onclick="userDetail.saveUser();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
 					<span th:text="#{web.label.save}"></span>
 				</button>
 			</div>
@@ -885,8 +885,8 @@
 			</style>
 			<script>
 				const userChangePassword = {
-					dialog: new core.Dialog(document.getElementById('userChangePassword')),
-					user: new core.Map({
+					dialog: new apps.Dialog(document.getElementById('userChangePassword')),
+					user: new apps.Map({
 						id: null,
 						password: null,
 						passwordConfirm: null
@@ -933,31 +933,31 @@
 					}
 				}
 			</script>
-			<h1 class="core-title">
+			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-password.png}"/>
 				<span data-th-text="#{web.title.changePassword}"></span>
 			</h1>
-			<hr class="core-hr"/>
-			<div class="core-form">
+			<hr class="apps-hr"/>
+			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="password" data-core-bind="userChangePassword.user,password"/>
+						<input is="apps-input" type="password" data-apps-bind="userChangePassword.user,password"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.password}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="password" data-core-bind="userChangePassword.user,passwordConfirm"/>
+						<input is="apps-input" type="password" data-apps-bind="userChangePassword.user,passwordConfirm"/>
 					</div>
 				</div>
 			</div>
-			<div class="core-container core-container--gap core-container--right">
-				<button class="core-button" onclick="userChangePassword.changePassword();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+			<div class="apps-container apps-container--gap apps-container--right">
+				<button class="apps-button" onclick="userChangePassword.changePassword();"
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
 					<span th:text="#{web.label.save}"></span>
 				</button>
 			</div>
@@ -983,9 +983,9 @@
 			</style>
 			<script>
 				const roleDetail = {
-					dialog: new core.Dialog(document.getElementById('roleDetail')),
-					role: new core.Map(),
-					roleAuthorities: new core.List(),
+					dialog: new apps.Dialog(document.getElementById('roleDetail')),
+					role: new apps.Map(),
+					roleAuthorities: new apps.List(),
 					// open
 					open: async function(id){
 						let _this = this;
@@ -1129,32 +1129,32 @@
 					}
 				}
 			</script>
-			<h1 class="core-title">
+			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-role.png}"/>
 				<span data-th-text="#{web.title.roleDetail}"></span>
 			</h1>
-			<hr class="core-hr"/>
-			<div class="core-form">
+			<hr class="apps-hr"/>
+			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.role.id}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.role.id}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="roleDetail.role,id" class="core-text-bold"/>
+						<input is="apps-input" type="text" data-apps-bind="roleDetail.role,id" class="apps-text-bold"/>
 					</div>
 					<div>
-						<span th:text="#{core.role.name}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.role.name}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="roleDetail.role,name"/>
+						<input is="apps-input" type="text" data-apps-bind="roleDetail.role,name"/>
 					</div>
 				</div>
 				<div>
 					<div>
 						<span th:text="#{core.role.icon}"></span>
 					</div>
-					<div class="core-container">
-						<img is="core-img" data-core-bind="roleDetail.role,icon" data-core-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
+					<div class="apps-container">
+						<img is="apps-img" data-apps-bind="roleDetail.role,icon" data-apps-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
 					</div>
 				</div>
 				<div>
@@ -1162,16 +1162,16 @@
 						<span th:text="#{core.role.note}"></span>
 					</div>
 					<div>
-						<textarea is="core-textarea" data-core-bind="roleDetail.role,note"></textarea>
+						<textarea is="apps-textarea" data-apps-bind="roleDetail.role,note"></textarea>
 					</div>
 				</div>
 				<div>
 					<div>
-						<img class="core-icon" th:src="@{/static/image/icon-authority.png}"/>
+						<img class="apps-icon" th:src="@{/static/image/icon-authority.png}"/>
 						<span th:text="#{core.role.authorities}"></span>
 					</div>
 					<div style="max-height:300px; overflow-y:scroll; border: solid 1px #ccc;">
-						<table is="core-table" data-core-bind="roleDetail.roleAuthorities,roleAuthority" style="border:none;">
+						<table is="apps-table" data-apps-bind="roleDetail.roleAuthorities,roleAuthority" style="border:none;">
 							<colgroup>
 								<col/>
 								<col/>
@@ -1182,9 +1182,9 @@
 								<th><span th:text="#{core.authority.id}"></span></th>
 								<th><span th:text="#{core.authority.name}"></span></th>
 								<th>
-									<button class="core-button"
+									<button class="apps-button"
 											onclick="roleDetail.addRoleAuthority();"
-											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 										<img th:src="@{/static/image/icon-add.png}"/>
 									</button>
 								</th>
@@ -1193,16 +1193,16 @@
 							<tbody>
 							<tr>
 								<td>
-									<img is="core-img" data-core-bind="roleAuthority,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
-									<span is="core-span" data-core-bind="roleAuthority,id" class="core-text-bold [@core[$context.roleAuthority.get('systemData')?'core-tag-system':'']]"></span>
+									<img is="apps-img" data-apps-bind="roleAuthority,icon" th:src="@{/static/image/icon-blank.png}" class="apps-icon"/>
+									<span is="apps-span" data-apps-bind="roleAuthority,id" class="apps-text-bold [@core[$context.roleAuthority.get('systemData')?'apps-tag-system':'']]"></span>
 								</td>
 								<td>
-									<span is="core-span" data-core-bind="roleAuthority,name"></span>
+									<span is="apps-span" data-apps-bind="roleAuthority,name"></span>
 								</td>
 								<td>
-									<button class="core-button" data-index="[@core[$context.index]]"
+									<button class="apps-button" data-index="[@core[$context.index]]"
 											onclick="roleDetail.removeRoleAuthority(this.dataset.index);"
-											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
+											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 										<img th:src="@{/static/image/icon-remove.png}"/>
 									</button>
 								</td>
@@ -1212,17 +1212,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="core-container core-container--right core-container--gap">
-				<button class="core-button"
+			<div class="apps-container apps-container--right apps-container--gap">
+				<button class="apps-button"
 						onclick="roleDetail.deleteRole();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-delete.png}"/>
 					<span th:text="#{web.label.delete}"></span>
 				</button>
-				<button class="core-button"
+				<button class="apps-button"
 						onclick="roleDetail.saveRole();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
 					<span th:text="#{web.label.save}"></span>
 				</button>
 			</div>
@@ -1248,17 +1248,17 @@
 			</style>
 			<script>
 				const roleSelect = {
-					dialog: new core.Dialog(document.getElementById('roleSelect')),
+					dialog: new apps.Dialog(document.getElementById('roleSelect')),
 					alreadySelectedIds: new Array(),
-					roleSearch: new core.Map({
+					roleSearch: new apps.Map({
 						_page: 0,
 						_size: 10,
 						_totalCount: -1,
 						key: null,
 						value: null
 					}),
-					roles: new core.List(),
-					selectedRoles: new core.List(),
+					roles: new apps.List(),
+					selectedRoles: new apps.List(),
 					// open
 					open: async function(alreadySelectedIds){
 						// sets already selected ids
@@ -1311,7 +1311,7 @@
 						console.log(role);
 						// check already selected
 						if(role.get('_select')){
-							new core.Alert("[[#{web.message.alreadySelected(#{core.role})}]]").open();
+							new apps.Alert("[[#{web.message.alreadySelected(#{core.role})}]]").open();
 							return;
 						}
 						role.set('_select', true);
@@ -1328,29 +1328,29 @@
 					}
 				}
 			</script>
-			<h1 class="core-title">
+			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-role.png}"/>
 				<span data-th-text="#{web.title.roleSelect}"></span>
 			</h1>
-			<hr class="core-hr"/>
-			<div class="core-container core-container--fluid">
-				<form onsubmit="return false;" class="core-container core-container--gap core-container--fluid">
-					<div class="core-container" style="width:300px;">
-						<select is="core-select" data-core-bind="roleSelect.roleSearch,key" style="width:40%;">
+			<hr class="apps-hr"/>
+			<div class="apps-container apps-container--fluid">
+				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
+					<div class="apps-container" style="width:300px;">
+						<select is="apps-select" data-apps-bind="roleSelect.roleSearch,key" style="width:40%;">
 							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
 							<option value="id" data-th-text="#{core.role.id}">Id</option>
 							<option value="name" data-th-text="#{core.role.name}">Name</option>
 						</select>
-						<input is="core-input" type="text" data-core-bind="roleSelect.roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="roleSelect.roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
 					</div>
-					<button onclick="roleSelect.getRoles(0);" class="core-button">
+					<button onclick="roleSelect.getRoles(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
 						<span data-th-text="#{web.label.search}"></span>
 					</button>
 				</form>
 			</div>
 			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
-				<table is="core-table" data-core-bind="roleSelect.roles,role" style="border:none;">
+				<table is="apps-table" data-apps-bind="roleSelect.roles,role" style="border:none;">
 					<colgroup>
 						<col style="width:50px;"/>
 						<col/>
@@ -1368,22 +1368,22 @@
 					<tbody>
 					<tr>
 						<td>
-							<span is="core-scriptlet" data-core-bind="role" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							<span is="apps-scriptlet" data-apps-bind="role" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 						</td>
 						<td>
-							<img is="core-img" data-core-bind="role,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
-							<span is="core-span" data-core-bind="role,id" class="core-text-bold [@core[$context.role.get('systemData')?'core-text--system':'']] id"></span>
+							<img is="apps-img" data-apps-bind="role,icon" th:src="@{/static/image/icon-blank.png}" class="apps-icon"/>
+							<span is="apps-span" data-apps-bind="role,id" class="apps-text-bold [@core[$context.role.get('systemData')?'apps-text--system':'']] id"></span>
 						</td>
 						<td>
-							<span is="core-span" data-core-bind="role,name"></span>
+							<span is="apps-span" data-apps-bind="role,name"></span>
 						</td>
 						<td>
-							<button is="core-scriptlet"
-									data-core-bind="role"
-									data-core-script="this.disabled = $context.role.get('_select');"
+							<button is="apps-scriptlet"
+									data-apps-bind="role"
+									data-apps-script="this.disabled = $context.role.get('_select');"
 									data-index="[@core[$context.index]]"
 									onclick="roleSelect.selectRole(this.dataset.index);"
-									class="core-button">
+									class="apps-button">
 								<img th:src="@{/static/image/icon-add.png}"/>
 							</button>
 						</td>
@@ -1391,13 +1391,13 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container core-container--center">
-				<ul is="core-widget-pagination" data-core-bind="roleSelect.roleSearch,_page,_size,_totalCount">
+			<div class="apps-container apps-container--center">
+				<ul is="apps-widget-pagination" data-apps-bind="roleSelect.roleSearch,_page,_size,_totalCount">
 					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
 				</ul>
 			</div>
 			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
-				<table is="core-table" data-core-bind="roleSelect.selectedRoles,role" style="border:none;">
+				<table is="apps-table" data-apps-bind="roleSelect.selectedRoles,role" style="border:none;">
 					<colgroup>
 						<col style="width:50px;"/>
 						<col/>
@@ -1415,17 +1415,17 @@
 					<tbody>
 					<tr>
 						<td>
-							<span is="core-scriptlet" data-core-bind="role" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							<span is="apps-scriptlet" data-apps-bind="role" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 						</td>
 						<td>
-							<img is="core-img" data-core-bind="role,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
-							<span is="core-span" data-core-bind="role,id" class="core-text-bold [@core[$context.role.get('systemData')?'system':'']] id"></span>
+							<img is="apps-img" data-apps-bind="role,icon" th:src="@{/static/image/icon-blank.png}" class="apps-icon"/>
+							<span is="apps-span" data-apps-bind="role,id" class="apps-text-bold [@core[$context.role.get('systemData')?'system':'']] id"></span>
 						</td>
 						<td>
-							<span is="core-span" data-core-bind="role,name"></span>
+							<span is="apps-span" data-apps-bind="role,name"></span>
 						</td>
 						<td>
-							<button class="core-button" data-index="[@core[$context.index]]" onclick="roleSelect.deselectRole(this.dataset.index);">
+							<button class="apps-button" data-index="[@core[$context.index]]" onclick="roleSelect.deselectRole(this.dataset.index);">
 								<img th:src="@{/static/image/icon-remove.png}"/>
 							</button>
 						</td>
@@ -1433,9 +1433,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container core-container--gap core-container--right">
-				<button class="core-button" onclick="roleSelect.confirm();">
-					<img class="core-icon" th:src="@{/static/image/icon-confirm.png}"/>
+			<div class="apps-container apps-container--gap apps-container--right">
+				<button class="apps-button" onclick="roleSelect.confirm();">
+					<img class="apps-icon" th:src="@{/static/image/icon-confirm.png}"/>
 					<span th:text="#{web.label.confirm}"></span>
 				</button>
 			</div>
@@ -1461,8 +1461,8 @@
 			</style>
 			<script>
 				const authorityDetail = {
-					dialog: new core.Dialog(document.getElementById('authorityDetail')),
-					authority: new core.Map(),
+					dialog: new apps.Dialog(document.getElementById('authorityDetail')),
+					authority: new apps.Map(),
 					// open
 					open: async function(id){
 						let _this = this;
@@ -1583,32 +1583,32 @@
 					}
 				}
 			</script>
-			<h1 class="core-title">
+			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-authority.png}"/>
 				<span data-th-text="#{web.title.authorityDetail}"></span>
 			</h1>
-			<hr class="core-hr"/>
-			<div class="core-form">
+			<hr class="apps-hr"/>
+			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.authority.id}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.authority.id}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="authorityDetail.authority,id" class="core-text-bold"/>
+						<input is="apps-input" type="text" data-apps-bind="authorityDetail.authority,id" class="apps-text-bold"/>
 					</div>
 					<div>
-						<span th:text="#{core.authority.name}" class="core-tag-mandatory"></span>
+						<span th:text="#{core.authority.name}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
-						<input is="core-input" type="text" data-core-bind="authorityDetail.authority,name"/>
+						<input is="apps-input" type="text" data-apps-bind="authorityDetail.authority,name"/>
 					</div>
 				</div>
 				<div>
 					<div>
 						<span th:text="#{core.authority.icon}"></span>
 					</div>
-					<div class="core-container">
-						<img is="core-img" data-core-bind="authorityDetail.authority,icon" data-core-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
+					<div class="apps-container">
+						<img is="apps-img" data-apps-bind="authorityDetail.authority,icon" data-apps-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
 					</div>
 				</div>
 				<div>
@@ -1616,21 +1616,21 @@
 						<span th:text="#{core.authority.note}"></span>
 					</div>
 					<div>
-						<textarea is="core-textarea" data-core-bind="authorityDetail.authority,note"></textarea>
+						<textarea is="apps-textarea" data-apps-bind="authorityDetail.authority,note"></textarea>
 					</div>
 				</div>
 			</div>
-			<div class="core-container core-container--right core-container--gap">
-				<button class="core-button"
+			<div class="apps-container apps-container--right apps-container--gap">
+				<button class="apps-button"
 						onclick="authorityDetail.deleteAuthority();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-delete.png}"/>
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-delete.png}"/>
 					<span th:text="#{web.label.delete}"></span>
 				</button>
-				<button class="core-button"
+				<button class="apps-button"
 						onclick="authorityDetail.saveAuthority();"
-						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'core-button--lock'">
-					<img class="core-icon" th:src="@{/static/image/icon-save.png}"/>
+						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
+					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
 					<span th:text="#{web.label.save}"></span>
 				</button>
 			</div>
@@ -1656,17 +1656,17 @@
 			</style>
 			<script>
 				const authoritySelect = {
-					dialog: new core.Dialog(document.getElementById('authoritySelect')),
+					dialog: new apps.Dialog(document.getElementById('authoritySelect')),
 					alreadySelectedIds: new Array(),
-					authoritySearch: new core.Map({
+					authoritySearch: new apps.Map({
 						_page: 0,
 						_size: 10,
 						_totalCount: -1,
 						key: null,
 						value: null
 					}),
-					authorities: new core.List(),
-					selectedAuthorities: new core.List(),
+					authorities: new apps.List(),
+					selectedAuthorities: new apps.List(),
 					// open
 					open: async function(alreadySelectedIds){
 						// sets already selected ids
@@ -1721,7 +1721,7 @@
 						let authority = this.authorities.getRow(index);
 						// check already selected
 						if(authority.get('_select')){
-							new core.Alert("[[#{web.message.alreadySelected(#{core.authority})}]]").open();
+							new apps.Alert("[[#{web.message.alreadySelected(#{core.authority})}]]").open();
 							return;
 						}
 						authority.set('_select', true);
@@ -1738,29 +1738,29 @@
 					}
 				}
 			</script>
-			<h1 class="core-title">
+			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-authority.png}"/>
 				<span data-th-text="#{web.title.authoritySelect}"></span>
 			</h1>
-			<hr class="core-hr"/>
-			<div class="core-container core-container--gap core-container--fluid">
-				<form onsubmit="return false;" class="core-container gap">
-					<div class="core-container" style="width:300px;">
-						<select is="core-select" data-core-bind="authoritySelect.authoritySearch,key" style="width:40%;">
+			<hr class="apps-hr"/>
+			<div class="apps-container apps-container--gap apps-container--fluid">
+				<form onsubmit="return false;" class="apps-container gap">
+					<div class="apps-container" style="width:300px;">
+						<select is="apps-select" data-apps-bind="authoritySelect.authoritySearch,key" style="width:40%;">
 							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
 							<option value="id" data-th-text="#{core.authority.id}">Id</option>
 							<option value="name" data-th-text="#{core.authority.name}">Name</option>
 						</select>
-						<input is="core-input" type="text" data-core-bind="authoritySelect.authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="authoritySelect.authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
 					</div>
-					<button onclick="authoritySelect.getAuthorities(1);" class="core-button">
+					<button onclick="authoritySelect.getAuthorities(1);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
 						<span data-th-text="#{web.label.search}"></span>
 					</button>
 				</form>
 			</div>
 			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
-				<table is="core-table" data-core-bind="authoritySelect.authorities,authority" style="border:none;">
+				<table is="apps-table" data-apps-bind="authoritySelect.authorities,authority" style="border:none;">
 					<colgroup>
 						<col style="width:50px;"/>
 						<col/>
@@ -1778,22 +1778,22 @@
 					<tbody>
 					<tr>
 						<td>
-							<span is="core-scriptlet" data-core-bind="authority" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							<span is="apps-scriptlet" data-apps-bind="authority" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 						</td>
 						<td>
-							<img is="core-img" data-core-bind="authority,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
-							<span is="core-span" data-core-bind="authority,id" class="[@core[$context.authority.get('systemData')?'system':'']] id"></span>
+							<img is="apps-img" data-apps-bind="authority,icon" th:src="@{/static/image/icon-blank.png}" class="apps-icon"/>
+							<span is="apps-span" data-apps-bind="authority,id" class="[@core[$context.authority.get('systemData')?'system':'']] id"></span>
 						</td>
 						<td>
-							<span is="core-span" data-core-bind="authority,name"></span>
+							<span is="apps-span" data-apps-bind="authority,name"></span>
 						</td>
 						<td>
-							<button is="core-scriptlet"
-									data-core-bind="authority"
-									data-core-script="this.disabled = $context.authority.get('_select');"
+							<button is="apps-scriptlet"
+									data-apps-bind="authority"
+									data-apps-script="this.disabled = $context.authority.get('_select');"
 									data-index="[@core[$context.index]]"
 									onclick="authoritySelect.selectAuthority(this.dataset.index);"
-									class="core-button">
+									class="apps-button">
 								<img th:src="@{/static/image/icon-plus.png}"/>
 							</button>
 						</td>
@@ -1801,13 +1801,13 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container core-container--center">
-				<ul is="core-widget-pagination" data-core-bind="authoritySelect.authoritySearch,_page,_size,_totalCount">
+			<div class="apps-container apps-container--center">
+				<ul is="apps-widget-pagination" data-apps-bind="authoritySelect.authoritySearch,_page,_size,_totalCount">
 					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
 				</ul>
 			</div>
 			<div style="max-height:300px; overflow-y:scroll; border:solid 1px #ccc;">
-				<table is="core-table" data-core-bind="authoritySelect.selectedAuthorities,authority" style="border:none;">
+				<table is="apps-table" data-apps-bind="authoritySelect.selectedAuthorities,authority" style="border:none;">
 					<colgroup>
 						<col style="width:50px;"/>
 						<col/>
@@ -1825,20 +1825,20 @@
 					<tbody>
 					<tr>
 						<td>
-							<span is="core-scriptlet" data-core-bind="authority" data-core-script="this.innerHTML=$context.index+1;" class="core-text-small"></span>
+							<span is="apps-scriptlet" data-apps-bind="authority" data-apps-script="this.innerHTML=$context.index+1;" class="apps-text-small"></span>
 						</td>
 						<td>
-							<img is="core-img" data-core-bind="authority,icon" th:src="@{/static/image/icon-blank.png}" class="core-icon"/>
-							<span is="core-span" data-core-bind="authority,id" class="[@core[$context.authority.get('systemData')?'system':'']] id"></span>
+							<img is="apps-img" data-apps-bind="authority,icon" th:src="@{/static/image/icon-blank.png}" class="apps-icon"/>
+							<span is="apps-span" data-apps-bind="authority,id" class="[@core[$context.authority.get('systemData')?'system':'']] id"></span>
 						</td>
 						<td>
-							<span is="core-span" data-core-bind="authority,name"></span>
+							<span is="apps-span" data-apps-bind="authority,name"></span>
 						</td>
 						<td>
 							<button
 									data-index="[@core[$context.index]]"
 									onclick="authoritySelect.deselectAuthority(this.dataset.index);"
-									class="core-button">
+									class="apps-button">
 								<img th:src="@{/static/image/icon-minus.png}"/>
 							</button>
 						</td>
@@ -1846,9 +1846,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="core-container core-container--gap core-container--right">
-				<button class="core-button" onclick="authoritySelect.confirm();">
-					<img class="core-icon" th:src="@{/static/image/icon-confirm.png}"/>
+			<div class="apps-container apps-container--gap apps-container--right">
+				<button class="apps-button" onclick="authoritySelect.confirm();">
+					<img class="apps-icon" th:src="@{/static/image/icon-confirm.png}"/>
 					<span th:text="#{web.label.confirm}"></span>
 				</button>
 			</div>

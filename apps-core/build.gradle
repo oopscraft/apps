@@ -80,6 +80,9 @@ dependencies {
 	// thumbnail
 	api 'org.imgscalr:imgscalr-lib:4.2'
 
+	// servlet
+	api "javax.servlet:javax.servlet-api:4.0.0"
+
 	// annotationProcessor
 	annotationProcessor 'javax.annotation:javax.annotation-api'
 	compileOnly 'org.projectlombok:lombok'

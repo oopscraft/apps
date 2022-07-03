@@ -21,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AuthenticationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends  OncePerRequestFilter {
 
 	private final WebConfig webConfig;
 
@@ -71,6 +71,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				log.warn(ignore.getMessage());
 			}
 		}
+
+		filterChain.doFilter(request,response);
 	}
 
 }

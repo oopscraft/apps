@@ -13,6 +13,8 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.oopscraft.apps.AppsPackage;
 import org.oopscraft.apps.core.data.RoutingDataSource;
+import org.oopscraft.apps.core.message.MessageService;
+import org.oopscraft.apps.core.message.MessageSource;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -212,6 +214,22 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
     @Bean
     public JPAQueryFactory jpaQueryFactory(EntityManagerFactory entityManagerFactory) {
        return new JPAQueryFactory(entityManagerFactory.createEntityManager());
+    }
+
+    /**
+     * messageSource
+     * @param messageService
+     * @return
+     */
+    @Bean
+    public MessageSource messageSource(MessageService messageService) {
+        MessageSource messageSource = new MessageSource(messageService);
+        messageSource.addBasenames("classpath*:/message/messages");
+        messageSource.setFallbackToSystemLocale(false);
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        messageSource.setCacheSeconds(10);
+        return messageSource;
     }
 
 }

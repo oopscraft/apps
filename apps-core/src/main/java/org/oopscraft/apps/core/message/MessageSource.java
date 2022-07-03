@@ -2,6 +2,7 @@ package org.oopscraft.apps.core.message;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -16,7 +17,6 @@ import java.util.Locale;
 import java.util.Properties;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class MessageSource extends ReloadableResourceBundleMessageSource {
 
@@ -106,5 +106,6 @@ public class MessageSource extends ReloadableResourceBundleMessageSource {
 		}
 		return messageFormat;
 	}
+
 
 }

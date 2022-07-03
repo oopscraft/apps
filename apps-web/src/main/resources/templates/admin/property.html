@@ -6,9 +6,9 @@
 	<main layout:fragment="_main">
 		<script>
 			// properties
-			const properties = new core.List();
+			const properties = new apps.List();
 			properties.setReadonlyAll(true);
-			const propertiesSearch = new core.Map({
+			const propertiesSearch = new apps.Map({
 				_page: 1,
 				_rows: 20,
 				_totalCount: -1,
@@ -173,8 +173,8 @@
 			</style>
 			<script>
 				const propertyDetail = {
-					dialog: new core.Dialog(document.getElementById('propertyDetail')),
-					property: new core.Map(),
+					dialog: new apps.Dialog(document.getElementById('propertyDetail')),
+					property: new apps.Map(),
 					// open
 					open: async function(id){
 						let _this = this;

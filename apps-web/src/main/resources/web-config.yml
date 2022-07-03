@@ -19,6 +19,18 @@ management:
 spring:
   main:
     web-application-type: servlet
+  mvc:
+    static-path-pattern: /static/**
+  jackson:
+    serialization:
+      indent-output: true
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  thymeleaf:
+    enabled: true
+    cache: false
   h2:
     console:
       enabled: true
@@ -36,5 +48,11 @@ springdoc:
     - group: version 1.0
       paths-to-match: /api/v1/**
 
-
+# web
+web:
+  locales:
+    - en_US
+    - ko_KR
+  secretKey: d8058b30f8208186d1d9cfa74c70ce31bd108b49aee773f7e4eb4e458a757c65
+  defaultAuthorities:
 

@@ -5,6 +5,9 @@ import lombok.Setter;
 import org.springframework.data.domain.AbstractPageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+
+import javax.servlet.http.HttpServletResponse;
 
 public class PageRequest extends AbstractPageRequest {
 
@@ -85,6 +88,22 @@ public class PageRequest extends AbstractPageRequest {
      */
     public PageRowBounds toPageRowBounds() {
         return new PageRowBounds((int)getOffset(), this.getPageSize());
+    }
+
+    /**
+     * sendTotalCount
+     * @param response HttpServletResponse
+     */
+    public void sendTotalCount(HttpServletResponse response) {
+        StringBuffer contentRange = new StringBuffer()
+                .append("items")
+                .append(" ")
+                .append(getOffset()+1)
+                .append("-")
+                .append(getOffset() + getPageSize())
+                .append("/")
+                .append(totalCount);
+        response.setHeader(HttpHeaders.CONTENT_RANGE, contentRange.toString());
     }
 
 }

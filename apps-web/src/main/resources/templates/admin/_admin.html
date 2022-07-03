@@ -16,21 +16,20 @@
 		<script th:src="@{/static/chartjs/chart.min.js}"></script>
 		<script th:src="@{/static/moment/moment.js}"></script>
 		<script th:src="@{/static/stomp/stomp.js}"></script>
-		<script th:src="@{/static/core.js}"></script>
-		<link rel="stylesheet" type="text/css" th:href="@{/static/core.css}">
+		<script th:src="@{/static/apps.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/apps.css}">
 		<script>
 			// menu
-			const _menus = new core.List();
+			const _menus = new apps.List();
 			_menus.setReadonly('icon', true);
 			_menus.fromJson([
-				{ name:'[[#{web.menu.monitor}]]', icon:'[[@{/static/image/icon-monitor.png}]]', link:'[[@{/admin/monitor}]]' },
-				{ name:'[[#{web.menu.user}]]', icon:'[[@{/static/image/icon-user.png}]]', link:'[[@{/admin/user}]]' },
-				{ name:'[[#{web.menu.property}]]', icon:'[[@{/static/image/icon-property.png}]]', link:'[[@{/admin/property}]]' },
-				{ name:'[[#{web.menu.message}]]', icon:'[[@{/static/image/icon-message.png}]]', link:'[[@{/admin/message}]]' },
-				{ name:'[[#{web.menu.code}]]', icon:'[[@{/static/image/icon-code.png}]]', link:'[[@{/admin/code}]]' },
-				{ name:'[[#{web.menu.menu}]]', icon:'[[@{/static/image/icon-menu.png}]]', link:'[[@{/admin/menu}]]' },
-				{ name:'[[#{web.menu.page}]]', icon:'[[@{/static/image/icon-page.png}]]', link:'[[@{/admin/page}]]' },
-				{ name:'[[#{web.menu.board}]]', icon:'[[@{/static/image/icon-board.png}]]', link:'[[@{/admin/board}]]' }
+				{ name:'[[#{apps.web.menu.user}]]', icon:'[[@{/static/image/icon-user.png}]]', link:'[[@{/admin/user}]]' },
+				{ name:'[[#{apps.web.menu.property}]]', icon:'[[@{/static/image/icon-property.png}]]', link:'[[@{/admin/property}]]' },
+				{ name:'[[#{apps.web.menu.message}]]', icon:'[[@{/static/image/icon-message.png}]]', link:'[[@{/admin/message}]]' },
+				{ name:'[[#{apps.web.menu.code}]]', icon:'[[@{/static/image/icon-code.png}]]', link:'[[@{/admin/code}]]' },
+				{ name:'[[#{apps.web.menu.menu}]]', icon:'[[@{/static/image/icon-menu.png}]]', link:'[[@{/admin/menu}]]' },
+				{ name:'[[#{apps.web.menu.page}]]', icon:'[[@{/static/image/icon-page.png}]]', link:'[[@{/admin/page}]]' },
+				{ name:'[[#{apps.web.menu.board}]]', icon:'[[@{/static/image/icon-board.png}]]', link:'[[@{/admin/board}]]' }
 			]);
 			
 			// home
@@ -152,32 +151,32 @@
 		<!-- START: header										-->
 		<!-- ================================================== -->
 		<header>
-			<div class="core-box">
-				<h1 class="core-logo" onclick="_home();" style="cursor:pointer;">
+			<div class="apps-box">
+				<h1 class="apps-logo" onclick="_home();" style="cursor:pointer;">
 					<img th:src="@{/static/image/logo.png}"/>
-					<span th:text="#{web.title.logo}"></span>
+					<span th:text="#{apps.web.title.admin}"></span>
 				</h1>
 			</div>
 			<div id="_header__user">
 				<span>
-					<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="core-icon" style="border-radius:50%;"/>
-					<span data-th-text="${_user.name}" class="core-text-bold"></span>
+					<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="apps-icon" style="border-radius:50%;"/>
+					<span data-th-text="${_user.name}" class="apps-text-bold"></span>
 				</span>
 				&nbsp;&nbsp;|&nbsp;&nbsp;
-				<span onclick="_logout();" class="core-link">
-					<img th:src="@{/static/image/icon-logout.png}" class="core-icon"/>
-					<span data-th-text="#{logout}" class="core-text-bold"></span>
+				<span onclick="_logout();" class="apps-link">
+					<img th:src="@{/static/image/icon-logout.png}" class="apps-icon"/>
+					<span data-th-text="#{logout}" class="apps-text-bold"></span>
 				</span>
 				&nbsp;&nbsp;|&nbsp;&nbsp;
 				<span>
-					<img th:src="@{/static/image/icon-locale.png}" class="core-icon"/>
+					<img th:src="@{/static/image/icon-locale.png}" class="apps-icon"/>
 					<select class="duice-select" onchange="_changeLocale(this.value);" style="width:100px;">
 						<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
 					</select>
 				</span>
 			</div>
 			<div id="_header__navButton">
-				<img th:src="@{/static/image/icon-menu.png}" class="core-icon core-link" onclick="_toggleNav();"/>
+				<img th:src="@{/static/image/icon-menu.png}" class="apps-icon apps-link" onclick="_toggleNav();"/>
 			</div>
 		</header>
 		<!-- ================================================== -->
@@ -189,37 +188,37 @@
 		<!-- ================================================== -->
 		<nav>
 			<div id="_nav__user">
-				<div class="core-container">
+				<div class="apps-container">
 					<span>
-						<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="core-icon" style="border-radius:50%;"/>
-						<span data-th-text="${_user.name}" class="core-text-bold"></span>
+						<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="apps-icon" style="border-radius:50%;"/>
+						<span data-th-text="${_user.name}" class="apps-text-bold"></span>
 					</span>
-					<span class="core-text-small">|</span>
-					<span onclick="_logout();" class="core-link">
-						<img th:src="@{/static/image/icon-logout.png}" class="core-icon"/>
-						<span data-th-text="#{logout}" class="core-text-bold"></span>
+					<span class="apps-text-small">|</span>
+					<span onclick="_logout();" class="apps-link">
+						<img th:src="@{/static/image/icon-logout.png}" class="apps-icon"/>
+						<span data-th-text="#{logout}" class="apps-text-bold"></span>
 					</span>
-					<span class="core-text-small">|</span>
+					<span class="apps-text-small">|</span>
 					<span>
-						<img th:src="@{/static/image/icon-locale.png}" class="core-icon"/>
+						<img th:src="@{/static/image/icon-locale.png}" class="apps-icon"/>
 						<select class="duice-select" onchange="_changeLocale(this.value);" style="width:100px;">
 							<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
 						</select>
 					</span>
 				</div>
-				<hr class="core-hr"/>
+				<hr class="apps-hr"/>
 			</div>
 			<div id="_navi__menu">
-				<ul is="core-ul"
-					data-core-bind="_menus,_menu" 
-					data-core-hierarchy="id,upperId"
-					data-core-foldable="false">
+				<ul is="apps-ul"
+					data-apps-bind="_menus,_menu"
+					data-apps-hierarchy="id,upperId"
+					data-apps-foldable="false">
 					<li style="cursor:pointer; border-bottom:dotted 1px #ccc; padding:0.2rem;"
-					data-link="[@core[$context._menu.get('link')]]" 
-					data-target="[@core[$context._menu.get('target')]]"
+					data-link="[@apps[$context._menu.get('link')]]"
+					data-target="[@apps[$context._menu.get('target')]]"
 					onclick="javascript:_openLink(this.dataset.link, this.dataset.target);">
-						<img is="core-img" data-core-bind="_menu,icon" th:src="@{/static/image/icon-menu.png}" class="core-icon"/>
-						<span is="core-span" data-core-bind="_menu,name" style="font-weight:bold;"></span>
+						<img is="apps-img" data-apps-bind="_menu,icon" th:src="@{/static/image/icon-menu.png}" class="apps-icon"/>
+						<span is="apps-span" data-apps-bind="_menu,name" style="font-weight:bold;"></span>
 					</li>
 				</ul>
 			</div>
@@ -249,8 +248,8 @@
 		<!-- ================================================== -->
 		<!-- START: footer										-->
 		<!-- ================================================== -->
-		<footer class="core-container core-container--center core-container--middle">
-			<span class="core-copyright">License: LGPL(GNU Lesser General Public License version 3) copyright(c) 2016</span>
+		<footer class="apps-container apps-container--center apps-container--middle">
+			<span class="apps-copyright">License: LGPL(GNU Lesser General Public License version 3) copyright(c) 2016</span>
 		</footer>
 		<!-- ================================================== -->
 		<!-- END: footer										-->

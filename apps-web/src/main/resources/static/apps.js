@@ -1,6 +1,6 @@
 // set alias for duice library
-var core = duice;
-core.setAlias('core');
+const apps = duice;
+apps.setAlias('apps');
 
 /**
  * JQUERY AJAX setting
@@ -91,21 +91,21 @@ const _fetch = async function(url, options, _bypass) {
  * Opens confirm dialog
  */
 const _confirm = function(message) {
-	return new core.Confirm(message).open();
+	return new apps.Confirm(message).open();
 }
 
 /**
  * Opens alert dialog
  */
 const _alert = function(message) {
-	return new core.Alert(message).open();
+	return new apps.Alert(message).open();
 }
 
 /**
  * Opens prompt dialog
  */
 const _prompt = function(message){
-	return new core.Prompt(message).open();
+	return new apps.Prompt(message).open();
 }
 
 /**

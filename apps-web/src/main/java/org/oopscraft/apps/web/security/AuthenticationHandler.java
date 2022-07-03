@@ -46,12 +46,7 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
 		try {
 			UserDetails userDetails = (UserDetails)authentication.getPrincipal();
 			issueAccessToken(userDetails, response);
-			String referer = request.getHeader("referer");
-			if(StringUtils.isNotBlank(referer)) {
-				redirectStrategy.sendRedirect(request, response, referer);
-			}else{
-				response.setStatus(HttpServletResponse.SC_OK);
-			}
+			response.setStatus(HttpServletResponse.SC_OK);
 		}catch(Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}

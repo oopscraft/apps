@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.oopscraft.apps.core.CoreConfiguration;
 import org.oopscraft.apps.core.data.PageRequestArgumentResolver;
 import org.oopscraft.apps.web.security.AuthenticationFilter;
@@ -31,16 +32,20 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.io.IOException;
@@ -50,13 +55,12 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
-@EnableAutoConfiguration(
-        exclude = {
-                DataSourceAutoConfiguration.class,
-                SecurityAutoConfiguration.class
-        }
-)
-@Import({CoreConfiguration.class})
+@EnableAutoConfiguration
+@Import({
+        CoreConfiguration.class,
+        WebConfiguration.BaseSecurityConfiguration.class,
+        WebConfiguration.ApiSecurityConfiguration.class
+})
 public class WebConfiguration implements EnvironmentPostProcessor, WebMvcConfigurer {
 
     /**
@@ -159,6 +163,27 @@ public class WebConfiguration implements EnvironmentPostProcessor, WebMvcConfigu
     }
 
     /**
+     * layoutDialect
+     * @return
+     */
+    @Bean
+    public LayoutDialect layoutDialect() {
+        return new LayoutDialect();
+    }
+
+    /**
+     * localeResolver
+     * @return local resolver
+     */
+    @Bean
+    public LocaleResolver localeResolver() {
+        CookieLocaleResolver localeResolver = new CookieLocaleResolver();
+        localeResolver.setCookieName("X-Locale");
+        localeResolver.setLanguageTagCompliant(false);
+        return localeResolver;
+    }
+
+    /**
      * csrfTokenRepository
      * @return
      */
@@ -213,6 +238,13 @@ public class WebConfiguration implements EnvironmentPostProcessor, WebMvcConfigu
         private final AuthenticationFilter authenticationFilter;
 
         private final CookieCsrfTokenRepository csrfTokenRepository;
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring()
+                    .antMatchers("/static/**", "/join/**")
+                    .antMatchers(HttpMethod.POST, "/join/process");
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
