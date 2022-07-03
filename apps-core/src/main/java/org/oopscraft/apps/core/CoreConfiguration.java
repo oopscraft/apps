@@ -157,6 +157,9 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
 
         if(EmbeddedDatabaseConnection.isEmbedded(dataSource)) {
             vendorAdapter.setGenerateDdl(true);
+            jpaProperties.setProperty(AvailableSettings.HBM2DDL_AUTO, "create");
+            jpaProperties.setProperty(AvailableSettings.HBM2DDL_IMPORT_FILES, "/db/data.sql");
+            jpaProperties.setProperty(AvailableSettings.HBM2DDL_IMPORT_FILES_SQL_EXTRACTOR, org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor.class.getName());
         }
 
         // return

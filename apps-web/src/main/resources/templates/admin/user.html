@@ -205,20 +205,20 @@
 		</script>
 		<h1 class="apps-title">
 			<img th:src="@{/static/image/icon-user.png}"/>
-			<span data-th-text="#{web.title.user}"></span>
+			<span data-th-text="#{apps.web.title.user}"></span>
 		</h1>
 		<div>
 			<span id="userTabButton" class="apps-tab">
 				<img th:src="@{/static/image/icon-user.png}"/>
-				<span data-th-text="#{core.user}"></span>
+				<span data-th-text="#{apps.core.user}"></span>
 			</span>
 			<span id="roleTabButton" class="apps-tab">
 				<img th:src="@{/static/image/icon-role.png}"/>
-				<span data-th-text="#{core.role}"></span>
+				<span data-th-text="#{apps.core.role}"></span>
 			</span>
 			<span id="authorityTabButton" class="apps-tab">
 				<img th:src="@{/static/image/icon-authority.png}"/>
-				<span data-th-text="#{core.authority}"></span>
+				<span data-th-text="#{apps.core.authority}"></span>
 			</span>
 		</div>
 		<hr class="apps-hr"/>
@@ -231,28 +231,28 @@
 				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
 					<div class="apps-container" style="width:300px;">
 						<select is="apps-select" data-apps-bind="userSearch,key" style="width:40%;">
-							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
-							<option value="id" data-th-text="#{core.user.id}"></option>
-							<option value="name" data-th-text="#{core.user.name}"></option>
-							<option value="email" data-th-text="#{core.user.email}"></option>
-							<option value="mobile" data-th-text="#{core.user.mobile}"></option>
+							<option value data-th-text="'- '+#{apps.web.label.search}+' -'"></option>
+							<option value="id" data-th-text="#{apps.core.user.id}"></option>
+							<option value="name" data-th-text="#{apps.core.user.name}"></option>
+							<option value="email" data-th-text="#{apps.core.user.email}"></option>
+							<option value="mobile" data-th-text="#{apps.core.user.mobile}"></option>
 						</select>
-						<input is="apps-input" type="text" data-apps-bind="userSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="userSearch,value" th:placeholder="#{apps.web.label.keyword}" style="width:60%;"/>
 					</div>
 					<select is="apps-select" data-apps-bind="userSearch,status" style="width:120px;">
-						<option value data-th-text="'- '+#{core.user.status}+' -'"></option>
+						<option value data-th-text="'- '+#{apps.core.user.status}+' -'"></option>
 						<option th:each="userStatus:${userStatuses}" th:value="${userStatus}" th:text="${userStatus}"></option>
 					</select>
 					<button onclick="getUsers(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
-						<span data-th-text="#{web.label.search}"></span>
+						<span data-th-text="#{apps.web.label.search}"></span>
 					</button>
 				</form>
 				<div class="apps-container apps-container--gap apps-container--fluid">
 					<button onclick="createUser();" class="apps-button"
 					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 						<img th:src="@{/static/image/icon-create.png}"/>
-						<span data-th-text="#{web.label.create}"></span>
+						<span data-th-text="#{apps.web.label.create}"></span>
 					</button>
 				</div>
 			</div>
@@ -270,14 +270,14 @@
 					</colgroup>
 					<thead class="thead-light">
 						<tr>
-							<th><span th:text="#{web.label.no}"></span></th>
-							<th><span th:text="#{core.user.id}"></span></th>
-							<th><span th:text="#{core.user.name}"></span></th>
-							<th><span th:text="#{core.user.type}"></span></th>
-							<th><span th:text="#{core.user.status}"></span></th>
-							<th><span th:text="#{core.user.email}"></span></th>
-							<th><span th:text="#{core.user.mobile}"></span></th>
-							<th><span th:text="#{core.user.roles}"></span></th>
+							<th><span th:text="#{apps.web.label.no}"></span></th>
+							<th><span th:text="#{apps.core.user.id}"></span></th>
+							<th><span th:text="#{apps.core.user.name}"></span></th>
+							<th><span th:text="#{apps.core.user.type}"></span></th>
+							<th><span th:text="#{apps.core.user.status}"></span></th>
+							<th><span th:text="#{apps.core.user.email}"></span></th>
+							<th><span th:text="#{apps.core.user.mobile}"></span></th>
+							<th><span th:text="#{apps.core.user.roles}"></span></th>
 							<th>-</th>
 						</tr>
 					</thead>
@@ -313,9 +313,9 @@
 								>0</span>
 							</td>
 							<td>
-								<button class="apps-button" data-id="[@core[$context.user.get('id')]]" onclick="getUser(this.dataset.id)">
-									<img th:src="@{/static/image/icon-view.png}"/>
-									<span data-th-text="#{web.label.view}"></span>
+								<button class="apps-button" data-id="[@apps[$context.user.get('id')]]" onclick="getUser(this.dataset.id)">
+									<img th:src="@{/static/image/icon-detail.png}"/>
+									<span data-th-text="#{apps.web.label.detail}"></span>
 								</button>
 							</td>
 						</tr>
@@ -328,7 +328,7 @@
 					<li data-page="[@core[$context.page]]" onclick="getUsers(this.dataset.page);"></li>
 				</ul>
 				<div class="apps-text-small apps-text-bold">
-					<span th:text="#{web.label.totalCount}"></span>
+					<span th:text="#{apps.web.label.totalCount}"></span>
 					<span is="apps-span" data-apps-bind="userSearch,_totalCount" data-apps-format="number,0"></span>
 				</div>
 			</div>
@@ -345,22 +345,22 @@
 				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
 					<div class="apps-container" style="width:300px;">
 						<select is="apps-select" data-apps-bind="roleSearch,key" style="width:40%;">
-							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
-							<option value="id" data-th-text="#{core.role.id}">Id</option>
-							<option value="name" data-th-text="#{core.role.name}">Name</option>
+							<option value data-th-text="'- '+#{apps.web.label.search}+' -'"></option>
+							<option value="id" data-th-text="#{apps.core.role.id}">Id</option>
+							<option value="name" data-th-text="#{apps.core.role.name}">Name</option>
 						</select>
-						<input is="apps-input" type="text" data-apps-bind="roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="roleSearch,value" th:placeholder="#{apps.web.label.keyword}" style="width:60%;"/>
 					</div>
 					<button onclick="getRoles(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
-						<span data-th-text="#{web.label.search}"></span>
+						<span data-th-text="#{apps.web.label.search}"></span>
 					</button>
 				</form>
 				<div class="apps-container apps-container--gap apps-container--fluid">
 					<button onclick="createRole();" class="apps-button"
 					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 						<img th:src="@{/static/image/icon-create.png}"/>
-						<span data-th-text="#{web.label.create}"></span>
+						<span data-th-text="#{apps.web.label.create}"></span>
 					</button>
 				</div>
 			</div>
@@ -375,10 +375,10 @@
 					</colgroup>
 					<thead class="thead-light">
 						<tr>
-							<th><span th:text="#{web.label.no}"></span></th>
-							<th><span th:text="#{core.role.id}"></span></th>
-							<th><span th:text="#{core.role.name}"></span></th>
-							<th><span th:text="#{core.role.authorities}"></span></th>
+							<th><span th:text="#{apps.web.label.no}"></span></th>
+							<th><span th:text="#{apps.core.role.id}"></span></th>
+							<th><span th:text="#{apps.core.role.name}"></span></th>
+							<th><span th:text="#{apps.core.role.authorities}"></span></th>
 							<th>-</th>
 						</tr>
 					</thead>
@@ -404,7 +404,7 @@
 							<td>
 								<button class="apps-button" data-id="[@core[$context.role.get('id')]]" onclick="getRole(this.dataset.id)">
 									<img th:src="@{/static/image/icon-view.png}"/>
-									<span data-th-text="#{web.label.view}"></span>
+									<span data-th-text="#{apps.web.label.view}"></span>
 								</button>
 							</td>
 						</tr>
@@ -417,7 +417,7 @@
 					<li data-page="[@core[$context.page]]" onclick="getRoles(this.dataset.page);"></li>
 				</ul>
 				<div class="apps-text-small apps-text-bold">
-					<span th:text="#{web.label.totalCount}"></span>
+					<span th:text="#{apps.web.label.totalCount}"></span>
 					<span is="apps-span" data-apps-bind="roleSearch,_totalCount" data-apps-format="number,0"></span>
 				</div>
 			</div>
@@ -434,22 +434,22 @@
 				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
 					<div class="apps-container" style="width:300px;">
 						<select is="apps-select" data-apps-bind="authoritySearch,key" style="width:40%;">
-							<option value data-th-text="'- '+#{web.label.search}+' -'"></option>
-							<option value="id" data-th-text="#{core.authority.id}">Id</option>
-							<option value="name" data-th-text="#{core.authority.name}">Name</option>
+							<option value data-th-text="'- '+#{apps.web.label.search}+' -'"></option>
+							<option value="id" data-th-text="#{apps.core.authority.id}">Id</option>
+							<option value="name" data-th-text="#{apps.core.authority.name}">Name</option>
 						</select>
-						<input is="apps-input" type="text" data-apps-bind="authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="authoritySearch,value" th:placeholder="#{apps.web.label.keyword}" style="width:60%;"/>
 					</div>
 					<button onclick="getAuthorities(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
-						<span data-th-text="#{web.label.search}"></span>
+						<span data-th-text="#{apps.web.label.search}"></span>
 					</button>
 				</form>
 				<div class="apps-container apps-container--gap apps-container--fluid">
 					<button onclick="createAuthority();" class="apps-button"
 					th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 						<img th:src="@{/static/image/icon-create.png}"/>
-						<span data-th-text="#{web.label.create}"></span>
+						<span data-th-text="#{apps.web.label.create}"></span>
 					</button>
 				</div>
 			</div>
@@ -463,9 +463,9 @@
 					</colgroup>
 					<thead class="thead-light">
 						<tr>
-							<th><span th:text="#{web.label.no}"></span></th>
-							<th><span th:text="#{core.authority.id}"></span></th>
-							<th><span th:text="#{core.authority.name}"></span></th>
+							<th><span th:text="#{apps.web.label.no}"></span></th>
+							<th><span th:text="#{apps.core.authority.id}"></span></th>
+							<th><span th:text="#{apps.core.authority.name}"></span></th>
 							<th>-</th>
 						</tr>
 					</thead>
@@ -484,7 +484,7 @@
 							<td>
 								<button class="apps-button" data-id="[@core[$context.authority.get('id')]]" onclick="getAuthority(this.dataset.id)">
 									<img th:src="@{/static/image/icon-view.png}"/>
-									<span data-th-text="#{web.label.view}"></span>
+									<span data-th-text="#{apps.web.label.view}"></span>
 								</button>
 							</td>
 						</tr>
@@ -497,7 +497,7 @@
 					<li data-page="[@core[$context.page]]" onclick="getAuthorities(this.dataset.page);"></li>
 				</ul>
 				<div class="apps-text-small apps-text-bold">
-					<span th:text="#{web.label.totalCount}"></span>
+					<span th:text="#{apps.web.label.totalCount}"></span>
 					<span is="apps-span" data-apps-bind="authoritySearch,_totalCount" data-apps-format="number,0"></span>
 				</div>
 			</div>
@@ -577,14 +577,14 @@
 					validateUserId: async function(id) {
 						// checks id is empty
 						if(!id || id.length < 1){
-							await _alert('[[#{web.message.emptyValue(#{core.user.id})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.user.id})}]]');
 							this.user.setFocus('id');
 							return false;
 						}
 
 						// validate id pattern
 						if(!_isIdFormat(id)){
-							await _alert('[[#{web.message.invalidFormat(#{core.user.id})}]]');
+							await _alert('[[#{apps.web.message.invalidFormat(#{apps.core.user.id})}]]');
 							this.user.setFocus('id');
 							return false;
 						}
@@ -597,7 +597,7 @@
 							let text = await response.text();
 							let json = (text.length == 0 ? null : JSON.parse(text));
 							if(json != null && json.id === id){
-								await _alert('[[#{web.message.alreadyExist(#{core.user.id})}]]');
+								await _alert('[[#{apps.web.message.alreadyExist(#{apps.core.user.id})}]]');
 								this.user.setFocus('id');
 								return false;
 							}
@@ -618,7 +618,7 @@
 
 						// checks name
 						if(_isEmpty(this.user.get('name'))){
-							await _alert('[[#{web.message.emptyValue(#{core.user.name})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.user.name})}]]');
 							this.user.setFocus('name');
 							return false;
 						}
@@ -626,24 +626,24 @@
 						// checks password
 						if(this.user.get('_new')){
 							if(_isEmpty(this.user.get('password'))){
-								await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+								await _alert('[[#{apps.web.message.emptyValue(#{apps.core.user.password})}]]');
 								this.user.setFocus('password');
 								return false;
 							}
 							if(_isEmpty(this.user.get('passwordConfirm'))){
-								await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+								await _alert('[[#{apps.web.message.emptyValue(#{apps.core.user.password})}]]');
 								this.user.setFocus('passwordConfirm');
 								return false;
 							}
 							if(this.user.get('password') !== this.user.get('passwordConfirm')){
-								await _alert('[[#{web.message.notMatch(#{core.user.password})}]]');
+								await _alert('[[#{apps.web.message.notMatch(#{apps.core.user.password})}]]');
 								this.user.setFocus('password');
 								return false;
 							}
 						}
 
 						// confirm
-						if(await _confirm("[[#{web.message.saveConfirm(#{core.user})}]]")){
+						if(await _confirm("[[#{apps.web.message.saveConfirm(#{apps.core.user})}]]")){
 							let data = this.user.toJson();
 							data.roles = this.userRoles.toJson();
 							var url = new URL('[[@{/admin/user/save-user}]]', document.location.origin);
@@ -655,21 +655,21 @@
 								body: JSON.stringify(data)
 							});
 							if(response.ok){
-								await _alert("[[#{web.message.saveComplete(#{core.user})}]]");
+								await _alert("[[#{apps.web.message.saveComplete(#{apps.core.user})}]]");
 								this.dialog.resolve(true);
 							}
 						}
 					},
 					// deleteUser
 					deleteUser: async function() {
-						if(await _confirm('[[#{web.message.deleteConfirm(#{core.user})}]]')){
+						if(await _confirm('[[#{apps.web.message.deleteConfirm(#{apps.core.user})}]]')){
 							let url = new URL('[[@{/admin/user/delete-user}]]', document.location.origin);
 							url.searchParams.append('id', this.user.get('id'));
 							let response = await _fetch(url,{
 								method:'DELETE'
 							});
 							if(response.ok){
-								await _alert('[[#{web.message.deleteComplete(#{core.user})}]]');
+								await _alert('[[#{apps.web.message.deleteComplete(#{apps.core.user})}]]');
 								this.dialog.resolve(true);
 							}
 						}
@@ -702,19 +702,19 @@
 			</script>
 			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-user.png}"/>
-				<span data-th-text="#{web.title.userDetail}"></span>
+				<span data-th-text="#{apps.web.title.userDetail}"></span>
 			</h1>
 			<hr class="apps-hr"/>
 			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.user.id}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.id}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="userDetail.user,id" class="apps-text-bold"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.name}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.name}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="userDetail.user,name"/>
@@ -722,31 +722,31 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.user.type}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.type}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<select is="apps-select" data-apps-bind="userDetail.user,type">
-							<option th:each="type:${T(net.chomookun.apps.core.user.User.Type).values}" th:value="${type}" th:text="#{'core.user.type.'+${type}}"></option>
+							<option th:each="type:${userTypes}" th:value="${type}" th:text="#{'apps.core.user.type.'+${type}}"></option>
 						</select>
 					</div>
 					<div>
-						<span th:text="#{core.user.status}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.status}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<select is="apps-select" data-apps-bind="userDetail.user,status">
-							<option th:each="status:${T(net.chomookun.apps.core.user.User.Status).values}" th:value="${status}" th:text="#{'core.user.status.'+${status}}"></option>
+							<option th:each="status:${userStatus}" th:value="${status}" th:text="#{'apps.core.user.status.'+${status}}"></option>
 						</select>
 					</div>
 				</div>
 				<div id="userDetail_passwordDiv">
 					<div>
-						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="password" data-apps-bind="userDetail.user,password"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="password" data-apps-bind="userDetail.user,passwordConfirm"/>
@@ -754,24 +754,24 @@
 				</div>
 				<div id="userDetail_changePasswordDiv">
 					<div>
-						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<button class="apps-button" onclick="userDetail.changePassword();">
 							<img class="icon" th:src="@{/static/image/icon-password.png}">
-							<span th:text="#{web.label.changePassword}"></span>
+							<span th:text="#{apps.web.label.changePassword}"></span>
 						</button>
 					</div>
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.user.email}"></span>
+						<span th:text="#{apps.core.user.email}"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="userDetail.user,email"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.mobile}"></span>
+						<span th:text="#{apps.core.user.mobile}"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="userDetail.user,mobile"/>
@@ -779,11 +779,11 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.user.locale}"></span>
+						<span th:text="#{apps.core.user.locale}"></span>
 					</div>
 					<div>
 						<select is="apps-select" data-apps-bind="userDetail.user,locale">
-							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
+							<option value data-th-text="'- '+#{apps.web.label.select}+' -'"></option>
 							<option th:each="locale:${_locales}" th:value="${locale.toString()}" th:text="${locale.getDisplayName(locale)}" th:selected="${locale == _locale}"></option>
 						</select>
 					</div>
@@ -792,7 +792,7 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.user.photo}"></span>
+						<span th:text="#{apps.core.user.photo}"></span>
 					</div>
 					<div class="apps-container">
 						<img is="apps-img" data-apps-bind="userDetail.user,photo" data-apps-size="64,64" th:src="@{/static/image/icon-null.png}"/>
@@ -800,7 +800,7 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.user.profile}"></span>
+						<span th:text="#{apps.core.user.profile}"></span>
 					</div>
 					<div>
 						<textarea is="apps-textarea" data-apps-bind="userDetail.user,profile"></textarea>
@@ -809,7 +809,7 @@
 				<div>
 					<div>
 						<img class="apps-icon" th:src="@{/static/image/icon-role.png}"/>
-						<span th:text="#{core.user.roles}"></span>
+						<span th:text="#{apps.core.user.roles}"></span>
 					</div>
 					<div style="max-height:300px; overflow-y:scroll; border: solid 1px #ccc;">
 						<table is="apps-table" data-apps-bind="userDetail.userRoles,userRole" style="border:none;">
@@ -820,8 +820,8 @@
 							</colgroup>
 							<thead>
 							<tr>
-								<th><span th:text="#{core.role.id}">Id</span></th>
-								<th><span th:text="#{core.role.name}">Name</span></th>
+								<th><span th:text="#{apps.core.role.id}">Id</span></th>
+								<th><span th:text="#{apps.core.role.name}">Name</span></th>
 								<th>
 									<button class="apps-button" onclick="userDetail.addUserRole();"
 											th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
@@ -855,12 +855,12 @@
 				<button class="apps-button" onclick="userDetail.deleteUser();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-delete.png}"/>
-					<span th:text="#{web.label.delete}"></span>
+					<span th:text="#{apps.web.label.delete}"></span>
 				</button>
 				<button class="apps-button" onclick="userDetail.saveUser();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
-					<span th:text="#{web.label.save}"></span>
+					<span th:text="#{apps.web.label.save}"></span>
 				</button>
 			</div>
 		</div>
@@ -899,23 +899,23 @@
 
 						// checks validation
 						if(_isEmpty(this.user.get('password'))){
-							await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.user.password})}]]');
 							this.user.setFocus('password');
 							return false;
 						}
 						if(_isEmpty(this.user.get('passwordConfirm'))){
-							await _alert('[[#{web.message.emptyValue(#{core.user.password})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.user.password})}]]');
 							this.user.setFocus('passwordConfirm');
 							return false;
 						}
 						if(this.user.get('password') !== this.user.get('passwordConfirm')){
-							await _alert('[[#{web.message.notMatch(#{core.user.password})}]]');
+							await _alert('[[#{apps.web.message.notMatch(#{apps.core.user.password})}]]');
 							this.user.setFocus('password');
 							return false;
 						}
 
 						// confirm
-						if(await _confirm("[[#{web.message.changeConfirm(#{core.user.password})}]]")){
+						if(await _confirm("[[#{apps.web.message.changeConfirm(#{apps.core.user.password})}]]")){
 							let data = this.user.toJson();
 							var url = new URL('[[@{/admin/user/change-password}]]', document.location.origin);
 							let response = await _fetch(url, {
@@ -926,7 +926,7 @@
 								body: JSON.stringify(data)
 							});
 							if(response.ok){
-								await _alert("[[#{web.message.changeComplete#{core.user.password})}]]");
+								await _alert("[[#{apps.web.message.changeComplete#{apps.core.user.password})}]]");
 								this.dialog.resolve(true);
 							}
 						}
@@ -935,19 +935,19 @@
 			</script>
 			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-password.png}"/>
-				<span data-th-text="#{web.title.changePassword}"></span>
+				<span data-th-text="#{apps.web.title.changePassword}"></span>
 			</h1>
 			<hr class="apps-hr"/>
 			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="password" data-apps-bind="userChangePassword.user,password"/>
 					</div>
 					<div>
-						<span th:text="#{core.user.password}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.user.password}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="password" data-apps-bind="userChangePassword.user,passwordConfirm"/>
@@ -958,7 +958,7 @@
 				<button class="apps-button" onclick="userChangePassword.changePassword();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
-					<span th:text="#{web.label.save}"></span>
+					<span th:text="#{apps.web.label.save}"></span>
 				</button>
 			</div>
 		</div>
@@ -1032,14 +1032,14 @@
 					validateRoleId: async function(id) {
 						// checks id is empty
 						if(!id || id.length < 1){
-							await _alert('[[#{web.message.emptyValue(#{core.role.id})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.role.id})}]]');
 							this.role.setFocus('id');
 							return false;
 						}
 
 						// validate id pattern
 						if(!_isIdFormat(id)){
-							await _alert('[[#{web.message.invalidFormat(#{core.role.id})}]]');
+							await _alert('[[#{apps.web.message.invalidFormat(#{apps.core.role.id})}]]');
 							this.role.setFocus('id');
 							return false;
 						}
@@ -1052,7 +1052,7 @@
 							let text = await response.text();
 							let json = (text.length == 0 ? null : JSON.parse(text));
 							if(json != null && json.id === id){
-								await _alert('[[#{web.message.alreadyExist(#{core.role.id})}]]');
+								await _alert('[[#{apps.web.message.alreadyExist(#{apps.core.role.id})}]]');
 								this.role.setFocus('id');
 								return false;
 							}
@@ -1073,13 +1073,13 @@
 
 						// checks name
 						if(_isEmpty(this.role.get('name'))){
-							await _alert('[[#{web.message.emptyValue(#{core.role.name})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.role.name})}]]');
 							this.role.setFocus('name');
 							return false;
 						}
 
 						// confirm
-						if(await _confirm("[[#{web.message.saveConfirm(#{core.role})}]]")){
+						if(await _confirm("[[#{apps.web.message.saveConfirm(#{apps.core.role})}]]")){
 							let data = this.role.toJson();
 							data.authorities = this.roleAuthorities.toJson();
 							var url = new URL('[[@{/admin/user/save-role}]]', document.location.origin);
@@ -1091,20 +1091,20 @@
 								body: JSON.stringify(data)
 							});
 							if(response.ok){
-								await _alert("[[#{web.message.saveComplete(#{core.role})}]]");
+								await _alert("[[#{apps.web.message.saveComplete(#{apps.core.role})}]]");
 								this.dialog.resolve(true);
 							}
 						}
 					},
 					// deleteRole
 					deleteRole: async function() {
-						if(await _confirm('[[#{web.message.deleteConfirm(#{core.role})}]]')){
+						if(await _confirm('[[#{apps.web.message.deleteConfirm(#{apps.core.role})}]]')){
 							let url = new URL('[[@{/admin/user/delete-role}]]', document.location.origin);
 							let response = await _fetch(url,{
 								method:'DELETE'
 							});
 							if(response.ok){
-								await _alert('[[#{web.message.deleteComplete(#{core.role})}]]');
+								await _alert('[[#{apps.web.message.deleteComplete(#{apps.core.role})}]]');
 								this.dialog.resolve(true);
 							}
 						}
@@ -1131,19 +1131,19 @@
 			</script>
 			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-role.png}"/>
-				<span data-th-text="#{web.title.roleDetail}"></span>
+				<span data-th-text="#{apps.web.title.roleDetail}"></span>
 			</h1>
 			<hr class="apps-hr"/>
 			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.role.id}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.role.id}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="roleDetail.role,id" class="apps-text-bold"/>
 					</div>
 					<div>
-						<span th:text="#{core.role.name}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.role.name}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="roleDetail.role,name"/>
@@ -1151,7 +1151,7 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.role.icon}"></span>
+						<span th:text="#{apps.core.role.icon}"></span>
 					</div>
 					<div class="apps-container">
 						<img is="apps-img" data-apps-bind="roleDetail.role,icon" data-apps-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
@@ -1159,7 +1159,7 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.role.note}"></span>
+						<span th:text="#{apps.core.role.note}"></span>
 					</div>
 					<div>
 						<textarea is="apps-textarea" data-apps-bind="roleDetail.role,note"></textarea>
@@ -1168,7 +1168,7 @@
 				<div>
 					<div>
 						<img class="apps-icon" th:src="@{/static/image/icon-authority.png}"/>
-						<span th:text="#{core.role.authorities}"></span>
+						<span th:text="#{apps.core.role.authorities}"></span>
 					</div>
 					<div style="max-height:300px; overflow-y:scroll; border: solid 1px #ccc;">
 						<table is="apps-table" data-apps-bind="roleDetail.roleAuthorities,roleAuthority" style="border:none;">
@@ -1179,8 +1179,8 @@
 							</colgroup>
 							<thead>
 							<tr>
-								<th><span th:text="#{core.authority.id}"></span></th>
-								<th><span th:text="#{core.authority.name}"></span></th>
+								<th><span th:text="#{apps.core.authority.id}"></span></th>
+								<th><span th:text="#{apps.core.authority.name}"></span></th>
 								<th>
 									<button class="apps-button"
 											onclick="roleDetail.addRoleAuthority();"
@@ -1217,13 +1217,13 @@
 						onclick="roleDetail.deleteRole();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-delete.png}"/>
-					<span th:text="#{web.label.delete}"></span>
+					<span th:text="#{apps.web.label.delete}"></span>
 				</button>
 				<button class="apps-button"
 						onclick="roleDetail.saveRole();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
-					<span th:text="#{web.label.save}"></span>
+					<span th:text="#{apps.web.label.save}"></span>
 				</button>
 			</div>
 		</div>
@@ -1311,7 +1311,7 @@
 						console.log(role);
 						// check already selected
 						if(role.get('_select')){
-							new apps.Alert("[[#{web.message.alreadySelected(#{core.role})}]]").open();
+							new apps.Alert("[[#{apps.web.message.alreadySelected(#{apps.core.role})}]]").open();
 							return;
 						}
 						role.set('_select', true);
@@ -1330,22 +1330,22 @@
 			</script>
 			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-role.png}"/>
-				<span data-th-text="#{web.title.roleSelect}"></span>
+				<span data-th-text="#{apps.web.title.roleSelect}"></span>
 			</h1>
 			<hr class="apps-hr"/>
 			<div class="apps-container apps-container--fluid">
 				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
 					<div class="apps-container" style="width:300px;">
 						<select is="apps-select" data-apps-bind="roleSelect.roleSearch,key" style="width:40%;">
-							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
-							<option value="id" data-th-text="#{core.role.id}">Id</option>
-							<option value="name" data-th-text="#{core.role.name}">Name</option>
+							<option value data-th-text="'- '+#{apps.web.label.select}+' -'"></option>
+							<option value="id" data-th-text="#{apps.core.role.id}">Id</option>
+							<option value="name" data-th-text="#{apps.core.role.name}">Name</option>
 						</select>
-						<input is="apps-input" type="text" data-apps-bind="roleSelect.roleSearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="roleSelect.roleSearch,value" th:placeholder="#{apps.web.label.keyword}" style="width:60%;"/>
 					</div>
 					<button onclick="roleSelect.getRoles(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
-						<span data-th-text="#{web.label.search}"></span>
+						<span data-th-text="#{apps.web.label.search}"></span>
 					</button>
 				</form>
 			</div>
@@ -1360,8 +1360,8 @@
 					<thead>
 					<tr>
 						<th><span>-</span></th>
-						<th><span th:text="#{core.role.id}">Id</span></th>
-						<th><span th:text="#{core.role.name}">Name</span></th>
+						<th><span th:text="#{apps.core.role.id}">Id</span></th>
+						<th><span th:text="#{apps.core.role.name}">Name</span></th>
 						<th>-</th>
 					</tr>
 					</thead>
@@ -1407,8 +1407,8 @@
 					<thead>
 					<tr>
 						<th><span>-</span></th>
-						<th><span th:text="#{core.role.id}">Id</span></th>
-						<th><span th:text="#{core.role.name}">Name</span></th>
+						<th><span th:text="#{apps.core.role.id}">Id</span></th>
+						<th><span th:text="#{apps.core.role.name}">Name</span></th>
 						<th>-</th>
 					</tr>
 					</thead>
@@ -1436,7 +1436,7 @@
 			<div class="apps-container apps-container--gap apps-container--right">
 				<button class="apps-button" onclick="roleSelect.confirm();">
 					<img class="apps-icon" th:src="@{/static/image/icon-confirm.png}"/>
-					<span th:text="#{web.label.confirm}"></span>
+					<span th:text="#{apps.web.label.confirm}"></span>
 				</button>
 			</div>
 		</div>
@@ -1505,14 +1505,14 @@
 					validateAuthorityId: async function(id){
 						// checks id is empty
 						if(!id || id.length < 1){
-							await _alert('[[#{web.message.emptyValue(#{core.authority.id})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.authority.id})}]]');
 							this.authority.setFocus('id');
 							return false;
 						}
 
 						// validate id pattern
 						if(!_isIdFormat(id)){
-							await _alert('[[#{web.message.invalidFormat(#{core.authority.id})}]]');
+							await _alert('[[#{apps.web.message.invalidFormat(#{apps.core.authority.id})}]]');
 							this.authority.setFocus('id');
 							return false;
 						}
@@ -1525,7 +1525,7 @@
 							let text = await response.text();
 							let json = (text.length == 0 ? null : JSON.parse(text));
 							if(json != null && json.id === id){
-								await _alert('[[#{web.message.alreadyExist(#{core.authority.id})}]]');
+								await _alert('[[#{apps.web.message.alreadyExist(#{apps.core.authority.id})}]]');
 								this.authority.setFocus('id');
 								return false;
 							}
@@ -1546,13 +1546,13 @@
 
 						// checks name
 						if(_isEmpty(this.authority.get('name'))){
-							await _alert('[[#{web.message.emptyValue(#{core.authority.name})}]]');
+							await _alert('[[#{apps.web.message.emptyValue(#{apps.core.authority.name})}]]');
 							this.authority.setFocus('name');
 							return false;
 						}
 
 						// confirm
-						if(await _confirm("[[#{web.message.saveConfirm(#{core.authority})}]]")){
+						if(await _confirm("[[#{apps.web.message.saveConfirm(#{apps.core.authority})}]]")){
 							let data = this.authority.toJson();
 							var url = new URL('[[@{/admin/user/save-authority}]]', document.location.origin);
 							let response = await _fetch(url, {
@@ -1563,20 +1563,20 @@
 								body: JSON.stringify(data)
 							});
 							if(response.ok){
-								await _alert("[[#{web.message.saveComplete(#{core.authority})}]]");
+								await _alert("[[#{apps.web.message.saveComplete(#{apps.core.authority})}]]");
 								this.dialog.resolve(true);
 							}
 						}
 					},
 					// deleteAuthority
 					deleteAuthority: async function() {
-						if(await _confirm('[[#{web.message.deleteConfirm(#{core.authority})}]]')){
+						if(await _confirm('[[#{apps.web.message.deleteConfirm(#{apps.core.authority})}]]')){
 							let url = new URL('[[@{/admin/user/delete-authority}]]', document.location.origin);
 							let response = await _fetch(url,{
 								method:'DELETE'
 							});
 							if(response.ok){
-								await _alert('[[#{web.message.deleteComplete(#{core.authority})}]]');
+								await _alert('[[#{apps.web.message.deleteComplete(#{apps.core.authority})}]]');
 								this.dialog.resolve(true);
 							}
 						}
@@ -1585,19 +1585,19 @@
 			</script>
 			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-authority.png}"/>
-				<span data-th-text="#{web.title.authorityDetail}"></span>
+				<span data-th-text="#{apps.web.title.authorityDetail}"></span>
 			</h1>
 			<hr class="apps-hr"/>
 			<div class="apps-form">
 				<div>
 					<div>
-						<span th:text="#{core.authority.id}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.authority.id}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="authorityDetail.authority,id" class="apps-text-bold"/>
 					</div>
 					<div>
-						<span th:text="#{core.authority.name}" class="apps-tag-mandatory"></span>
+						<span th:text="#{apps.core.authority.name}" class="apps-tag-mandatory"></span>
 					</div>
 					<div>
 						<input is="apps-input" type="text" data-apps-bind="authorityDetail.authority,name"/>
@@ -1605,7 +1605,7 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.authority.icon}"></span>
+						<span th:text="#{apps.core.authority.icon}"></span>
 					</div>
 					<div class="apps-container">
 						<img is="apps-img" data-apps-bind="authorityDetail.authority,icon" data-apps-size="32,32" th:src="@{/static/image/icon-blank.png}"/>
@@ -1613,7 +1613,7 @@
 				</div>
 				<div>
 					<div>
-						<span th:text="#{core.authority.note}"></span>
+						<span th:text="#{apps.core.authority.note}"></span>
 					</div>
 					<div>
 						<textarea is="apps-textarea" data-apps-bind="authorityDetail.authority,note"></textarea>
@@ -1625,13 +1625,13 @@
 						onclick="authorityDetail.deleteAuthority();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-delete.png}"/>
-					<span th:text="#{web.label.delete}"></span>
+					<span th:text="#{apps.web.label.delete}"></span>
 				</button>
 				<button class="apps-button"
 						onclick="authorityDetail.saveAuthority();"
 						th:classappend="!${#authorization.expression('hasAuthority(''ADMIN_USER_EDIT'')')}?'apps-button--lock'">
 					<img class="apps-icon" th:src="@{/static/image/icon-save.png}"/>
-					<span th:text="#{web.label.save}"></span>
+					<span th:text="#{apps.web.label.save}"></span>
 				</button>
 			</div>
 		</div>
@@ -1721,7 +1721,7 @@
 						let authority = this.authorities.getRow(index);
 						// check already selected
 						if(authority.get('_select')){
-							new apps.Alert("[[#{web.message.alreadySelected(#{core.authority})}]]").open();
+							new apps.Alert("[[#{apps.web.message.alreadySelected(#{apps.core.authority})}]]").open();
 							return;
 						}
 						authority.set('_select', true);
@@ -1740,22 +1740,22 @@
 			</script>
 			<h1 class="apps-title">
 				<img th:src="@{/static/image/icon-authority.png}"/>
-				<span data-th-text="#{web.title.authoritySelect}"></span>
+				<span data-th-text="#{apps.web.title.authoritySelect}"></span>
 			</h1>
 			<hr class="apps-hr"/>
 			<div class="apps-container apps-container--gap apps-container--fluid">
 				<form onsubmit="return false;" class="apps-container gap">
 					<div class="apps-container" style="width:300px;">
 						<select is="apps-select" data-apps-bind="authoritySelect.authoritySearch,key" style="width:40%;">
-							<option value data-th-text="'- '+#{web.label.select}+' -'"></option>
-							<option value="id" data-th-text="#{core.authority.id}">Id</option>
-							<option value="name" data-th-text="#{core.authority.name}">Name</option>
+							<option value data-th-text="'- '+#{apps.web.label.select}+' -'"></option>
+							<option value="id" data-th-text="#{apps.core.authority.id}">Id</option>
+							<option value="name" data-th-text="#{apps.core.authority.name}">Name</option>
 						</select>
-						<input is="apps-input" type="text" data-apps-bind="authoritySelect.authoritySearch,value" th:placeholder="#{web.label.keyword}" style="width:60%;"/>
+						<input is="apps-input" type="text" data-apps-bind="authoritySelect.authoritySearch,value" th:placeholder="#{apps.web.label.keyword}" style="width:60%;"/>
 					</div>
 					<button onclick="authoritySelect.getAuthorities(1);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
-						<span data-th-text="#{web.label.search}"></span>
+						<span data-th-text="#{apps.web.label.search}"></span>
 					</button>
 				</form>
 			</div>
@@ -1770,8 +1770,8 @@
 					<thead>
 					<tr>
 						<th>-</th>
-						<th><span th:text="#{core.authority.id}">Id</span></th>
-						<th><span th:text="#{core.authority.name}">Name</span></th>
+						<th><span th:text="#{apps.core.authority.id}">Id</span></th>
+						<th><span th:text="#{apps.core.authority.name}">Name</span></th>
 						<th>-</th>
 					</tr>
 					</thead>
@@ -1817,8 +1817,8 @@
 					<thead>
 					<tr>
 						<th>-</th>
-						<th><span th:text="#{core.authority.id}">Id</span></th>
-						<th><span th:text="#{core.authority.name}">Name</span></th>
+						<th><span th:text="#{apps.core.authority.id}">Id</span></th>
+						<th><span th:text="#{apps.core.authority.name}">Name</span></th>
 						<th>-</th>
 					</tr>
 					</thead>
@@ -1849,7 +1849,7 @@
 			<div class="apps-container apps-container--gap apps-container--right">
 				<button class="apps-button" onclick="authoritySelect.confirm();">
 					<img class="apps-icon" th:src="@{/static/image/icon-confirm.png}"/>
-					<span th:text="#{web.label.confirm}"></span>
+					<span th:text="#{apps.web.label.confirm}"></span>
 				</button>
 			</div>
 		</div>
