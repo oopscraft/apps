@@ -42,7 +42,7 @@ public class AuthenticationFilter extends  OncePerRequestFilter {
 		// try authentication
 		if(accessToken != null) {
 			try {
-				UserDetails userDetails = jwtTokenEncoder.decode(accessToken, webConfig.getSecureKey());
+				UserDetails userDetails = jwtTokenEncoder.decode(accessToken, webConfig.getSecretKey());
 				if (userDetails != null) {
 
 					// if system account, checks real time authentication

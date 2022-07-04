@@ -31,13 +31,27 @@
 				{ name:'[[#{apps.web.menu.page}]]', icon:'[[@{/static/image/icon-page.png}]]', link:'[[@{/admin/page}]]' },
 				{ name:'[[#{apps.web.menu.board}]]', icon:'[[@{/static/image/icon-board.png}]]', link:'[[@{/admin/board}]]' }
 			]);
-			
-			// home
-			function _home() {
-				document.location.href = '[[@{/}]]';
+
+			/**
+			 * _admin
+			 * @private
+			 */
+			function _admin() {
+				document.location.href = "[[@{/admin}]]";
 			}
-			
-			// logout
+
+			/**
+			 * _login
+			 * @private
+			 */
+			function _login() {
+				document.location.href = "[[@{/login}]]"
+			}
+
+			/**
+			 * _logout
+			 * @private
+			 */
 			function _logout() {
 				let url = new URL('[[@{/logout}]]', document.location.origin);
 				_fetch(url,{
@@ -48,8 +62,11 @@
 					}
 				});
 			}
-			
-			// toggleNav 
+
+			/**
+			 * _toggleNav
+			 * @private
+			 */
 			function _toggleNav() {
 				$('nav').slideToggle(200);
 			}
@@ -62,7 +79,7 @@
 				  'header header header'
 				  'nav main aside'
 				  'footer footer footer';
-				grid-template-columns: 1fr 8fr 1fr;
+				grid-template-columns: 200px 1fr 20px;
 				grid-template-rows: 70px 1fr 50px;
 				padding: 0;
 			}
@@ -158,15 +175,23 @@
 				</h1>
 			</div>
 			<div id="_header__user">
-				<span>
-					<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="apps-icon" style="border-radius:50%;"/>
-					<span data-th-text="${_user.name}" class="apps-text-bold"></span>
-				</span>
-				&nbsp;&nbsp;|&nbsp;&nbsp;
-				<span onclick="_logout();" class="apps-link">
-					<img th:src="@{/static/image/icon-logout.png}" class="apps-icon"/>
-					<span data-th-text="#{logout}" class="apps-text-bold"></span>
-				</span>
+				<th:block sec:authorize="isAnonymous()">
+					<span onclick="_login();" class="apps-link">
+						<img th:src="@{/static/image/icon-login.png}" class="apps-icon"/>
+						<span data-th-text="#{apps.web.label.login}" class="apps-text-bold"></span>
+					</span>
+				</th:block>
+				<th:block sec:authorize="isAuthenticated()">
+					<span>
+						<img th:src="${_user.icon} == null ? @{/static/image/icon-user.png} : ${_user.icon}" class="apps-icon" style="border-radius:50%;"/>
+						<span data-th-text="${_user.name}" class="apps-text-bold"></span>
+					</span>
+					&nbsp;&nbsp;|&nbsp;&nbsp;
+					<span onclick="_logout();" class="apps-link">
+						<img th:src="@{/static/image/icon-logout.png}" class="apps-icon"/>
+						<span data-th-text="#{apps.web.label.logout}" class="apps-text-bold"></span>
+					</span>
+				</th:block>
 				&nbsp;&nbsp;|&nbsp;&nbsp;
 				<span>
 					<img th:src="@{/static/image/icon-locale.png}" class="apps-icon"/>

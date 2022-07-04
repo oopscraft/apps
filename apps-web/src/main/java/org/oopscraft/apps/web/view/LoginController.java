@@ -20,7 +20,7 @@ public class LoginController {
     @GetMapping
     @PreAuthorize("permitAll()")
     public ModelAndView index() throws Exception {
-        ModelAndView modelAndView = new ModelAndView("/login/login.html");
+        ModelAndView modelAndView = new ModelAndView("/login.html");
         return modelAndView;
     }
 

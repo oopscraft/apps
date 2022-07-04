@@ -136,7 +136,7 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
 	 * @param response
 	 */
 	public void issueAccessToken(UserDetails userDetails, HttpServletResponse response) {
-		String securityToken = jwtTokenEncoder.encode(userDetails, webConfig.getSecureKey(), ACCESS_TOKEN_VALID_MINUTES);
+		String securityToken = jwtTokenEncoder.encode(userDetails, webConfig.getSecretKey(), ACCESS_TOKEN_VALID_MINUTES);
 		response.setHeader(ACCESS_TOKEN_HEADER_NAME, securityToken);
 		Cookie securityTokenCookie = new Cookie(ACCESS_TOKEN_HEADER_NAME, securityToken);
 		securityTokenCookie.setPath("/");

@@ -4,23 +4,6 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="admin/_admin.html">
 	<main layout:fragment="_main">
-		<style>
-			.apps-user-type--GENERAL {
-				background-color: deepskyblue;
-			}
-			.apps-user-type--SYSTEM {
-				background-color: orangered;
-			}
-			.apps-user-status--ACTIVE {
-				background-color: deepskyblue;
-			}
-			.apps-user-status--LOCKED {
-				background-color: lightgray;
-			}
-			.apps-user-status--EXPIRED {
-				background-color: lightgray;
-			}
-		</style>
 		<script>
 			const tabFolder = new apps.TabFolder();
 			
@@ -31,9 +14,10 @@
 				_page: 0,
 				_size: 20,
 				_totalCount: -1,
+				type: null,
+				status: null,
 				key: null,
-				value: null,
-				status: null
+				value: null
 			});
 			userSearch.onAfterChange(function(name,value){
 				if(name === 'key' && !value){
@@ -103,10 +87,11 @@
 				let url = new URL('[[@{/admin/user/get-users}]]', document.location.origin);
 				url.searchParams.append('_page', userSearch.get('_page'));
 				url.searchParams.append('_size', userSearch.get('_size'));
+				url.searchParams.append('type', userSearch.get('type') || '');
+				url.searchParams.append('status', userSearch.get('status') || '');
 				if(userSearch.get('key')){
 					url.searchParams.append(userSearch.get('key'), userSearch.get('value'));	
 				}
-				url.searchParams.append('status', userSearch.get('status') || '');
 				_fetch(url)
 				.then(function(response){
 					userSearch.set('_totalCount', _getTotalCount(response));
@@ -229,6 +214,14 @@
 		<div id="userTabContent">
 			<div class="apps-container apps-container--fluid">
 				<form onsubmit="return false;" class="apps-container apps-container--gap apps-container--fluid">
+					<select is="apps-select" data-apps-bind="userSearch,type" style="width:120px;">
+						<option value data-th-text="'- '+#{apps.core.user.type}+' -'"></option>
+						<option th:each="userType:${userTypes}" th:value="${userType}" th:text="${userType}"></option>
+					</select>
+					<select is="apps-select" data-apps-bind="userSearch,status" style="width:120px;">
+						<option value data-th-text="'- '+#{apps.core.user.status}+' -'"></option>
+						<option th:each="userStatus:${userStatuses}" th:value="${userStatus}" th:text="${userStatus}"></option>
+					</select>
 					<div class="apps-container" style="width:300px;">
 						<select is="apps-select" data-apps-bind="userSearch,key" style="width:40%;">
 							<option value data-th-text="'- '+#{apps.web.label.search}+' -'"></option>
@@ -239,10 +232,6 @@
 						</select>
 						<input is="apps-input" type="text" data-apps-bind="userSearch,value" th:placeholder="#{apps.web.label.keyword}" style="width:60%;"/>
 					</div>
-					<select is="apps-select" data-apps-bind="userSearch,status" style="width:120px;">
-						<option value data-th-text="'- '+#{apps.core.user.status}+' -'"></option>
-						<option th:each="userStatus:${userStatuses}" th:value="${userStatus}" th:text="${userStatus}"></option>
-					</select>
 					<button onclick="getUsers(0);" class="apps-button">
 						<img th:src="@{/static/image/icon-search.png}"/>
 						<span data-th-text="#{apps.web.label.search}"></span>
@@ -294,10 +283,10 @@
 								<span is="apps-span" data-apps-bind="user,name"></span>
 							</td>
 							<td>
-								<span is="apps-span" data-apps-bind="user,type" class="apps-user-type apps-user-type--[@core[$context.user.get('type')]]"></span>
+								<span is="apps-span" data-apps-bind="user,type" class="apps-user-type apps-user-type--[@apps[$context.user.get('type')]]"></span>
 							</td>
 							<td>
-								<span is="apps-span" data-apps-bind="user,status" class="apps-user-status apps-user-status--[@core[$context.user.get('status')]]"></span>
+								<span is="apps-span" data-apps-bind="user,status" class="apps-user-status apps-user-status--[@apps[$context.user.get('status')]]"></span>
 							</td>
 							<td>
 								<span is="apps-span" data-apps-bind="user,email"></span>

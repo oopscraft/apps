@@ -52,6 +52,9 @@ public class UserService {
 			if(userSearch.getStatus() != null) {
 				predicates.add(builder.equal(root.get(User_.STATUS), userSearch.getStatus()));
 			}
+			if(userSearch.getType() != null) {
+				predicates.add(builder.equal(root.get(User_.TYPE), userSearch.getType()));
+			}
 			return builder.and(predicates.toArray(new Predicate[0]));
 		};
 

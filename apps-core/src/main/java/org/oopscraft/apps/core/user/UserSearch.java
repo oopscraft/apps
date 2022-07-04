@@ -15,6 +15,8 @@ public class UserSearch {
 
     private String name;
 
+    private User.Type type;
+
     private User.Status status;
 
     private String email;

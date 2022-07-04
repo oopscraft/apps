@@ -10,7 +10,7 @@ public class WebConfig {
 
     private List<String> locales = new ArrayList<>();
 
-    private String secureKey;
+    private String secretKey;
 
     private List<String> defaultAuthorities = new ArrayList<>();
 
