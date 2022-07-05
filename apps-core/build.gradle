@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'java-library'
-	id 'org.springframework.boot' version '2.5.2'
+	id 'org.springframework.boot' version '2.6.8'
 	id 'maven-publish'
 	id 'idea'
 }
@@ -31,11 +31,7 @@ dependencies {
 	// h2database
 	api 'com.h2database:h2'
 
-	// annotation
-	api 'javax.annotation:javax.annotation-api'
-
 	// hibernate
-	api "javax.persistence:javax.persistence-api"
 	api 'org.hibernate:hibernate-jpamodelgen'
 	api 'org.hibernate:hibernate-jcache'
 	api 'org.ehcache:ehcache'
@@ -83,13 +79,20 @@ dependencies {
 	// servlet
 	api "javax.servlet:javax.servlet-api:4.0.0"
 
-	// annotationProcessor
-	annotationProcessor 'javax.annotation:javax.annotation-api'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt'
-	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
-	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
+	// guava
+	api "com.google.guava:guava"
+	api "com.google.code.findbugs:jsr305"
+
+	// annotation processor
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'javax.annotation:javax.annotation-api'
+    annotationProcessor "javax.annotation:javax.annotation-api"
+    compileOnly "jakarta.persistence:jakarta.persistence-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt'
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
+    annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 
 	// unit test
 	testCompileOnly 'org.projectlombok:lombok'

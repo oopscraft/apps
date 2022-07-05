@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nz.net.ultraq.thymeleaf.LayoutDialect;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.oopscraft.apps.core.CoreConfiguration;
 import org.oopscraft.apps.core.data.PageRequestArgumentResolver;
 import org.oopscraft.apps.web.security.AuthenticationFilter;

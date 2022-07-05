@@ -915,7 +915,7 @@
 								body: JSON.stringify(data)
 							});
 							if(response.ok){
-								await _alert("[[#{apps.web.message.changeComplete#{apps.core.user.password})}]]");
+								await _alert("[[#{apps.web.message.changeComplete(#{apps.core.user.password})}]]");
 								this.dialog.resolve(true);
 							}
 						}
