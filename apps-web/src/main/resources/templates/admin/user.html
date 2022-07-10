@@ -391,9 +391,9 @@
 								>0</span>
 							</td>
 							<td>
-								<button class="apps-button" data-id="[@core[$context.role.get('id')]]" onclick="getRole(this.dataset.id)">
-									<img th:src="@{/static/image/icon-view.png}"/>
-									<span data-th-text="#{apps.web.label.view}"></span>
+								<button class="apps-button" data-id="[@apps[$context.role.get('id')]]" onclick="getRole(this.dataset.id)">
+									<img th:src="@{/static/image/icon-detail.png}"/>
+									<span data-th-text="#{apps.web.label.detail}"></span>
 								</button>
 							</td>
 						</tr>
@@ -471,9 +471,9 @@
 								<span is="apps-span" data-apps-bind="authority,name"></span>
 							</td>
 							<td>
-								<button class="apps-button" data-id="[@core[$context.authority.get('id')]]" onclick="getAuthority(this.dataset.id)">
-									<img th:src="@{/static/image/icon-view.png}"/>
-									<span data-th-text="#{apps.web.label.view}"></span>
+								<button class="apps-button" data-id="[@apps[$context.authority.get('id')]]" onclick="getAuthority(this.dataset.id)">
+									<img th:src="@{/static/image/icon-detail.png}"/>
+									<span data-th-text="#{apps.web.label.detail}"></span>
 								</button>
 							</td>
 						</tr>
@@ -723,7 +723,7 @@
 					</div>
 					<div>
 						<select is="apps-select" data-apps-bind="userDetail.user,status">
-							<option th:each="status:${userStatus}" th:value="${status}" th:text="#{'apps.core.user.status.'+${status}}"></option>
+							<option th:each="status:${userStatuses}" th:value="${status}" th:text="#{'apps.core.user.status.'+${status}}"></option>
 						</select>
 					</div>
 				</div>
