@@ -74,26 +74,40 @@ public class FixedLengthFileItemWriter<T> extends GenericFileItemWriter<T> {
     @Setter
     @Accessors(chain = true, fluent = true)
     public static class FixedLengthFileItemWriterBuilder<T> {
-        protected String name;
-        protected String filePath;
-        protected Class<T> itemType;
-        protected Boolean withHeader;
-        protected String encoding;
-        protected String lineSeparator;
-        protected String dateFormat;
-        protected String dateTimeFormat;
-        protected String timestampFormat;
+
+        private String name;
+
+        private String filePath;
+
+        private Class<T> itemType;
+
+        private Boolean withHeader;
+
+        private String encoding;
+
+        private String lineSeparator;
+
+        private String dateFormat;
+
+        private String dateTimeFormat;
+
+        private String timestampFormat;
+
+        /**
+         * build
+         * @return
+         */
         public FixedLengthFileItemWriter<T> build() {
             FixedLengthFileItemWriter instance = new FixedLengthFileItemWriter();
-            instance.setName(Optional.ofNullable(name).orElse(instance.name));
-            instance.setFilePath(Optional.ofNullable(filePath).orElse(instance.filePath));
-            instance.setItemType(Optional.ofNullable(itemType).orElse(instance.itemType));
-            instance.setWithHeader(Optional.ofNullable(withHeader).orElse(instance.withHeader));
-            instance.setEncoding(Optional.ofNullable(encoding).orElse(instance.encoding));
-            instance.setLineSeparator(Optional.ofNullable(lineSeparator).orElse(instance.lineSeparator));
-            instance.setDateFormat(Optional.ofNullable(dateFormat).orElse(instance.dateFormat));
-            instance.setDateTimeFormat(Optional.ofNullable(dateTimeFormat).orElse(instance.dateTimeFormat));
-            instance.setTimestampFormat(Optional.ofNullable(timestampFormat).orElse(instance.timestampFormat));
+            Optional.ofNullable(name).ifPresent(value -> instance.setName(value));
+            Optional.ofNullable(filePath).ifPresent(value -> instance.setFilePath(value));
+            Optional.ofNullable(itemType).ifPresent(value -> instance.setItemType(value));
+            Optional.ofNullable(withHeader).ifPresent(value -> instance.setWithHeader(value));
+            Optional.ofNullable(encoding).ifPresent(value -> instance.setEncoding(value));
+            Optional.ofNullable(lineSeparator).ifPresent(value -> instance.setLineSeparator(value));
+            Optional.ofNullable(dateFormat).ifPresent(value -> instance.setDateFormat(value));
+            Optional.ofNullable(dateTimeFormat).ifPresent(value -> instance.setDateTimeFormat(value));
+            Optional.ofNullable(timestampFormat).ifPresent(value -> instance.setTimestampFormat(value));
             return instance;
         }
     }

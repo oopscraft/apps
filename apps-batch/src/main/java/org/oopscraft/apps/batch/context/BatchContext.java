@@ -1,8 +1,7 @@
 package org.oopscraft.apps.batch.context;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 
@@ -11,7 +10,6 @@ import java.util.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class BatchContext {
 
     private Class<?> jobClass;
@@ -61,6 +59,46 @@ public class BatchContext {
             jobParameterNames.add(name);
         }
         return jobParameterNames;
+    }
+
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class BatchContextBuilder {
+
+        protected Class<?> jobClass;
+
+        protected String baseDate;
+
+        protected Map<String,String> jobParameters = new LinkedHashMap<>();
+
+        public BatchContextBuilder jobParameter(String key, String value) {
+            jobParameters.put(key, value);
+            return this;
+        }
+
+        /**
+         * build
+         * @return
+         */
+        public BatchContext build() {
+            BatchContext instance = new BatchContext();
+            Optional.ofNullable(jobClass).ifPresent(value -> {
+                instance.setJobClass(value);
+            });
+            Optional.ofNullable(baseDate).ifPresent(value -> {
+                instance.setBaseDate(value);
+            });
+            instance.setJobParameters(jobParameters);
+            return instance;
+        }
+    }
+
+    /**
+     * builder
+     * @return
+     */
+    public static BatchContextBuilder builder() {
+        return new BatchContextBuilder();
     }
 
 }
