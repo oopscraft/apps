@@ -11,7 +11,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
-import org.oopscraft.apps.AppsPackage;
+import org.oopscraft.apps.AppsBasePackage;
 import org.oopscraft.apps.core.data.RoutingDataSource;
 import org.oopscraft.apps.core.message.MessageService;
 import org.oopscraft.apps.core.message.MessageSource;
@@ -25,7 +25,6 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -33,7 +32,6 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -41,9 +39,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.*;
 
@@ -52,18 +48,18 @@ import java.util.*;
 @EnableConfigurationProperties(CoreConfig.class)
 @EnableTransactionManagement
 @ComponentScan(
-        basePackageClasses = {AppsPackage.class},
+        basePackageClasses = {AppsBasePackage.class},
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class
 )
 @EnableJpaRepositories(
-        basePackageClasses = {AppsPackage.class},
+        basePackageClasses = {AppsBasePackage.class},
         entityManagerFactoryRef = "entityManagerFactory"
 )
 @EntityScan(
-        basePackageClasses = {AppsPackage.class}
+        basePackageClasses = {AppsBasePackage.class}
 )
 @MapperScan(
-        basePackageClasses = {AppsPackage.class},
+        basePackageClasses = {AppsBasePackage.class},
         annotationClass = Mapper.class,
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
         sqlSessionFactoryRef = "sqlSessionFactory"
@@ -138,7 +134,7 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         entityManagerFactory.setDataSource(dataSource);
 
         // package to scan
-        entityManagerFactory.setPackagesToScan(AppsPackage.class.getPackage().getName());
+        entityManagerFactory.setPackagesToScan(AppsBasePackage.class.getPackage().getName());
 
         // defines vendor adapter
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

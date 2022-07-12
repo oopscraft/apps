@@ -11,7 +11,6 @@ import org.oopscraft.apps.batch.item.db.QueryDslDbItemReader;
 import org.oopscraft.apps.batch.item.file.*;
 import org.oopscraft.apps.batch.listener.JobListener;
 import org.oopscraft.apps.batch.listener.StepListener;
-import org.oopscraft.apps.batch.tasklet.AbstractTasklet;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
