@@ -12,12 +12,16 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
 
 public class AbstractJobTest {
 
+    //@Configuration
+    //@ConditionalOnExpression("${org.oopscraft.apps.batch.job.AbstractTest.TestJob:false}")
     @Slf4j
     @RequiredArgsConstructor
     public static class TestJob extends AbstractJob {
@@ -53,7 +57,8 @@ public class AbstractJobTest {
                 AbstractJobTest.TestJob.class.getName(),
                 "20110101",
                 "message=hello",
-                String.format("uuid=%s", UUID.randomUUID().toString())
+                String.format("uuid=%s", UUID.randomUUID().toString()),
+                "--org.oopscraft.apps.batch.job.AbstractTest.TestJob=true"
         });
     }
 
