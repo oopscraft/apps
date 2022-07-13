@@ -1,6 +1,9 @@
 package org.oopscraft.apps.batch.item.file;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.batch.BatchConfig;
 import org.oopscraft.apps.batch.item.file.resource.ResourceHandlerFactory;
@@ -10,23 +13,29 @@ import org.springframework.batch.item.file.separator.DefaultRecordSeparatorPolic
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
+
 @Slf4j
-@Builder
 public class StringFileItemReader extends FlatFileItemReader<String> {
 
+    @Getter
+    @Setter
     private String name;
 
+    @Getter
+    @Setter
     private String filePath;
 
-    @Builder.Default
+    @Getter
+    @Setter
     private String encoding = BatchConfig.getEncoding();
 
-    @Builder.Default
+    @Getter
+    @Setter
     private String lineSeparator = BatchConfig.getLineSeparator();
 
     private Resource resource;
 
-    @Builder.Default
     private int readCount = 0;
 
     /**
@@ -86,6 +95,44 @@ public class StringFileItemReader extends FlatFileItemReader<String> {
         log.info("| filePath: {}", filePath);
         log.info("| readCount: {}", readCount);
         log.info("{}", StringUtils.repeat("-", 80));
+    }
+
+    /**
+     * StringFileItemReaderBuilder
+     * @param
+     */
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class StringFileItemReaderBuilder {
+
+        private String name;
+
+        private String filePath;
+
+        private String encoding;
+
+        private String lineSeparator;
+
+        /**
+         * build
+         * @return
+         */
+        public StringFileItemReader build() {
+            StringFileItemReader instance = new StringFileItemReader();
+            Optional.ofNullable(name).ifPresent(value -> instance.setName(value));
+            Optional.ofNullable(filePath).ifPresent(value -> instance.setFilePath(value));
+            Optional.ofNullable(encoding).ifPresent(value -> instance.setEncoding(value));
+            Optional.ofNullable(lineSeparator).ifPresent(value -> instance.setLineSeparator(value));
+            return instance;
+        }
+    }
+
+    /**
+     * builder
+     * @return
+     */
+    public static StringFileItemReader.StringFileItemReaderBuilder builder() {
+        return new StringFileItemReader.StringFileItemReaderBuilder();
     }
 
 }

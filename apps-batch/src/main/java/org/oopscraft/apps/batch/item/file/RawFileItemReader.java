@@ -1,5 +1,8 @@
 package org.oopscraft.apps.batch.item.file;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.batch.BatchConfig;
 import org.oopscraft.apps.batch.item.file.resource.ResourceHandlerFactory;
@@ -9,15 +12,25 @@ import org.springframework.batch.item.file.SimpleBinaryBufferedReaderFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
+
 @Slf4j
 public class RawFileItemReader extends FlatFileItemReader<byte[]> {
 
+    @Setter
+    @Getter
     private String name;
 
+    @Setter
+    @Getter
     private String filePath;
 
+    @Getter
+    @Setter
     private String encoding = BatchConfig.getEncoding();
 
+    @Getter
+    @Setter
     private String lineSeparator = BatchConfig.getLineSeparator();
 
     private Resource resource;
@@ -84,6 +97,45 @@ public class RawFileItemReader extends FlatFileItemReader<byte[]> {
         log.info("| filePath: {}", filePath);
         log.info("| readCount: {}", readCount);
         log.info("{}", StringUtils.repeat("-", 80));
+    }
+
+
+    /**
+     * RawFileItemReaderBuilder
+     * @param
+     */
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class RawFileItemReaderBuilder {
+
+        private String name;
+
+        private String filePath;
+
+        private String encoding;
+
+        private String lineSeparator;
+
+        /**
+         * build
+         * @return
+         */
+        public RawFileItemReader build() {
+            RawFileItemReader instance = new RawFileItemReader();
+            Optional.ofNullable(name).ifPresent(value -> instance.setName(value));
+            Optional.ofNullable(filePath).ifPresent(value -> instance.setFilePath(value));
+            Optional.ofNullable(encoding).ifPresent(value -> instance.setEncoding(value));
+            Optional.ofNullable(lineSeparator).ifPresent(value -> instance.setLineSeparator(value));
+            return instance;
+        }
+    }
+
+    /**
+     * builder
+     * @return
+     */
+    public static RawFileItemReader.RawFileItemReaderBuilder builder() {
+        return new RawFileItemReader.RawFileItemReaderBuilder();
     }
 
 }

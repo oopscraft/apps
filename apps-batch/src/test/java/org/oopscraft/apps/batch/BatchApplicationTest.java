@@ -1,12 +1,11 @@
 package org.oopscraft.apps.batch;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.internal.util.Assert;
 import org.oopscraft.apps.batch.context.BatchContext;
+import org.oopscraft.apps.batch.dependency.BatchComponentScan;
 import org.oopscraft.apps.batch.job.AbstractJob;
-import org.oopscraft.apps.batch.job.AbstractJobTest;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -17,19 +16,25 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.UUID;
 
+
+@Slf4j
 public class BatchApplicationTest {
 
-    @Configuration
-    @ConditionalOnExpression("${org.oopscraft.apps.batch.BatchApplicationTest$TestProxyModeJob:false}")
+    /**
+     * ProxyModeTestJob
+     * Job 에 @Configuration 을 설정 하지 않으면 jobParameter 의 @Value 는 NULL 이다.
+     * (장기보험 프로젝트에서는 Light Mode로 동작함.)
+     */
     @Slf4j
-    @RequiredArgsConstructor
-    public static class TestProxyModeJob extends AbstractJob {
+    @Configuration
+    @BatchComponentScan
+    @ConditionalOnExpression(value = "${ProxyModeTestJob.enable:false}")       // 다른 테스트 시 로딩 방지
+    public static class ProxyModeTestJob extends AbstractJob {
 
         @Override
         public void initialize(BatchContext batchContext) {
-            log.info("== initialize: {}", batchContext);
+            log.info("== batchContext: {}", batchContext);
             addStep(step());
         }
 
@@ -46,22 +51,69 @@ public class BatchApplicationTest {
         public Tasklet tasklet(@Value("#{jobParameters[message]}")String message) {
             return (contribution, chunkContext) -> {
                 log.info("== message: {}", message);
-                Assert.notNull(message);
+                Assert.notNull(message, "message is not be null");
                 return RepeatStatus.FINISHED;
             };
         }
     }
 
+    /**
+     * ProxyMode Job 실행 테스트
+     * @throws Exception
+     */
     @Test
-    public void test() throws Exception {
-        BatchApplication.main(new String[]{
-                BatchApplicationTest.TestProxyModeJob.class.getName(),
+    public void testProxyModeJob() throws Exception {
+        String[] args = new String[]{
+                ProxyModeTestJob.class.getName(),
                 "20110101",
                 "message=hello",
-                String.format("uuid=%s", UUID.randomUUID().toString()),
-                "--org.oopscraft.apps.batch.BatchApplicationTest$TestProxyModeJob=true"
-        });
+                "--ProxyModeTestJob.enable=true",       // @ConditionalOnExpression enable
+                String.format("currentTime=%d", System.currentTimeMillis())
+        };
+        BatchApplication.main(args);
     }
 
+    /**
+     * LightModeTestJob
+     */
+    @BatchComponentScan
+    public static class LightModeTestJob extends AbstractJob {
 
+        @Override
+        public void initialize(BatchContext batchContext) {
+            log.info("== batchContext: {}", batchContext);
+            String message = batchContext.getJobParameter("message");
+            addStep(step(message));
+        }
+
+        public Step step(String message) {
+            return getStepBuilderFactory().get("testStep01")
+                    .tasklet(tasklet(message))
+                    .build();
+        }
+
+        public Tasklet tasklet(String message) {
+            return (contribution, chunkContext) -> {
+                log.info("== message: {}", message);
+                Assert.notNull(message, "message is not be null");
+                return RepeatStatus.FINISHED;
+            };
+        }
+    }
+
+    /**
+     * testLightModeJob
+     * @throws Exception
+     */
+    @Test
+    public void testLightModeJob() throws Exception {
+        String[] args = new String[]{
+                LightModeTestJob.class.getName(),
+                "20110101",
+                "message=hello",
+                String.format("currentTime=%d", System.currentTimeMillis())
+        };
+        BatchApplication.main(args);
+    }
 }
+
