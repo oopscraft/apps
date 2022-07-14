@@ -83,6 +83,9 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
                     environment.getPropertySources().addLast(parseYamlResource(location));
                 });
         environment.getPropertySources().addLast(parseYamlResource(("classpath:batch-config.yml")));
+
+        // apply batch component scan
+        applyBatchComponentScan(batchContext.getJobClass(), environment);
     }
 
     /**
