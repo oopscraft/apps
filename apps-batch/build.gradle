@@ -24,6 +24,7 @@ dependencies {
 
 	// spring batch
 	api 'org.springframework.boot:spring-boot-starter-batch'
+	api 'org.springframework.batch:spring-batch-test'
 
 	// annotation processor
 	compileOnly "org.projectlombok:lombok"

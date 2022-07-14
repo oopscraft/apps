@@ -1,8 +1,9 @@
-package org.oopscraft.apps.batch;
+package org.oopscraft.apps.batch.test;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.internal.util.Assert;
+import org.oopscraft.apps.batch.BatchConfiguration;
 import org.oopscraft.apps.batch.context.BatchContext;
 import org.oopscraft.apps.batch.dependency.BatchComponentScan;
 import org.oopscraft.apps.batch.job.AbstractJob;
@@ -13,6 +14,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
  * BatchApplicationTest
  */
 @Slf4j
-public class BatchApplicationTest {
+public class AbstractJobTestSupportTest extends AbstractJobTestSupport {
 
     /**
      * ProxyModeTestJob
@@ -31,8 +33,8 @@ public class BatchApplicationTest {
     @Slf4j
     @Configuration
     @BatchComponentScan
-    @ConditionalOnExpression(value = "${org.oopscraft.apps.batch.BatchApplicationTest.ProxyModeTestJob.enable:false}")       // 다른 테스트 시 로딩 방지
-    public static class ProxyModeTestJob extends AbstractJob {
+    @ConditionalOnExpression(value = "${org.oopscraft.apps.batch.test.AbstractJobTestSupportTest.ProxyModeTestJob:false}")       // 다른 테스트 시 로딩 방지
+    protected static class ProxyModeTestJob extends AbstractJob {
 
         @Override
         public void initialize(BatchContext batchContext) {
@@ -65,14 +67,13 @@ public class BatchApplicationTest {
      */
     @Test
     public void testProxyModeJob() throws Exception {
-        String[] args = new String[]{
-                ProxyModeTestJob.class.getName(),
-                "20110101",
-                "message=hello",
-                "--org.oopscraft.apps.batch.BatchApplicationTest.ProxyModeTestJob.enable=true", // @ConditionalOnExpression enable
-                String.format("currentTime=%d", System.currentTimeMillis())
-        };
-        BatchApplication.main(args);
+        BatchContext batchContext = BatchContext.builder()
+                .jobClass(ProxyModeTestJob.class)
+                .baseDate(getCurrentBaseDate())
+                .jobParameter("message", "hello")
+                .jobParameter("--org.oopscraft.apps.batch.test.AbstractJobTestSupportTest.ProxyModeTestJob", "true")
+                .build();
+        launchJob(batchContext);
     }
 
     /**
@@ -109,13 +110,12 @@ public class BatchApplicationTest {
      */
     @Test
     public void testLightModeJob() throws Exception {
-        String[] args = new String[]{
-                LightModeTestJob.class.getName(),
-                "20110101",
-                "message=hello",
-                String.format("currentTime=%d", System.currentTimeMillis())
-        };
-        BatchApplication.main(args);
+        BatchContext batchContext = BatchContext.builder()
+                .jobClass(LightModeTestJob.class)
+                .baseDate(getCurrentBaseDate())
+                .jobParameter("message", "hello")
+                .build();
+        launchJob(batchContext);
     }
 }
 

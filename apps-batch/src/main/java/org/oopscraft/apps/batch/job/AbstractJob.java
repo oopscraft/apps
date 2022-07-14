@@ -23,6 +23,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
@@ -33,6 +34,10 @@ import java.util.UUID;
 public abstract class AbstractJob extends SimpleJob implements ApplicationContextAware, InitializingBean {
 
     private ApplicationContext applicationContext;
+
+    @Autowired
+    @Getter
+    private BatchContext batchContext;
 
     @Autowired
     private DataSource dataSource;
@@ -79,18 +84,10 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
 
     @Override
     public void afterPropertiesSet() {
-        this.setName(this.getClass().getName());
+        this.setName(batchContext.getJobClass().getName());
         this.setJobRepository(applicationContext.getBean(JobRepository.class));
         this.registerJobExecutionListener(new JobListener());
         this.initialize(applicationContext.getBean(BatchContext.class));
-    }
-
-    /**
-     * getBatchContext
-     * @return
-     */
-    public final BatchContext getBatchContext(){
-        return applicationContext.getBean(BatchContext.class);
     }
 
     /**
@@ -110,10 +107,10 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
      * addStep
      * @param step
      */
-    public void addStep(Step step){
+    public final void addStep(TaskletStep step){
         applicationContext.getAutowireCapableBeanFactory().autowireBean(step);
-        ((AbstractStep) step).registerStepExecutionListener(new StepListener());
-        ((TaskletStep) step).registerChunkListener(new StepListener());
+        step.registerStepExecutionListener(new StepListener());
+        step.registerChunkListener(new StepListener());
         super.addStep(step);
     }
 

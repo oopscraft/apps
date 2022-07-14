@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-public class AbstractJobTest {
+public class AbstractJobTestSupport {
 
     /**
      * returns current base date for test

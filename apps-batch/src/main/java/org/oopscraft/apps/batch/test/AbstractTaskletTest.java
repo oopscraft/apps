@@ -18,13 +18,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.UUID;
 
+@Deprecated
 @SpringBootTest(
         classes = {BatchConfiguration.class},
         properties = "spring.main.web-application-type=none"
 )
 @Slf4j
 public class AbstractTaskletTest {
-
     @Autowired
     @Getter
     private ConfigurableApplicationContext applicationContext;
