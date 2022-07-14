@@ -12,11 +12,12 @@ import org.oopscraft.apps.batch.item.file.*;
 import org.oopscraft.apps.batch.listener.JobListener;
 import org.oopscraft.apps.batch.listener.StepListener;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepExecutionListener;
+import org.oopscraft.apps.core.data.RoutingDataSource;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.SimpleJob;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.core.step.AbstractStep;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,7 +41,7 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     private BatchContext batchContext;
 
     @Autowired
-    private DataSource dataSource;
+    private RoutingDataSource dataSource;
 
     @Autowired
     protected PlatformTransactionManager transactionManager;
@@ -60,6 +61,8 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     @Autowired
     @Getter
     protected StepBuilderFactory stepBuilderFactory;
+
+    private String dataSourceKey;
 
     /**
      * setApplicationContext
@@ -88,6 +91,31 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
         this.setJobRepository(applicationContext.getBean(JobRepository.class));
         this.registerJobExecutionListener(new JobListener());
         this.initialize(applicationContext.getBean(BatchContext.class));
+    }
+
+    /**
+     * setDataSourceKey
+     * @param dataSourceKey
+     */
+    public final void setDataSourceKey(String dataSourceKey) {
+        log.info("AbstractTasklet.setDataSourceKey({})", dataSourceKey);
+        this.dataSourceKey = dataSourceKey;
+    }
+
+    @Override
+    protected void doExecute(JobExecution execution) throws JobInterruptedException, JobRestartException, StartLimitExceededException {
+        try {
+            // switches data source
+            if (dataSourceKey != null) {
+                dataSource.switchDefaultDataSource(dataSourceKey);
+            }
+            super.doExecute(execution);
+        }finally{
+            // stores data source
+            if(dataSourceKey != null){
+                dataSource.restoreDefaultDataSource();
+            }
+        }
     }
 
     /**

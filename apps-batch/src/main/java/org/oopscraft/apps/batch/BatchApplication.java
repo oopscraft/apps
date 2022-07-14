@@ -52,23 +52,35 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
      * @param args
      */
     public static void main(String[] args) throws Exception {
+        try {
+            // parse batch context
+            if (args == null || args.length < 1) {
+                throw new IllegalArgumentException("Usage: BatchApplication [jobClass] [args]...");
+            }
+            batchContext = BatchContextFactory.getJobContextFromArguments(args);
+            BatchConfiguration.setBatchContext(batchContext);
 
-        // parse batch context
-        if(args == null || args.length < 1) {
-            throw new IllegalArgumentException("Usage: BatchApplication [jobClass] [args]...");
+            // runs spring application
+            new SpringApplicationBuilder(BatchApplication.class)
+                    .sources(batchContext.getJobClass())
+                    .properties("--spring.batch.job.enabled=false")
+                    .beanNameGenerator(new FullyQualifiedAnnotationBeanNameGenerator())
+                    .web(WebApplicationType.NONE)
+                    .registerShutdownHook(true)
+                    .lazyInitialization(true)
+                    .run(args);
+
+        }catch(Exception e){
+            log.error("{}", e.getMessage());
+            throw e;
+        }finally{
+            // manual close for multiple test without shutdown hooking
+            if(applicationContext != null && applicationContext.isActive()){
+                try {
+                    applicationContext.close();
+                }catch(Throwable ignore){}
+            }
         }
-        batchContext = BatchContextFactory.getJobContextFromArguments(args);
-        BatchConfiguration.setBatchContext(batchContext);
-
-        // runs spring application
-        new SpringApplicationBuilder(BatchApplication.class)
-                .sources(batchContext.getJobClass())
-                .properties("--spring.batch.job.enabled=false")
-                .beanNameGenerator(new FullyQualifiedAnnotationBeanNameGenerator())
-                .web(WebApplicationType.NONE)
-                .registerShutdownHook(true)
-                .lazyInitialization(true)
-                .run(args);
     }
 
     /**
