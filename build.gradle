@@ -23,7 +23,7 @@ allprojects {
                 exclude "**/*.java"
             }
             sourceSets.test.resources {
-                srcDirs += ["src/main/java"]
+                srcDirs += ["src/test/java"]
                 exclude "**/*.java"
             }
         }

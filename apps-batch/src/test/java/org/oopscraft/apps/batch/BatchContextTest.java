@@ -1,7 +1,9 @@
-package org.oopscraft.apps.batch.context;
+package org.oopscraft.apps.batch;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.oopscraft.apps.batch.BatchContext;
+import org.springframework.batch.core.Job;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,7 +14,7 @@ public class BatchContextTest {
     @Test
     public void test() {
         BatchContext batchContext = BatchContext.builder()
-                .jobClass(this.getClass())
+                .jobClass(Job.class)
                 .baseDate("20110101")
                 .jobParameter("key01", "value01")
                 .jobParameter("key02", "value02")

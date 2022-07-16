@@ -2,6 +2,7 @@ package org.oopscraft.apps.batch.item.db;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.batch.test.AbstractJobTest;
 import org.oopscraft.apps.core.user.QUser;
@@ -11,7 +12,10 @@ import org.springframework.batch.item.ExecutionContext;
 import javax.persistence.EntityManagerFactory;
 
 @Slf4j
+@RequiredArgsConstructor
 public class QueryDslDbItemReaderTest extends AbstractJobTest {
+
+    private final EntityManagerFactory entityManagerFactory;
 
     @Test
     public void test() throws Exception {
@@ -29,7 +33,7 @@ public class QueryDslDbItemReaderTest extends AbstractJobTest {
         // creates query dsl reader
         QueryDslDbItemReader<Tuple> dbItemReader = QueryDslDbItemReader.<Tuple>builder()
                 .name("test")
-                .entityManagerFactory(getApplicationContext().getBean(EntityManagerFactory.class))
+                .entityManagerFactory(entityManagerFactory)
                 .query(query)
                 .build();
 

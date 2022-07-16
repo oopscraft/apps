@@ -2,18 +2,14 @@ package org.oopscraft.apps.batch;
 
 
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.annotation.MapperScans;
 import org.oopscraft.apps.AppsBasePackage;
 import org.oopscraft.apps.batch.dependency.BatchComponentScan;
-import org.oopscraft.apps.batch.context.BatchContext;
 import org.oopscraft.apps.batch.dependency.DependencyTracker;
 import org.oopscraft.apps.core.CoreConfiguration;
-import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -29,12 +25,8 @@ import org.springframework.batch.core.repository.support.MapJobRepositoryFactory
 import org.springframework.batch.core.scope.JobScope;
 import org.springframework.batch.core.scope.StepScope;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -68,11 +60,17 @@ import java.util.*;
 })
 public class BatchConfiguration implements EnvironmentPostProcessor {
 
-    @Autowired
-    private Job job;
+    @Setter
+    private static BatchContext batchContext = new BatchContext();
 
-//    @Setter
-//    private static BatchContext batchContext = new BatchContext();
+    /**
+     * batchContext
+     * @return
+     */
+    @Bean
+    public BatchContext batchContext() {
+        return batchContext;
+    }
 
     /**
      * postProcessEnvironment
@@ -90,8 +88,8 @@ public class BatchConfiguration implements EnvironmentPostProcessor {
         environment.getPropertySources().addLast(parseYamlResource(("classpath:batch-config.yml")));
 
         // apply BatchComponentScan
-        if(job.getClass().getAnnotation(BatchComponentScan.class) != null) {
-            applyBatchComponentScan(job.getClass(), environment);
+        if (batchContext.getJobClass() != null && batchContext.getJobClass().getAnnotation(BatchComponentScan.class) != null) {
+            applyBatchComponentScan(batchContext.getJobClass(), environment);
         }
     }
 

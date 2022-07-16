@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.oopscraft.apps.batch.context.BatchContext;
-import org.oopscraft.apps.batch.context.BatchContextFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -32,15 +30,11 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 public class BatchApplication implements CommandLineRunner, ApplicationContextAware {
 
+    private static BatchContext batchContext = null;
+
     private static ConfigurableApplicationContext applicationContext = null;
 
     private static BufferingApplicationStartup bufferingApplicationStartup = new BufferingApplicationStartup(1000);
-
-    private static BatchContext batchContext = null;
-
-    private final Job job;
-
-    private final JobLauncher jobLauncher;
 
     /**
      * main
@@ -54,8 +48,8 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
             }
 
             // batch context
-            batchContext = BatchContextFactory.getJobContextFromArguments(args);
-            //BatchConfiguration.setBatchContext(batchContext);
+            batchContext = parseJobContextFromArguments(args);
+            BatchConfiguration.setBatchContext(batchContext);
 
             // runs spring application
             new SpringApplicationBuilder(BatchApplication.class)
@@ -74,6 +68,34 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
         }finally {
             shutdown();
         }
+    }
+
+    /**
+     * parseBatchContextFromArguments
+     * @param arguments
+     * @return
+     */
+    public static BatchContext parseJobContextFromArguments(String[] arguments) throws ClassNotFoundException {
+        BatchContext.BatchContextBuilder batchContextBuilder = BatchContext.builder();
+        for(int index = 0; index < arguments.length; index ++ ) {
+            String argument = arguments[index];
+            // job class
+            if(index == 0){
+                batchContextBuilder.jobClass((Class<? extends Job>) Class.forName(argument));
+            }
+            // base date
+            else if(index == 1){
+                batchContextBuilder.baseDate(argument);
+            }
+            // job parameter
+            else{
+                List<String> keyPair = Arrays.asList(argument.split("="));
+                String name = keyPair.get(0);
+                String value = (keyPair.size() < 2 ? null : keyPair.get(1));
+                batchContextBuilder.jobParameter(name, value);
+            }
+        }
+        return batchContextBuilder.build();
     }
 
     /**
@@ -113,7 +135,9 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
             printStartupContext(args);
 
             // launch
-            JobExecution jobExecution = jobLauncher.run(job, batchContext.getJobParameters());
+            Job job = applicationContext.getBean(batchContext.getJobClass());
+            JobLauncher jobLauncher = applicationContext.getBean(JobLauncher.class);
+            JobExecution jobExecution = jobLauncher.run(job, batchContext.createJobParameters());
             log.info("JobExecution:{}", jobExecution);
 
             // check isUnsuccessful

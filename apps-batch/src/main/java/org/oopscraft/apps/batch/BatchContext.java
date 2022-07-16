@@ -1,7 +1,8 @@
-package org.oopscraft.apps.batch.context;
+package org.oopscraft.apps.batch;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 
@@ -12,7 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 public class BatchContext {
 
-    private Class<?> jobClass;
+    private Class<? extends Job> jobClass;
 
     private String baseDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 
@@ -36,18 +37,6 @@ public class BatchContext {
         return jobParameters.get(name);
     }
 
-    /**
-     * getJobParameters
-     * @return
-     */
-    public JobParameters getJobParameters() {
-        Map<String, JobParameter> jobParameterMap = new LinkedHashMap<>();
-        for(String name : jobParameters.keySet()){
-            String value = jobParameters.get(name);
-            jobParameterMap.put(name, new JobParameter(value));
-        }
-        return new JobParameters(jobParameterMap);
-    }
 
     /**
      * getJobParameterNames
@@ -61,11 +50,25 @@ public class BatchContext {
         return jobParameterNames;
     }
 
+    /**
+     * createJobParameters
+     * @return
+     */
+    public JobParameters createJobParameters() {
+        Map<String, JobParameter> jobParameterMap = new LinkedHashMap<>();
+        jobParameterMap.put("_baseDate", new JobParameter(getBaseDate()));
+        for(String name : jobParameters.keySet()){
+            String value = jobParameters.get(name);
+            jobParameterMap.put(name, new JobParameter(value));
+        }
+        return new JobParameters(jobParameterMap);
+    }
+
     @Setter
     @Accessors(chain = true, fluent = true)
     public static class BatchContextBuilder {
 
-        protected Class<?> jobClass;
+        protected Class<? extends Job> jobClass;
 
         protected String baseDate;
 

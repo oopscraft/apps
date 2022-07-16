@@ -2,7 +2,7 @@ package org.oopscraft.apps.batch.job;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.oopscraft.apps.batch.context.BatchContext;
+import org.oopscraft.apps.batch.BatchContext;
 import org.oopscraft.apps.batch.item.db.JpaDbItemWriter;
 import org.oopscraft.apps.batch.item.db.MybatisDbItemReader;
 import org.oopscraft.apps.batch.item.db.MybatisDbItemWriter;
