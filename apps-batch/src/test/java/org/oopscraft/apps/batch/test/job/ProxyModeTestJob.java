@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @BatchComponentScan
 @SpringBatchTest
-//@ConditionalOnExpression(value = "${org.oopscraft.apps.batch.test.AbstractJobTestSupportTest.ProxyModeTestJob:false}")       // 다른 테스트 시 로딩 방지
 public class ProxyModeTestJob extends AbstractJob {
 
     @Override
