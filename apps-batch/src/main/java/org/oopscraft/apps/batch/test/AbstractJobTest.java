@@ -2,6 +2,7 @@ package org.oopscraft.apps.batch.test;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.oopscraft.apps.batch.BatchConfiguration;
 import org.oopscraft.apps.batch.context.BatchContext;
 import org.oopscraft.apps.batch.job.AbstractJob;
@@ -9,22 +10,25 @@ import org.oopscraft.apps.batch.job.AbstractTasklet;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.UUID;
 
-@Deprecated
 @SpringBootTest(
         classes = {BatchConfiguration.class},
         properties = "spring.main.web-application-type=none"
 )
 @Slf4j
-public class AbstractTaskletTest {
+public class AbstractJobTest {
+
     @Autowired
     @Getter
     private ConfigurableApplicationContext applicationContext;

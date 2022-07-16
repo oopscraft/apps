@@ -9,11 +9,14 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
 public class StepListener implements StepExecutionListener, ChunkListener {
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static final int LOGGING_CHUNK_INTERVAL = 10;
 
@@ -24,7 +27,7 @@ public class StepListener implements StepExecutionListener, ChunkListener {
         log.info("{}", StringUtils.repeat("─",80));
         log.info("| [START] StepExecution");
         log.info("| stepName: {}", stepExecution.getStepName());
-        log.info("| startTime: {}", stepExecution.getStartTime());
+        log.info("| startTime: {}", Optional.ofNullable(stepExecution.getStartTime()).map(v->DATE_FORMAT.format(v)).orElse(null));
         log.info("{}", StringUtils.repeat("─",80));
     }
 
@@ -54,8 +57,8 @@ public class StepListener implements StepExecutionListener, ChunkListener {
         log.info("{}", StringUtils.repeat("─",80));
         log.info("| [END] StepExecution");
         log.info("| stepName: {}", stepExecution.getStepName());
-        log.info("| startTime: {}", stepExecution.getStartTime());
-        log.info("| endTime: {}", Optional.ofNullable(stepExecution.getEndTime()).orElse(new Date()));
+        log.info("| startTime: {}", Optional.ofNullable(stepExecution.getStartTime()).map(v->DATE_FORMAT.format(v)).orElse(null));
+        log.info("| endTime: {}", Optional.ofNullable(stepExecution.getEndTime()).map(v->DATE_FORMAT.format(v)).orElse(null));
         log.info("| readCount: {}", stepExecution.getReadCount());
         log.info("| filterCount: {}", stepExecution.getFilterCount());
         log.info("| writeCount: {}", stepExecution.getWriteCount());

@@ -2,7 +2,7 @@ package org.oopscraft.apps.batch.item.db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.batch.item.db.vo.DbItemVo;
-import org.oopscraft.apps.batch.test.AbstractTaskletTest;
+import org.oopscraft.apps.batch.test.AbstractJobTest;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.ExecutionContext;
@@ -10,7 +10,7 @@ import org.springframework.batch.item.ExecutionContext;
 import javax.sql.DataSource;
 
 @Slf4j
-public class MybatisDbItemReaderTest extends AbstractTaskletTest {
+public class MybatisDbItemReaderTest extends AbstractJobTest {
 
     @Test
     public void test01() throws Exception {

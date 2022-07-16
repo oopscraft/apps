@@ -3,7 +3,7 @@ package org.oopscraft.apps.batch.item.db;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.extern.slf4j.Slf4j;
-import org.oopscraft.apps.batch.test.AbstractTaskletTest;
+import org.oopscraft.apps.batch.test.AbstractJobTest;
 import org.oopscraft.apps.core.user.QUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.ExecutionContext;
@@ -11,7 +11,7 @@ import org.springframework.batch.item.ExecutionContext;
 import javax.persistence.EntityManagerFactory;
 
 @Slf4j
-public class QueryDslDbItemReaderTest extends AbstractTaskletTest {
+public class QueryDslDbItemReaderTest extends AbstractJobTest {
 
     @Test
     public void test() throws Exception {

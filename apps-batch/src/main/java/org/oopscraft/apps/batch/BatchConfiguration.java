@@ -2,6 +2,7 @@ package org.oopscraft.apps.batch;
 
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.oopscraft.apps.batch.dependency.BatchComponentScan;
 import org.oopscraft.apps.batch.context.BatchContext;
 import org.oopscraft.apps.batch.dependency.DependencyTracker;
 import org.oopscraft.apps.core.CoreConfiguration;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -30,6 +32,7 @@ import org.springframework.batch.support.transaction.ResourcelessTransactionMana
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -63,11 +66,13 @@ import java.util.*;
         CoreConfiguration.class,
         BatchConfiguration.SpringBatchConfiguration.class
 })
-public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactoryPostProcessor {
+public class BatchConfiguration implements EnvironmentPostProcessor {
 
+    @Autowired
+    private Job job;
 
-    @Setter
-    private static BatchContext batchContext = new BatchContext();
+//    @Setter
+//    private static BatchContext batchContext = new BatchContext();
 
     /**
      * postProcessEnvironment
@@ -84,8 +89,10 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
                 });
         environment.getPropertySources().addLast(parseYamlResource(("classpath:batch-config.yml")));
 
-        // apply batch component scan
-        applyBatchComponentScan(batchContext.getJobClass(), environment);
+        // apply BatchComponentScan
+        if(job.getClass().getAnnotation(BatchComponentScan.class) != null) {
+            applyBatchComponentScan(job.getClass(), environment);
+        }
     }
 
     /**
@@ -104,11 +111,6 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
         }else{
             return new PropertiesPropertySource(location, new Properties());
         }
-    }
-
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        beanFactory.registerSingleton(BatchContext.class.getCanonicalName(), batchContext);
     }
 
     /**
@@ -136,7 +138,7 @@ public class BatchConfiguration implements EnvironmentPostProcessor, BeanFactory
         String jobClassPackage = jobClass.getPackage().getName();
         basePackageNames.add(jobClassPackage);
 
-        // 4. dependency tracking
+        // 3. dependency tracking
         String[] projectPackagePaths = Arrays.copyOfRange(jobClassPackage.split("\\."), 0, 3);
         String projectPackage = String.join(".", projectPackagePaths);
         DependencyTracker dependencyTracker = new DependencyTracker(jobClass.getName(), dependencyClassName ->{

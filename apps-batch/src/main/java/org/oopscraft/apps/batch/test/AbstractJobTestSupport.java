@@ -1,8 +1,13 @@
 package org.oopscraft.apps.batch.test;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.oopscraft.apps.batch.BatchApplication;
+import org.oopscraft.apps.batch.BatchConfiguration;
 import org.oopscraft.apps.batch.context.BatchContext;
+import org.springframework.batch.test.context.SpringBatchTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+
 public class AbstractJobTestSupport {
 
     /**

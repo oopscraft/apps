@@ -11,10 +11,6 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -25,7 +21,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,28 +52,40 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
             if (args == null || args.length < 1) {
                 throw new IllegalArgumentException("Usage: BatchApplication [jobClass] [args]...");
             }
+
+            // batch context
             batchContext = BatchContextFactory.getJobContextFromArguments(args);
-            BatchConfiguration.setBatchContext(batchContext);
+            //BatchConfiguration.setBatchContext(batchContext);
 
             // runs spring application
             new SpringApplicationBuilder(BatchApplication.class)
                     .sources(batchContext.getJobClass())
                     .properties("--spring.batch.job.enabled=false")
+                    .lazyInitialization(true)
                     .beanNameGenerator(new FullyQualifiedAnnotationBeanNameGenerator())
                     .web(WebApplicationType.NONE)
                     .registerShutdownHook(true)
-                    .lazyInitialization(true)
+                    .applicationStartup(bufferingApplicationStartup)
                     .run(args);
 
         }catch(Exception e){
             log.error("{}", e.getMessage());
             throw e;
-        }finally{
-            // manual close for multiple test without shutdown hooking
-            if(applicationContext != null && applicationContext.isActive()){
-                try {
-                    applicationContext.close();
-                }catch(Throwable ignore){}
+        }finally {
+            shutdown();
+        }
+    }
+
+    /**
+     * shutdown
+     */
+    public static void shutdown() {
+        // manual close for multiple test without shutdown hooking
+        if(applicationContext != null && applicationContext.isActive()){
+            try {
+                applicationContext.close();
+            }catch(Throwable ignore){
+                log.warn(ignore.getMessage());
             }
         }
     }
@@ -120,8 +127,8 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
             // check stopped
             if(jobExecution.getStatus() == BatchStatus.STOPPED){
                 log.warn("== BatchStatus is [{}]", jobExecution.getStatus().name());
-                // SIGTERM(143)
-                System.exit(143);
+                shutdown();
+                System.exit(143);       // SIGTERM(143)
             }
 
         }catch(Exception e){
