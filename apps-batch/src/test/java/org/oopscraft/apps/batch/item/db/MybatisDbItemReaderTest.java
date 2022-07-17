@@ -1,25 +1,19 @@
 package org.oopscraft.apps.batch.item.db;
 
 import com.querydsl.core.dml.DeleteClause;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.oopscraft.apps.batch.item.db.dao.DbItemMapper;
 import org.oopscraft.apps.batch.item.db.dto.*;
 import org.oopscraft.apps.batch.test.AbstractJobTest;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,14 +22,33 @@ import static org.junit.Assert.assertEquals;
 public class MybatisDbItemReaderTest extends AbstractJobTest {
 
     /**
-     * deleteDbItemBackupAll
+     * delete db item backup all
      */
-    public void deleteDbItemBackupAll() {
-        EntityManager entityManager = getEntityManagerFactory().createEntityManager();
+    public void clearTestData() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        DeleteClause deleteClause = new JPAQueryFactory(entityManager)
-                .delete(QDbItemBackupEntity.dbItemBackupEntity);
-        deleteClause.execute();
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+        jpaQueryFactory.delete(QDbItemEntity.dbItemEntity).execute();
+        jpaQueryFactory.delete(QDbItemBackupEntity.dbItemBackupEntity).execute();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    /**
+     * create test data
+     * @param insertCount
+     */
+    public void createTestData(long insertCount) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        for(int i = 0; i < insertCount; i++ ) {
+            DbItemEntity dbItemEntity = DbItemEntity.builder()
+                    .id(String.format("id-%d",i))
+                    .name(String.format("name-%d",i))
+                    .build();
+            entityManager.persist(dbItemEntity);
+            entityManager.flush();
+        }
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -45,10 +58,13 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
      * @throws Exception
      */
     @Test
+    @Order(1)
     public void testRead() throws Exception {
 
-        // test count
-        long count = 1234;
+        // initialize
+        long testCount = 1234;
+        clearTestData();
+        createTestData(testCount);
 
         // creates database reader
         MybatisDbItemReader<DbItemVo> dbItemReader = MybatisDbItemReader.<DbItemVo>builder()
@@ -57,7 +73,7 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
                 .dataSource(getDataSource())
                 .mapperClass(DbItemMapper.class)
                 .mapperMethod("selectDbItems")
-                .parameter("limit", count)
+                .parameter("limit", testCount)
                 .build();
 
         // try
@@ -78,7 +94,7 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
         }
 
         // check read count
-        assertEquals(readCount, count);
+        assertEquals(readCount, testCount);
     }
 
     /**
@@ -86,30 +102,30 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
      * @throws Exception
      */
     @Test
+    @Order(2)
     @Transactional
     public void testReadWithMybatisWriter() throws Exception {
 
-        // test count
-        long count = 1234;
-
-        // delete db item backup
-        deleteDbItemBackupAll();
+        // initialize
+        long testCount = 1234;
+        clearTestData();
+        createTestData(testCount);
 
         // creates database reader
         MybatisDbItemReader<DbItemVo> dbItemReader = MybatisDbItemReader.<DbItemVo>builder()
                 .name("dbItemReader")
-                .sqlSessionFactory(getSqlSessionFactory())
-                .dataSource(getDataSource())
+                .sqlSessionFactory(sqlSessionFactory)
+                .dataSource(dataSource)
                 .mapperClass(DbItemMapper.class)
                 .mapperMethod("selectDbItems")
-                .parameter("limit", count)
+                .parameter("limit", testCount)
                 .build();
 
         // creates item writer
         MybatisDbItemWriter<DbItemVo> dbItemBackupWriter = MybatisDbItemWriter.<DbItemVo>builder()
                 .name("dbItemBackupWriter")
-                .transactionManager(getTransactionManager())
-                .sqlSessionFactory(getSqlSessionFactory())
+                .transactionManager(transactionManager)
+                .sqlSessionFactory(sqlSessionFactory)
                 .mapperClass(DbItemMapper.class)
                 .mapperMethod("insertDbItemBackup")
                 .build();
@@ -141,17 +157,17 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
         }
 
         // check read/write count
-        assertEquals(readCount, count);
-        assertEquals(writeCount, count);
+        assertEquals(readCount, testCount);
+        assertEquals(writeCount, testCount);
 
         // check select count
         QDbItemBackupEntity qDbItemBackupEntity = QDbItemBackupEntity.dbItemBackupEntity;
-        long dbItemBackupCount = getJpaQueryFactory()
+        long dbItemBackupCount = jpaQueryFactory
                 .select(qDbItemBackupEntity.count())
                 .from(qDbItemBackupEntity)
                 .fetchFirst();
         log.info("== dbItemBackupCount: {}", dbItemBackupCount);
-        Assertions.assertEquals(dbItemBackupCount, count);
+        Assertions.assertEquals(dbItemBackupCount, testCount);
     }
 
     /**
@@ -159,30 +175,30 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
      * @throws Exception
      */
     @Test
+    @Order(3)
     @Transactional
     public void testReadWithJpaWriter() throws Exception {
 
-        // test count
-        long count = 1234;
-
-        // delete db item backup
-        deleteDbItemBackupAll();
+        // initialize
+        long testCount = 1234;
+        clearTestData();
+        createTestData(testCount);
 
         // creates database reader
         MybatisDbItemReader<DbItemVo> dbItemReader = MybatisDbItemReader.<DbItemVo>builder()
                 .name("dbItemReader")
-                .sqlSessionFactory(getSqlSessionFactory())
-                .dataSource(getDataSource())
+                .sqlSessionFactory(sqlSessionFactory)
+                .dataSource(dataSource)
                 .mapperClass(DbItemMapper.class)
                 .mapperMethod("selectDbItems")
-                .parameter("limit", count)
+                .parameter("limit", testCount)
                 .build();
 
         // creates item writer
         JpaDbItemWriter<DbItemBackupEntity> dbItemBackupWriter = JpaDbItemWriter.<DbItemBackupEntity>builder()
                 .name("dbItemBackupWriter")
-                .entityManagerFactory(getEntityManagerFactory())
-                .transactionManager(getTransactionManager())
+                .entityManagerFactory(entityManagerFactory)
+                .transactionManager(transactionManager)
                 .build();
 
         // try
@@ -212,17 +228,17 @@ public class MybatisDbItemReaderTest extends AbstractJobTest {
         }
 
         // check read/write count
-        assertEquals(readCount, count);
-        assertEquals(writeCount, count);
+        assertEquals(readCount, testCount);
+        assertEquals(writeCount, testCount);
 
         // check select count
         QDbItemBackupEntity qDbItemBackupEntity = QDbItemBackupEntity.dbItemBackupEntity;
-        long dbItemBackupCount = getJpaQueryFactory()
+        long dbItemBackupCount = jpaQueryFactory
                 .select(qDbItemBackupEntity.count())
                 .from(qDbItemBackupEntity)
                 .fetchFirst();
         log.info("== dbItemBackupCount: {}", dbItemBackupCount);
-        Assertions.assertEquals(dbItemBackupCount, count);
+        Assertions.assertEquals(dbItemBackupCount, testCount);
 
     }
 

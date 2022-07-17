@@ -4,7 +4,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.oopscraft.apps.batch.BatchConfiguration;
 import org.oopscraft.apps.batch.BatchContext;
 import org.oopscraft.apps.batch.job.AbstractJob;
@@ -36,35 +38,36 @@ import static org.springframework.beans.factory.config.AutowireCapableBeanFactor
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnableTransactionManagement
 public class AbstractJobTest {
 
     @Autowired
-    private GenericApplicationContext applicationContext;
+    protected GenericApplicationContext applicationContext;
 
     @Autowired
     @Getter
-    private RoutingDataSource dataSource;
+    protected RoutingDataSource dataSource;
 
     @Autowired
     @Getter
-    private PlatformTransactionManager transactionManager;
+    protected PlatformTransactionManager transactionManager;
 
     @Autowired
     @Getter
-    private SqlSessionFactory sqlSessionFactory;
+    protected SqlSessionFactory sqlSessionFactory;
 
     @Autowired
     @Getter
-    private EntityManagerFactory entityManagerFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     @Autowired
     @Getter
-    private JPAQueryFactory jpaQueryFactory;
+    protected JPAQueryFactory jpaQueryFactory;
 
     @Autowired
     @Getter
-    private JobLauncher jobLauncher;
+    protected JobLauncher jobLauncher;
 
     /**
      * runJob
