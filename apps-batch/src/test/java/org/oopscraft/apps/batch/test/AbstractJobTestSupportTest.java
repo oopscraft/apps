@@ -3,8 +3,8 @@ package org.oopscraft.apps.batch.test;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.oopscraft.apps.batch.BatchContext;
-import org.oopscraft.apps.batch.test.job.LightModeTestJob;
-import org.oopscraft.apps.batch.test.job.ProxyModeTestJob;
+import org.oopscraft.apps.batch.job.LightModeTestJob;
+import org.oopscraft.apps.batch.job.ProxyModeTestJob;
 
 
 /**
@@ -22,6 +22,7 @@ public class AbstractJobTestSupportTest extends AbstractJobTestSupport {
         BatchContext batchContext = BatchContext.builder()
                 .jobClass(ProxyModeTestJob.class)
                 .baseDate(getCurrentBaseDate())
+                .jobParameter("--ProxyModeTestJob.enable", "true")
                 .jobParameter("message", "hello")
                 .build();
         launchJob(batchContext);

@@ -1,4 +1,4 @@
-package org.oopscraft.apps.batch.test.job;
+package org.oopscraft.apps.batch.job;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.internal.util.Assert;

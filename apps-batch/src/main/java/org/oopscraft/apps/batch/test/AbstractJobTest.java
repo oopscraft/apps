@@ -1,32 +1,31 @@
 package org.oopscraft.apps.batch.test;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.oopscraft.apps.batch.BatchConfiguration;
 import org.oopscraft.apps.batch.BatchContext;
 import org.oopscraft.apps.batch.job.AbstractJob;
-import org.oopscraft.apps.batch.job.AbstractTasklet;
-import org.springframework.batch.core.BatchStatus;
+import org.oopscraft.apps.core.data.RoutingDataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 
 import static org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR;
 
@@ -37,10 +36,31 @@ import static org.springframework.beans.factory.config.AutowireCapableBeanFactor
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@EnableTransactionManagement
 public class AbstractJobTest {
 
     @Autowired
     private GenericApplicationContext applicationContext;
+
+    @Autowired
+    @Getter
+    private RoutingDataSource dataSource;
+
+    @Autowired
+    @Getter
+    private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    @Getter
+    private SqlSessionFactory sqlSessionFactory;
+
+    @Autowired
+    @Getter
+    private EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    @Getter
+    private JPAQueryFactory jpaQueryFactory;
 
     @Autowired
     @Getter

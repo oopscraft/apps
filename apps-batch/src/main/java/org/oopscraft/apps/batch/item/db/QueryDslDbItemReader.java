@@ -3,29 +3,45 @@ package org.oopscraft.apps.batch.item.db;
 import ch.qos.logback.classic.Level;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.core.data.RoutingDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jpa.QueryHints;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.support.AbstractItemCountingItemStreamItemReader;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Slf4j
-@Builder
 public class QueryDslDbItemReader <T> extends AbstractItemCountingItemStreamItemReader<T> {
 
+    @Getter
+    @Setter
     private String name;
 
+    @Setter
+    @Getter
+    private PlatformTransactionManager transactionManager;
+
+    @Getter
+    @Setter
     private EntityManagerFactory entityManagerFactory;
 
+    @Getter
+    @Setter
     private JPAQuery query;
 
+    @Getter
+    @Setter
     private String dataSourceKey;
 
     private EntityManager entityManager;
@@ -121,5 +137,46 @@ public class QueryDslDbItemReader <T> extends AbstractItemCountingItemStreamItem
         return value;
     }
 
+    /**
+     * QueryDslDbItemReaderBuilder
+     * @param <T>
+     */
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class QueryDslDbItemReaderBuilder<T> {
+
+        private String name;
+
+        private PlatformTransactionManager transactionManager;
+
+        private EntityManagerFactory entityManagerFactory;
+
+        private JPAQuery<?> query;
+
+        private String dataSourceKey;
+
+        /**
+         * build
+         * @return
+         */
+        public QueryDslDbItemReader<T> build() {
+            QueryDslDbItemReader<T> instance = new QueryDslDbItemReader<T>();
+            Optional.ofNullable(name).ifPresent(value -> instance.setName(value));
+            Optional.ofNullable(transactionManager).ifPresent(value -> instance.setTransactionManager(value));
+            Optional.ofNullable(entityManagerFactory).ifPresent(value -> instance.setEntityManagerFactory(value));
+            Optional.ofNullable(query).ifPresent(value -> instance.setQuery(value));
+            Optional.ofNullable(dataSourceKey).ifPresent(value -> instance.setDataSourceKey(value));
+            return instance;
+        }
+    }
+
+    /**
+     * builder
+     * @param <T>
+     * @return
+     */
+    public static <T> QueryDslDbItemReaderBuilder<T> builder() {
+        return new QueryDslDbItemReaderBuilder<T>();
+    }
 
 }

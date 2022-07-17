@@ -75,7 +75,7 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
      * @param arguments
      * @return
      */
-    public static BatchContext parseJobContextFromArguments(String[] arguments) throws ClassNotFoundException {
+     static BatchContext parseJobContextFromArguments(String[] arguments) throws ClassNotFoundException {
         BatchContext.BatchContextBuilder batchContextBuilder = BatchContext.builder();
         for(int index = 0; index < arguments.length; index ++ ) {
             String argument = arguments[index];

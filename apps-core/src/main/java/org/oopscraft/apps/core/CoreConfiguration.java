@@ -39,6 +39,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.*;
@@ -207,12 +208,12 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
 
     /**
      * jpaQueryFactory
-     * @param entityManagerFactory
+     * @param entityManager
      * @return
      */
     @Bean
-    public JPAQueryFactory jpaQueryFactory(EntityManagerFactory entityManagerFactory) {
-       return new JPAQueryFactory(entityManagerFactory.createEntityManager());
+    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+       return new JPAQueryFactory(entityManager);
     }
 
     /**

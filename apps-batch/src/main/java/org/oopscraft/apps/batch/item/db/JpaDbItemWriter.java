@@ -90,8 +90,9 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
                 // commit
                 transactionManager.commit(status);
             }catch(Exception e){
-                // rollback
-                transactionManager.rollback(status);
+                if(status != null) {
+                    transactionManager.rollback(status);
+                }
             }finally{
                 // restore dataSourceKey
                 RoutingDataSource.clearKey();
@@ -102,21 +103,56 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
     }
 
     /**
+     * write
+     * @param item
+     */
+    public void write(T item) {
+        if(dataSourceKey != null) {
+            DefaultTransactionDefinition definition = null;
+            TransactionStatus status = null;
+            try {
+                // switch dataSource key
+                RoutingDataSource.setKey(dataSourceKey);
+
+                // creates new transaction
+                definition = new DefaultTransactionDefinition();
+                definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_NESTED);
+                status = transactionManager.getTransaction(definition);
+
+                // executes write
+                internalWrite(item);
+
+                // commit
+                transactionManager.commit(status);
+            }catch(Exception e){
+                if(status != null) {
+                    transactionManager.rollback(status);
+                }
+                throw e;
+            }finally{
+                // restore dataSourceKey
+                RoutingDataSource.clearKey();
+            }
+        }else{
+            internalWrite(item);
+        }
+    }
+
+    /**
      * internalWrite
      * @param items
      */
     protected void internalWrite(List<? extends T> items) {
         for(T item : items){
-            write(item);
+            internalWrite(item);
         }
     }
 
     /**
-     * write
+     * internalWrite
      * @param item
-     * @throws Exception
      */
-    public void write(T item) {
+    protected void internalWrite(T item) {
         super.write(Arrays.asList(item));
         writeCount ++;
     }

@@ -40,6 +40,13 @@ dependencies {
 	// unit test
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+	testAnnotationProcessor "javax.annotation:javax.annotation-api:1.3.2"
+	testCompileOnly "jakarta.persistence:jakarta.persistence-api"
+	testAnnotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	testAnnotationProcessor group: 'com.querydsl', name: 'querydsl-apt'
+	testAnnotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
+	testAnnotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

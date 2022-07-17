@@ -3,8 +3,8 @@ package org.oopscraft.apps.batch.test;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.oopscraft.apps.batch.BatchContext;
-import org.oopscraft.apps.batch.test.job.LightModeTestJob;
-import org.oopscraft.apps.batch.test.job.ProxyModeTestJob;
+import org.oopscraft.apps.batch.job.LightModeTestJob;
+import org.oopscraft.apps.batch.job.ProxyModeTestJob;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 

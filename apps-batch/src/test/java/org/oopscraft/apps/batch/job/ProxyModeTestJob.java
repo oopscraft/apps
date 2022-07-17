@@ -1,4 +1,4 @@
-package org.oopscraft.apps.batch.test.job;
+package org.oopscraft.apps.batch.job;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.internal.util.Assert;
@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 */
 @Slf4j
 @Configuration
+@ConditionalOnExpression(value = "${ProxyModeTestJob:false}")  // 다른 테스트 시 로딩 방지
 @BatchComponentScan
-@SpringBatchTest
 public class ProxyModeTestJob extends AbstractJob {
 
     @Override

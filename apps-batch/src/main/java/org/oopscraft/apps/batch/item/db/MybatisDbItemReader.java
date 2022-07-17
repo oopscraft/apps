@@ -2,7 +2,10 @@ package org.oopscraft.apps.batch.item.db;
 
 import ch.qos.logback.classic.Level;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.core.data.RoutingDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -15,29 +18,48 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.support.AbstractItemCountingItemStreamItemReader;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
-@Builder
 public class MybatisDbItemReader<T> extends AbstractItemCountingItemStreamItemReader<T> {
 
+    @Getter
+    @Setter
     private String name;
 
+    @Getter
+    @Setter
+    private PlatformTransactionManager transactionManager;
+
+    @Setter
+    @Getter
     private SqlSessionFactory sqlSessionFactory;
 
+    @Getter
+    @Setter
     private DataSource dataSource;
 
+    @Getter
+    @Setter
     private Class<?> mapperClass;
 
+    @Getter
+    @Setter
     private String mapperMethod;
 
-    @Singular
+    @Getter
+    @Setter
     private Map<String, Object> parameters;
 
+    @Getter
+    @Setter
     private String dataSourceKey;
 
     private SqlSession sqlSession;
@@ -133,4 +155,66 @@ public class MybatisDbItemReader<T> extends AbstractItemCountingItemStreamItemRe
         log.info("{}", StringUtils.repeat("-",80));
     }
 
+
+    /**
+     * MybatisDbItemReaderBuilder
+     * @param <T>
+     */
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class MybatisDbItemReaderBuilder<T> {
+
+        private String name;
+
+        private PlatformTransactionManager transactionManager;
+
+        private SqlSessionFactory sqlSessionFactory;
+
+        private DataSource dataSource;
+
+        private Class mapperClass;
+
+        private String mapperMethod;
+
+        private Map<String, Object> parameters = new LinkedHashMap<>();
+
+        private String dataSourceKey;
+
+        /**
+         * parameter
+         * @param name
+         * @param value
+         * @return
+         */
+        public MybatisDbItemReaderBuilder<T> parameter(String name, Object value) {
+            parameters.put(name, value);
+            return this;
+        }
+
+        /**
+         * build
+         * @return
+         */
+        public MybatisDbItemReader<T> build() {
+            MybatisDbItemReader<T> instance = new MybatisDbItemReader<T>();
+            Optional.ofNullable(name).ifPresent(value -> instance.setName(value));
+            Optional.ofNullable(transactionManager).ifPresent(value -> instance.setTransactionManager(value));
+            Optional.ofNullable(sqlSessionFactory).ifPresent(value -> instance.setSqlSessionFactory(value));
+            Optional.ofNullable(dataSource).ifPresent(value -> instance.setDataSource(value));
+            Optional.ofNullable(mapperClass).ifPresent(value -> instance.setMapperClass(value));
+            Optional.ofNullable(mapperMethod).ifPresent(value -> instance.setMapperMethod(value));
+            Optional.ofNullable(parameters).ifPresent(value -> instance.setParameters(value));
+            Optional.ofNullable(dataSourceKey).ifPresent(value -> instance.setDataSourceKey(value));
+            return instance;
+        }
+    }
+
+    /**
+     * builder
+     * @param <T>
+     * @return
+     */
+    public static <T> MybatisDbItemReaderBuilder<T> builder() {
+        return new MybatisDbItemReaderBuilder<T>();
+    }
 }

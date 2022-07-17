@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.oopscraft.apps.batch.item.db.MybatisDbItemReaderTestMapper">
+<mapper namespace="org.oopscraft.apps.batch.item.db.dao.DbItemMapper">
 
-    <select id="selectItems" resultType="org.oopscraft.apps.batch.item.db.vo.DbItemVo">
+    <select id="selectDbItems" resultType="org.oopscraft.apps.batch.item.db.dto.DbItemVo">
         <![CDATA[
         select   floor(rand()*10000000) as "id"
                 ,concat('이름',floor(rand()*10000000)) as "name"
@@ -26,5 +26,29 @@
         limit #{limit}
         ]]>
     </select>
+
+    <insert id="insertDbItem">
+        <![CDATA[
+        insert into test_db_item (
+            id,
+            name
+        ) values (
+            #{id},
+            #{name}
+        )
+        ]]>
+    </insert>
+
+    <insert id="insertDbItemBackup">
+        <![CDATA[
+        insert into test_db_item_backup (
+            id,
+            name
+        ) values (
+            #{id},
+            #{name}
+        )
+        ]]>
+    </insert>
 
 </mapper>
