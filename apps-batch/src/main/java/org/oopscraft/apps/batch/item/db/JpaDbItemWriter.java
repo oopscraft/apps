@@ -73,14 +73,11 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
     @Override
     public void write(List<? extends T> items) {
         if(dataSourceKey != null) {
-            DefaultTransactionDefinition definition = null;
             TransactionStatus status = null;
             try {
-                // switch dataSource key
+                // set dataSource key
                 RoutingDataSource.setKey(dataSourceKey);
-
-                // creates new transaction
-                definition = new DefaultTransactionDefinition();
+                DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
                 definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
                 status = transactionManager.getTransaction(definition);
 
@@ -108,14 +105,11 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
      */
     public void write(T item) {
         if(dataSourceKey != null) {
-            DefaultTransactionDefinition definition = null;
             TransactionStatus status = null;
             try {
-                // switch dataSource key
+                // set dataSource key
                 RoutingDataSource.setKey(dataSourceKey);
-
-                // creates new transaction
-                definition = new DefaultTransactionDefinition();
+                DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
                 definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_NESTED);
                 status = transactionManager.getTransaction(definition);
 
@@ -130,7 +124,7 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
                 }
                 throw e;
             }finally{
-                // restore dataSourceKey
+                // clear dataSource Key
                 RoutingDataSource.clearKey();
             }
         }else{

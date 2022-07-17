@@ -96,14 +96,11 @@ public class MybatisDbItemWriter<T> implements ItemStreamWriter<T> {
     @Override
     public void write(final List<? extends T> items) {
         if(dataSourceKey != null) {
-            DefaultTransactionDefinition definition = null;
             TransactionStatus status = null;
             try {
-                // switch dataSource key
+                // set dataSource key
                 RoutingDataSource.setKey(dataSourceKey);
-
-                // creates new transaction
-                definition = new DefaultTransactionDefinition();
+                DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
                 definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
                 status = transactionManager.getTransaction(definition);
 
@@ -131,14 +128,11 @@ public class MybatisDbItemWriter<T> implements ItemStreamWriter<T> {
      */
     public void write(T item) {
         if(dataSourceKey != null) {
-            DefaultTransactionDefinition definition = null;
             TransactionStatus status = null;
             try {
-                // switch dataSource key
+                // set dataSourceKey
                 RoutingDataSource.setKey(dataSourceKey);
-
-                // creates new transaction
-                definition = new DefaultTransactionDefinition();
+                DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
                 definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_NESTED);
                 status = transactionManager.getTransaction(definition);
 
