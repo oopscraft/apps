@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * ProxyModeTestJob
+ * (only test, not recommend)
 */
 @Slf4j
 @Configuration
