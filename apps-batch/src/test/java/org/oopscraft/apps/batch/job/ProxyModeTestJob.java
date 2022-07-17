@@ -13,6 +13,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 */
 @Slf4j
 @Configuration
-@ConditionalOnExpression(value = "${ProxyModeTestJob:false}")  // 다른 테스트 시 로딩 방지
+@ConditionalOnProperty(value = "spring.batch.job.name", havingValue="ProxyModeTestJob")  // 다른 테스트 시 로딩 방지
 @BatchComponentScan
 public class ProxyModeTestJob extends AbstractJob {
 

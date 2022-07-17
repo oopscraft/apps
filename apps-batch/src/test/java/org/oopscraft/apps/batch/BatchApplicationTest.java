@@ -22,7 +22,7 @@ public class BatchApplicationTest {
                 ProxyModeTestJob.class.getName(),
                 "20110101",
                 "message=hello",
-                "--org.oopscraft.apps.batch.BatchApplicationTest.ProxyModeTestJob.enable=true", // @ConditionalOnExpression enable
+                "--ProxyModeTestJob.enable=true", // @ConditionalOnExpression enable
                 String.format("currentTime=%d", System.currentTimeMillis())
         };
         BatchApplication.main(args);

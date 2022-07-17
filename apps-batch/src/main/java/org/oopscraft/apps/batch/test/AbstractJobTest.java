@@ -33,8 +33,7 @@ import static org.springframework.beans.factory.config.AutowireCapableBeanFactor
 
 @Slf4j
 @SpringBootTest(
-        classes = {BatchConfiguration.class},
-        properties = "spring.main.web-application-type=none"
+        classes = {BatchConfiguration.class}
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -22,7 +22,7 @@ public class AbstractJobTestSupportTest extends AbstractJobTestSupport {
         BatchContext batchContext = BatchContext.builder()
                 .jobClass(ProxyModeTestJob.class)
                 .baseDate(getCurrentBaseDate())
-                .jobParameter("--ProxyModeTestJob.enable", "true")
+                .jobParameter("--spring.batch.job.name", "ProxyModeTestJob")
                 .jobParameter("message", "hello")
                 .build();
         launchJob(batchContext);
