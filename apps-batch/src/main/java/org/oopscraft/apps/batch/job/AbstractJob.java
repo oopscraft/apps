@@ -21,6 +21,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.job.SimpleJob;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,13 +124,23 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
      * addTasklet
      * @param tasklet
      */
+    @Deprecated
     public void addTasklet(AbstractTasklet tasklet) {
+        addStep(tasklet);
+    }
+
+    /**
+     * addStep
+     * @param tasklet
+     */
+    public final void addStep(Tasklet tasklet) {
         applicationContext.getAutowireCapableBeanFactory().autowireBean(tasklet);
         TaskletStep taskletStep = stepBuilderFactory.get(tasklet.getClass().getName())
                 .tasklet(tasklet)
                 .listener((StepExecutionListener) new StepListener())
                 .build();
         super.addStep(taskletStep);
+
     }
 
     /**
