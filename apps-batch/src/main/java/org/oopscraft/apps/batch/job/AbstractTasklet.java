@@ -1,5 +1,7 @@
 package org.oopscraft.apps.batch.job;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.oopscraft.apps.batch.BatchContext;
@@ -45,6 +47,9 @@ public abstract class AbstractTasklet implements Tasklet {
 
     @Autowired
     public SqlSessionFactory sqlSessionFactory;
+
+    @Autowired
+    protected JPAQueryFactory jpaQueryFactory;
 
     @Setter
     private String dataSourceKey;
