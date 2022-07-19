@@ -1,6 +1,6 @@
 ext {
     includeSubmodule = System.getProperty("includeSubmodule")?System.getProperty("includeSubmodule").toBoolean():false
-    jdkVersion = System.getProperty("jdkVersion")?:"1.8"
+    jdkVersion = System.getProperty("jdkVersion")?:"11"
     mavenPublishUrl = System.getProperty("mavenPublishUrl")
     mavenUsername = System.getProperty("mavenUsername")
     mavenPassword = System.getProperty("mavenPassword")

@@ -19,13 +19,6 @@ dependencies {
 	annotationProcessor platform(project(":apps-dependencies"))
 	testAnnotationProcessor platform(project(":apps-dependencies"))
 
-	// project
-	api project(":apps-core")
-
-	// spring batch
-	api 'org.springframework.boot:spring-boot-starter-batch'
-	api 'org.springframework.batch:spring-batch-test'
-
 	// annotation processor
 	compileOnly "org.projectlombok:lombok"
 	annotationProcessor 'org.projectlombok:lombok'
@@ -37,7 +30,7 @@ dependencies {
 	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', classifier: 'jpa'
 	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 
-	// unit test
+	// test
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'javax.annotation:javax.annotation-api:1.3.2'
@@ -52,12 +45,20 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testCompileOnly 'org.junit.platform:junit-platform-runner'
 
+	// project
+	api project(":apps-core")
+
+	// spring batch
+	api 'org.springframework.boot:spring-boot-starter-batch'
+	api 'org.springframework.batch:spring-batch-test'
+
 	// include module
 	println("== includeSubmodule:${includeSubmodule}")
 	if(includeSubmodule == true) {
 		runtimeOnly "org.oopscraft.apps:apps-sandbox-core:1.0.0-SNAPSHOT@jar"
 		runtimeOnly "org.oopscraft.apps:apps-sandbox-batch:1.0.0-SNAPSHOT@jar"
 	}
+
 }
 
 test {
