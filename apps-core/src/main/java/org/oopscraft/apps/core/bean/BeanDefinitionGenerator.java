@@ -5,8 +5,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 public class BeanDefinitionGenerator {
 
-    // registry
-
     /**
      * generateBeanDefinition
      * @param beanClass

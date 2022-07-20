@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Slf4j
-public class MapperDefinitionGeneratorTest extends AbstractServiceTest {
+public class MapperDefinitionFactoryTest extends AbstractServiceTest {
 
     @Autowired
     private GenericApplicationContext applicationContext;
@@ -28,8 +28,9 @@ public class MapperDefinitionGeneratorTest extends AbstractServiceTest {
         assertNull(testMapper);
 
         // 2. Creates mapper bean
-        MapperBeanDefinitionFactory definitionGenerator = new MapperBeanDefinitionFactory();
-        BeanDefinition beanDefinition = definitionGenerator.getBeanDefinition(TestMapper.class);
+        MapperBeanDefinitionFactory beanDefinitionFactory = new MapperBeanDefinitionFactory();
+        assertEquals(beanDefinitionFactory.support(TestMapper.class), true);
+        BeanDefinition beanDefinition = beanDefinitionFactory.getBeanDefinition(TestMapper.class);
         applicationContext.registerBeanDefinition(TestMapper.class.getName(), beanDefinition);
 
         // 3. Executes query form mapper bean

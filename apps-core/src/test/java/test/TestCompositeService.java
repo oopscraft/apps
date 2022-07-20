@@ -19,4 +19,8 @@ public class TestCompositeService {
         return testMapper.selectValue(value);
     }
 
+    public String getValue(String value) {
+        return testComponent.getValue(value);
+    }
+
 }

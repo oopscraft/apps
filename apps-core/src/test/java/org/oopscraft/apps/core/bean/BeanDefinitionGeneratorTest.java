@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.support.GenericApplicationContext;
 import test.TestComponent;
+import test.TestCompositeService;
 import test.TestMapper;
 
-public class BeanDefinitionFactoryTest extends AbstractServiceTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class BeanDefinitionGeneratorTest extends AbstractServiceTest {
 
     @Autowired
     private GenericApplicationContext applicationContext;
@@ -25,9 +28,13 @@ public class BeanDefinitionFactoryTest extends AbstractServiceTest {
         applicationContext.registerBeanDefinition(TestComponent.class.getName(), componentDefinition);
 
         // 3. composite service 생성
+        BeanDefinition compositeServiceDefinition = BeanDefinitionGenerator.getBeanDefinition(TestCompositeService.class);
+        applicationContext.registerBeanDefinition(TestCompositeService.class.getName(), compositeServiceDefinition);
 
-
-
+        // 4. call test
+        TestCompositeService compositeService = applicationContext.getBean(TestCompositeService.class);
+        assertEquals(compositeService.selectValue("test_value"),"test_value");
+        assertEquals(compositeService.getValue("test_value"), "test_value");
 
     }
 }
