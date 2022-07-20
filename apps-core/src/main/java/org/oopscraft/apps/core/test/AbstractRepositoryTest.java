@@ -15,5 +15,5 @@ import javax.transaction.Transactional;
 @Transactional
 @Rollback
 @Slf4j
-public class ServiceTest {
+public class AbstractRepositoryTest {
 }

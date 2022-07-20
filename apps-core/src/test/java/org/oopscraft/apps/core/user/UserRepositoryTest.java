@@ -2,12 +2,12 @@ package org.oopscraft.apps.core.user;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.oopscraft.apps.core.test.RepositoryTest;
+import org.oopscraft.apps.core.test.AbstractRepositoryTest;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class UserRepositoryTest extends RepositoryTest {
+public class UserRepositoryTest extends AbstractRepositoryTest {
 
     private final UserRepository userRepository;
 

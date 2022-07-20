@@ -2,12 +2,12 @@ package org.oopscraft.apps.core.code;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.oopscraft.apps.core.test.RepositoryTest;
+import org.oopscraft.apps.core.test.AbstractRepositoryTest;
 
 import java.util.ArrayList;
 
 @RequiredArgsConstructor
-public class CodeRepositoryTest extends RepositoryTest {
+public class CodeRepositoryTest extends AbstractRepositoryTest {
 
     private final CodeRepository codeRepository;
 
