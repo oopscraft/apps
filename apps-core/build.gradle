@@ -72,7 +72,7 @@ dependencies {
 	api "org.modelmapper:modelmapper"
 
 	// jackson
-	api "com.fasterxml.jackson.annotation:jackson-annotation"
+	api "com.fasterxml.jackson.core:jackson-annotations"
 	api "com.fasterxml.jackson.core:jackson-databind"
 	api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 

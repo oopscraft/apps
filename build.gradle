@@ -1,16 +1,17 @@
 ext {
+    projectGroup = "org.oopscraft.apps"
+    projectVersion = "1.0.0-SNAPSHOT"
+    jdkVersion = "11"
     includeSubmodule = System.getProperty("includeSubmodule")?System.getProperty("includeSubmodule").toBoolean():false
-    jdkVersion = System.getProperty("jdkVersion")?:"11"
     mavenPublishUrl = System.getProperty("mavenPublishUrl")
     mavenUsername = System.getProperty("mavenUsername")
     mavenPassword = System.getProperty("mavenPassword")
 }
-print("==ext: ${ext.getProperties()}")
 
 allprojects {
     afterEvaluate { project ->
-        group = "org.oopscraft.apps"
-        version = "1.0.0-SNAPSHOT"
+        group = projectGroup
+        version = projectVersion
         if(project.plugins.hasPlugin("java")){
             project.sourceCompatibility = jdkVersion
             project.targetCompatibility = jdkVersion
