@@ -1,4 +1,4 @@
-package test;
+package sandbox;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

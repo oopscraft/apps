@@ -1,4 +1,4 @@
-package org.oopscraft.apps.core.bean;
+package org.oopscraft.apps.core.support.beans;
 
 public class UnsupportedBeanTypeException extends Exception {
 

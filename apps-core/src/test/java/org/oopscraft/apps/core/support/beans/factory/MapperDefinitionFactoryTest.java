@@ -1,8 +1,8 @@
-package org.oopscraft.apps.core.bean.definition;
+package org.oopscraft.apps.core.support.beans.factory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import test.TestMapper;
+import sandbox.TestMapper;
 import org.oopscraft.apps.core.test.AbstractServiceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -28,7 +28,7 @@ public class MapperDefinitionFactoryTest extends AbstractServiceTest {
         assertNull(testMapper);
 
         // 2. Creates mapper bean
-        MapperBeanDefinitionFactory beanDefinitionFactory = new MapperBeanDefinitionFactory();
+        MapperDefinitionFactory beanDefinitionFactory = new MapperDefinitionFactory();
         assertEquals(beanDefinitionFactory.support(TestMapper.class), true);
         BeanDefinition beanDefinition = beanDefinitionFactory.getBeanDefinition(TestMapper.class);
         applicationContext.registerBeanDefinition(TestMapper.class.getName(), beanDefinition);

@@ -50,7 +50,8 @@ public class DateDeserializer implements GenericConverter {
 
             // java.time.LocalDateTime
             if (targetTypeClass == LocalDateTime.class) {
-                return LocalDateTime.parse(source.toString(), DateTimeFormatter.ofPattern(dateTimeFormat));
+                return LocalDateTime.parse(source.toString(), DateTimeFormatter.ofPattern(dateTimeFormat))
+                        .withNano(0);
             }
 
             // java.time.LocalDate

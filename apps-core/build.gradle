@@ -44,7 +44,10 @@ dependencies {
 	api 'org.springframework.boot:spring-boot-starter'
 	api 'org.springframework.boot:spring-boot-starter-test'
 	api 'org.springframework.boot:spring-boot-starter-data-jpa'
-	api 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+
+	// mybatis
+	api 'org.mybatis.spring.boot:mybatis-spring-boot-starter'
+	api "org.mybatis.spring.boot:mybatis-spring-boot-starter-test"
 
 	// log4jdbc
 	api 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
@@ -104,7 +107,6 @@ dependencies {
 	// guava
 	api "com.google.guava:guava"
 	api "com.google.code.findbugs:jsr305"
-
 
 }
 

@@ -1,12 +1,13 @@
-package org.oopscraft.apps.core.bean.definition;
+package org.oopscraft.apps.core.support.beans.factory;
 
+import org.oopscraft.apps.core.support.beans.BeanDefinitionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.stereotype.Repository;
 
-public class RepositoryDefinitionFactory extends AbstractBeanDefinitionFactory {
+public class RepositoryDefinitionFactory extends BeanDefinitionFactory {
 
     private String transactionManager = "transactionManager";
 

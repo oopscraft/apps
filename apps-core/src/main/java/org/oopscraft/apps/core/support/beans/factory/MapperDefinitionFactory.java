@@ -1,13 +1,14 @@
-package org.oopscraft.apps.core.bean.definition;
+package org.oopscraft.apps.core.support.beans.factory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.oopscraft.apps.core.support.beans.BeanDefinitionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 
 @Slf4j
-public class MapperBeanDefinitionFactory extends AbstractBeanDefinitionFactory {
+public class MapperDefinitionFactory extends BeanDefinitionFactory {
 
     private String sqlSessionFactoryRef = "sqlSessionFactory";
 

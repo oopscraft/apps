@@ -265,7 +265,7 @@ public class BatchConfiguration implements EnvironmentPostProcessor {
     /**
      * custom batch configuration
      */
-    @Configuration(proxyBeanMethods = false)
+    //@Configuration(proxyBeanMethods = false)
     @RequiredArgsConstructor
     public static class SpringBatchConfiguration implements InitializingBean, DisposableBean {
 

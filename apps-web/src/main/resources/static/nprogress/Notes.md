@@ -2,23 +2,23 @@ Testing
 -------
 
     $ npm install
-    $ npm test
+    $ npm sandbox
 
 or try it out in the browser:
 
-    $ open test/index.html
+    $ open sandbox/index.html
 
 Testing component build
 -----------------------
 
     $ component install
     $ component build
-    $ open test/component.html
+    $ open sandbox/component.html
 
 Releasing
 ---------
 
-    $ npm test
+    $ npm sandbox
     $ bump *.json nprogress.js          # bump version numbers
     $ git release 0.1.1                 # release to bower/github
     $ npm publish                       # release to npm

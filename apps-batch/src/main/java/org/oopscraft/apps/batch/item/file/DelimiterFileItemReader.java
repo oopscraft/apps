@@ -87,7 +87,7 @@ public class DelimiterFileItemReader<Object> extends GenericFileItemReader<Objec
          * @return
          */
         public DelimiterFileItemReader<T> build() {
-            DelimiterFileItemReader instance = new DelimiterFileItemReader();
+            DelimiterFileItemReader<T> instance = new DelimiterFileItemReader<>();
             Optional.ofNullable(name).ifPresent(value -> instance.setName(value));
             Optional.ofNullable(filePath).ifPresent(value -> instance.setFilePath(value));
             Optional.ofNullable(itemType).ifPresent(value -> instance.setItemType(value));

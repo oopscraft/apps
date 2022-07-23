@@ -30,7 +30,7 @@ place the files in whichever you want though.
 The editor comes with a few sample pages that can be used to verify that
 installation proceeded properly. Take a look at the `samples` directory.
 
-To test your installation, just call the following page at your website:
+To sandbox your installation, just call the following page at your website:
 
 	http://<your site>/<CKEditor installation path>/samples/index.html
 

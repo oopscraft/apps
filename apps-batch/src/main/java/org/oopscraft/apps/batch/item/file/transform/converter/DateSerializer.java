@@ -50,7 +50,7 @@ public class DateSerializer implements GenericConverter {
             // java.time.LocalDateTime
             if (sourceTypeClass == LocalDateTime.class) {
                 LocalDateTime localDateTime = (LocalDateTime)source;
-                return DateTimeFormatter.ofPattern(dateTimeFormat).format(localDateTime);
+                return DateTimeFormatter.ofPattern(dateTimeFormat).format(localDateTime.withNano(0));
             }
 
             // java.time.LocalDate

@@ -1,11 +1,12 @@
-package org.oopscraft.apps.core.bean.definition;
+package org.oopscraft.apps.core.support.beans.factory;
 
+import org.oopscraft.apps.core.support.beans.BeanDefinitionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-public class ComponentBeanDefinitionFactory extends AbstractBeanDefinitionFactory {
+public class ComponentDefinitionFactory extends BeanDefinitionFactory {
 
     @Override
     public boolean support(Class<?> beanClass) {
