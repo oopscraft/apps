@@ -14,7 +14,7 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import java.util.Optional;
 
 @Slf4j
-public class FixedLengthFileItemReader<Object> extends GenericFileItemReader<Object> {
+public class FixedLengthFileItemReader<T> extends GenericFileItemReader<T> {
 
     /**
      * createLineMapper
@@ -23,7 +23,7 @@ public class FixedLengthFileItemReader<Object> extends GenericFileItemReader<Obj
      * @throws ItemStreamException
      */
     @Override
-    public LineMapper<Object> createLineMapper(Class<? extends Object> itemType) throws ItemStreamException {
+    public LineMapper createLineMapper(Class<?> itemType) throws ItemStreamException {
         // item type parser
         ItemTypeParser itemTypeParser = new ItemTypeParser(itemType);
 
@@ -32,7 +32,7 @@ public class FixedLengthFileItemReader<Object> extends GenericFileItemReader<Obj
         lineTokenizer.setCharset(encoding);
 
         // creates field set mapper
-        BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper fieldSetMapper = new BeanWrapperFieldSetMapper();
         fieldSetMapper.setTargetType(itemType);
         FieldConversionService conversionService = new FieldConversionService();
         conversionService.setDateFormat(dateFormat);

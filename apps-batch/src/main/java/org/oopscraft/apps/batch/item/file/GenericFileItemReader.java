@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 @Slf4j
-public abstract class GenericFileItemReader<Object> extends FlatFileItemReader<Object> {
+public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
 
     @Setter
     @Getter
@@ -29,7 +29,7 @@ public abstract class GenericFileItemReader<Object> extends FlatFileItemReader<O
 
     @Setter
     @Getter
-    protected Class<? extends Object> itemType;
+    protected Class<?> itemType;
 
     @Setter
     @Getter
@@ -57,7 +57,7 @@ public abstract class GenericFileItemReader<Object> extends FlatFileItemReader<O
 
     protected Resource resource;
 
-    protected HashMap<Class<?>, LineMapper<Object>> lineMapperRegistry = new LinkedHashMap<>();
+    protected HashMap<Class<?>, LineMapper<T>> lineMapperRegistry = new LinkedHashMap<>();
 
     protected int readCount = 0;
 
@@ -100,14 +100,14 @@ public abstract class GenericFileItemReader<Object> extends FlatFileItemReader<O
      * @return
      * @throws ItemStreamException
      */
-    public abstract LineMapper<Object> createLineMapper(Class<? extends Object> itemType) throws ItemStreamException;
+    public abstract LineMapper createLineMapper(Class<?> itemType) throws ItemStreamException;
 
     /**
      * doRead
      * @return T
      */
     @Override
-    protected final Object doRead() throws Exception {
+    protected final T doRead() throws Exception {
         readCount ++;
         String line = readLine();
         if (line == null) {
@@ -132,7 +132,7 @@ public abstract class GenericFileItemReader<Object> extends FlatFileItemReader<O
      * @param line line
      * @return Object
      */
-    public Object internalRead(String line, int lineNumber) {
+    public T internalRead(String line, int lineNumber) {
         return mapLine(line, itemType);
     }
 
@@ -142,12 +142,12 @@ public abstract class GenericFileItemReader<Object> extends FlatFileItemReader<O
      * @param itemType itemType
      * @return Object
      */
-    public Object mapLine(String line, Class<? extends Object> itemType) {
+    public T mapLine(String line, Class<?> itemType) {
         try {
             if(!lineMapperRegistry.containsKey(itemType)){
-                lineMapperRegistry.put(itemType, createLineMapper(itemType));
+                lineMapperRegistry.put(itemType.getClass(), createLineMapper(itemType.getClass()));
             }
-            LineMapper<Object> lineMapper = lineMapperRegistry.get(itemType);
+            LineMapper<T> lineMapper = lineMapperRegistry.get(itemType);
             return lineMapper.mapLine(line, 1);
         }catch(Exception e){
             throw new RuntimeException(e);

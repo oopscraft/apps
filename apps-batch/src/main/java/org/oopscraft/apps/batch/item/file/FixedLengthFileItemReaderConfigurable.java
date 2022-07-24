@@ -3,7 +3,7 @@ package org.oopscraft.apps.batch.item.file;
 /**
  * FixedLengthFileItemReaderConfigurable
  */
-public abstract class FixedLengthFileItemReaderConfigurable<Object> extends FixedLengthFileItemReader<Object> {
+public abstract class FixedLengthFileItemReaderConfigurable<T> extends FixedLengthFileItemReader<T> {
 
     /**
      * internalRead
@@ -11,6 +11,6 @@ public abstract class FixedLengthFileItemReaderConfigurable<Object> extends Fixe
      * @param lineNumber lineNumber
      * @return Object
      */
-    public abstract Object internalRead(String line, int lineNumber);
+    public abstract T internalRead(String line, int lineNumber);
 
 }

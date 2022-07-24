@@ -15,7 +15,7 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import java.util.Optional;
 
 @Slf4j
-public class DelimiterFileItemReader<Object> extends GenericFileItemReader<Object> {
+public class DelimiterFileItemReader<T> extends GenericFileItemReader<T> {
 
     @Setter
     @Getter
@@ -28,7 +28,7 @@ public class DelimiterFileItemReader<Object> extends GenericFileItemReader<Objec
      * @throws ItemStreamException
      */
     @Override
-    public LineMapper<Object> createLineMapper(Class<? extends Object> itemType) throws ItemStreamException {
+    public LineMapper createLineMapper(Class<?> itemType) throws ItemStreamException {
         // item type parser
         ItemTypeParser itemTypeParser = new ItemTypeParser(itemType);
 
@@ -38,7 +38,7 @@ public class DelimiterFileItemReader<Object> extends GenericFileItemReader<Objec
         lineTokenizer.setStrict(false);
 
         // creates field set mapper
-        BeanWrapperFieldSetMapper<Object> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper fieldSetMapper = new BeanWrapperFieldSetMapper<>();
         fieldSetMapper.setTargetType(itemType);
         FieldConversionService conversionService = new FieldConversionService();
         conversionService.setDateFormat(dateFormat);
@@ -66,7 +66,7 @@ public class DelimiterFileItemReader<Object> extends GenericFileItemReader<Objec
 
         private String filePath;
 
-        private Class<T> itemType;
+        private Class<?> itemType;
 
         private Boolean withHeader;
 

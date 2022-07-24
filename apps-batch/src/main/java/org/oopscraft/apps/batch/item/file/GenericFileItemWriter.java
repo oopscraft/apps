@@ -33,7 +33,7 @@ public abstract class GenericFileItemWriter<T> extends FlatFileItemWriter<T> {
 
     @Setter
     @Getter
-    protected Class<T> itemType;
+    protected Class<?> itemType;
 
     @Setter
     @Getter
