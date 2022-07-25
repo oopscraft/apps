@@ -48,7 +48,6 @@ public class QueryDslDbItemReader <T> extends AbstractItemCountingItemStreamItem
 
     private Iterator<T> iterator;
 
-    @Builder.Default
     private int readCount = 0;
 
     @Override
