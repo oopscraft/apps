@@ -2,6 +2,7 @@ package org.oopscraft.apps.batch.test;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.MethodOrderer;
@@ -10,10 +11,13 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.oopscraft.apps.batch.BatchConfiguration;
 import org.oopscraft.apps.batch.BatchContext;
 import org.oopscraft.apps.batch.job.AbstractJob;
+import org.oopscraft.apps.batch.job.AbstractTasklet;
 import org.oopscraft.apps.core.data.RoutingDataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -28,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+
+import java.util.Collection;
 
 import static org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR;
 
@@ -106,6 +112,35 @@ public class AbstractJobTest {
                 log.warn(ignore.getMessage());
             }
         }
+    }
+
+    /**
+     * TaskletTestJob
+     */
+    public static class TaskletTestJob extends AbstractJob {
+        @Setter
+        public static Tasklet tasklet = null;
+        @Override
+        public void initialize(BatchContext batchContext) {
+            addStep(tasklet);
+        }
+    }
+
+    /**
+     * runTasklet
+     * @param tasklet
+     */
+    public final StepExecution runTasklet(Tasklet tasklet) {
+        TaskletTestJob.setTasklet(tasklet);
+        BatchContext batchContext = BatchContext.builder()
+                .jobClass(TaskletTestJob.class)
+                .build();
+        JobExecution jobExecution = runJob(batchContext);
+        Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();
+        for(StepExecution stepExecution : stepExecutions){
+            return stepExecution;
+        }
+        return null;
     }
 
 }
