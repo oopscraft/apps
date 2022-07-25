@@ -38,7 +38,7 @@ public class MybatisDbItemWriter<T> implements ItemStreamWriter<T> {
 
     @Setter
     @Getter
-    private Class mapperClass;
+    private Class<?> mapperClass;
 
     @Setter
     @Getter

@@ -5,6 +5,13 @@ package org.oopscraft.apps.batch.item.file;
  */
 public abstract class DelimiterFileItemReaderConfigurable<T> extends DelimiterFileItemReader<T> {
 
+	/**
+	 * constructor
+	 */
+	public DelimiterFileItemReaderConfigurable(){
+		this.setWithHeader(false);
+	}
+
     /**
      * internalRead
      * @param line line

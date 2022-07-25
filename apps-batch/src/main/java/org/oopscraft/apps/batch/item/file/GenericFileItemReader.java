@@ -57,7 +57,7 @@ public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
 
     protected Resource resource;
 
-    protected HashMap<Class<?>, LineMapper<T>> lineMapperRegistry = new LinkedHashMap<>();
+    protected HashMap<Class<?>, LineMapper> lineMapperRegistry = new LinkedHashMap<>();
 
     protected int readCount = 0;
 
@@ -145,7 +145,7 @@ public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
     public T mapLine(String line, Class<?> itemType) {
         try {
             if(!lineMapperRegistry.containsKey(itemType)){
-                lineMapperRegistry.put(itemType.getClass(), createLineMapper(itemType.getClass()));
+                lineMapperRegistry.put(itemType, createLineMapper(itemType));
             }
             LineMapper<T> lineMapper = lineMapperRegistry.get(itemType);
             return lineMapper.mapLine(line, 1);
