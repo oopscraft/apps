@@ -8,6 +8,13 @@ import java.util.List;
 public abstract class DelimiterFileItemWriterConfigurable<T> extends DelimiterFileItemWriter<T> {
 
     /**
+     * constructor
+     */
+    public DelimiterFileItemWriterConfigurable() {
+        this.setWithHeader(false);
+    }
+
+    /**
      * internalWrite
      * @param items items
      */

@@ -6,6 +6,13 @@ package org.oopscraft.apps.batch.item.file;
 public abstract class FixedLengthFileItemReaderConfigurable<T> extends FixedLengthFileItemReader<T> {
 
     /**
+     * constructor
+     */
+    public FixedLengthFileItemReaderConfigurable() {
+        super.setWithHeader(false);
+    }
+
+    /**
      * internalRead
      * @param line line
      * @param lineNumber lineNumber

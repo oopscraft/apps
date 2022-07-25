@@ -3,6 +3,7 @@ package org.oopscraft.apps.batch.item.file;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.oopscraft.apps.batch.item.file.annotation.Length;
 import org.oopscraft.apps.batch.item.file.transform.FieldConversionService;
 import org.oopscraft.apps.batch.item.file.transform.FixedLengthLineAggregator;
 import org.oopscraft.apps.batch.item.file.transform.ItemField;
@@ -29,7 +30,9 @@ public class FixedLengthFileItemWriter<T> extends GenericFileItemWriter<T> {
             ItemTypeParser itemTypeParser = new ItemTypeParser(itemType);
             itemTypeParser.getItemFields().forEach(itemField->{
                 String fieldName = itemField.getName();
-                int fieldLength = itemField.getLength().value();
+                int fieldLength = Optional.ofNullable(itemField.getLength())
+                        .map(Length::value)
+                        .orElseThrow(()-> new RuntimeException("@Length Not exists"));
                 fieldName = StringUtils.rightPad(fieldName, fieldLength);
                 fieldName = StringUtils.truncate(fieldName, fieldLength);
                 fieldNames.add(fieldName);

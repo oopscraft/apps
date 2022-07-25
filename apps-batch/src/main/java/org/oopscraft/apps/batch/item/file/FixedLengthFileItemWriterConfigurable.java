@@ -8,6 +8,13 @@ import java.util.List;
 public abstract class FixedLengthFileItemWriterConfigurable<T> extends FixedLengthFileItemWriter<T> {
 
     /**
+     * constructor
+     */
+    public FixedLengthFileItemWriterConfigurable() {
+
+    }
+
+    /**
      * internalWrite
      * @param items items
      */
