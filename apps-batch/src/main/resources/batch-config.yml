@@ -1,4 +1,18 @@
+#===============================================
+# logging
+#===============================================
+logging:
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}] [%-5level] %-32.32logger{32} : %m%n"
+  level:
+    root: DEBUG
+    com.zaxxer.hikari: INFO
+    org.apache.http.wire: INFO
+    org.springframework.beans.factory.support.DefaultListableBeanFactory: INFO
+
+#===============================================
 # batch
+#===============================================
 batch:
   enableDatasource: true
   datasource:
@@ -8,7 +22,9 @@ batch:
     password:
     connectionTestQuery: select 1 from dual
 
+#===============================================
 # core
+#===============================================
 core:
   datasource:
     # default
