@@ -46,7 +46,7 @@ public class RawFileItemReader extends FlatFileItemReader<byte[]> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [START] StringFileItemReader");
+        log.info("| [OPEN] StringFileItemReader");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| encoding: {}", encoding);
@@ -92,7 +92,7 @@ public class RawFileItemReader extends FlatFileItemReader<byte[]> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [END] StringFileItemReader");
+        log.info("| [CLOSE] StringFileItemReader");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| readCount: {}", readCount);

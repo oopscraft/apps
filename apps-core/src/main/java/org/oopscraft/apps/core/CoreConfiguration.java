@@ -143,7 +143,7 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         jpaProperties.setProperty(AvailableSettings.HQL_BULK_ID_STRATEGY, org.hibernate.hql.spi.id.inline.InlineIdsOrClauseBulkIdStrategy.class.getName());    // Bulk-id strategies when you can’t use temporary tables
         jpaProperties.setProperty(AvailableSettings.GLOBALLY_QUOTED_IDENTIFIERS, Boolean.toString(true));
         jpaProperties.setProperty(AvailableSettings.SHOW_SQL, Boolean.toString(log.isDebugEnabled()));
-        jpaProperties.setProperty(AvailableSettings.FORMAT_SQL, Boolean.toString(true));
+        jpaProperties.setProperty(AvailableSettings.FORMAT_SQL, Boolean.toString(log.isDebugEnabled()));
         jpaProperties.setProperty(AvailableSettings.USE_SQL_COMMENTS, Boolean.toString(true));
         jpaProperties.setProperty(AvailableSettings.ENABLE_LAZY_LOAD_NO_TRANS, Boolean.toString(true));
 

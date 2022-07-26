@@ -76,7 +76,7 @@ public class MybatisDbItemReader<T> extends AbstractItemCountingItemStreamItemRe
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [START] MybatisDbItemReader");
+        log.info("| [OPEN] MybatisDbItemReader");
         log.info("| name: {}", name);
         log.info("| mapperClass: {}", mapperClass);
         log.info("| mapperMethod: {}", mapperMethod);
@@ -146,7 +146,7 @@ public class MybatisDbItemReader<T> extends AbstractItemCountingItemStreamItemRe
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [END] MybatisDbItemReader");
+        log.info("| [CLOSE] MybatisDbItemReader");
         log.info("| name: {}", name);
         log.info("| mapperClass: {}", mapperClass);
         log.info("| mapperMethod: {}", mapperMethod);

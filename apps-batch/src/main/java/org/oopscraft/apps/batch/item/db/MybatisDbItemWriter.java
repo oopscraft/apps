@@ -67,7 +67,7 @@ public class MybatisDbItemWriter<T> implements ItemStreamWriter<T> {
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [START] MybatisDbItemWriter");
+        log.info("| [OPEN] MybatisDbItemWriter");
         log.info("| name: {}", name);
         log.info("| mapperClass: {}", mapperClass);
         log.info("| mapperMethod: {}", mapperMethod);
@@ -192,7 +192,7 @@ public class MybatisDbItemWriter<T> implements ItemStreamWriter<T> {
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [END] MybatisDbItemWriter");
+        log.info("| [CLOSE] MybatisDbItemWriter");
         log.info("| name: {}", name);
         log.info("| mapperClass: {}", mapperClass);
         log.info("| mapperMethod: {}", mapperMethod);

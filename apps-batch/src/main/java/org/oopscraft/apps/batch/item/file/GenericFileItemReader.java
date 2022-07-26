@@ -66,10 +66,12 @@ public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [START] {}}", this.getClass().getSimpleName());
+        log.info("| [OPEN] GenericFileItemReader");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| itemType: {}", itemType);
+        log.info("| withHeader: {}", withHeader);
+        log.info("| encoding: {}", encoding);
         log.info("{}", StringUtils.repeat("-",80));
 
         // checks validation
@@ -162,10 +164,12 @@ public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [END] {}}", this.getClass().getSimpleName());
+        log.info("| [CLOSE] GenericFileItemReader");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| itemType: {}", itemType);
+        log.info("| withHeader: {}", withHeader);
+        log.info("| encoding: {}", encoding);
         log.info("| readCount: {}", readCount);
         log.info("{}", StringUtils.repeat("-", 80));
     }

@@ -92,10 +92,12 @@ public abstract class GenericFileItemWriter<T> extends FlatFileItemWriter<T> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [START] {}}", this.getClass().getSimpleName());
+        log.info("| [OPEN] GenericFileItemWriter");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| itemType: {}", itemType);
+        log.info("| withHeader: {}", withHeader);
+        log.info("| encoding: {}", encoding);
         log.info("{}", StringUtils.repeat("-",80));
 
         // check validation
@@ -203,10 +205,12 @@ public abstract class GenericFileItemWriter<T> extends FlatFileItemWriter<T> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [END] {}}", this.getClass().getSimpleName());
+        log.info("| [CLOSE] GenericFileItemWriter");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| itemType: {}", itemType);
+        log.info("| withHeader: {}", withHeader);
+        log.info("| encoding: {}", encoding);
         log.info("| writeCount: {}", writeCount);
         log.info("{}", StringUtils.repeat("-", 80));
     }

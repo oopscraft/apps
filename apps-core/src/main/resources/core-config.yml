@@ -1,4 +1,6 @@
+#===============================================
 # logging
+#===============================================
 logging:
   level:
     root: DEBUG
@@ -13,15 +15,19 @@ logging:
     org.hibernate.sql: DEBUG
     org.hibernate.type.descriptor.sql.basicbinder: TRACE
 
+#===============================================
 # spring
+#===============================================
 spring:
   main:
     web-application-type: none
   output:
     ansi:
-      enabled: ALWAYS
+      enabled: DETECT
 
+#===============================================
 # core
+#===============================================
 core:
   datasource:
     # default

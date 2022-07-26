@@ -47,7 +47,7 @@ public class RawFileItemWriter extends FlatFileItemWriter<byte[]> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [START] StringFileItemWriter");
+        log.info("| [OPEN] StringFileItemWriter");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("{}", StringUtils.repeat("-", 80));
@@ -102,7 +102,7 @@ public class RawFileItemWriter extends FlatFileItemWriter<byte[]> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [END] StringFileItemWriter");
+        log.info("| [CLOSE] StringFileItemWriter");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| writeCount: {}", writeCount);

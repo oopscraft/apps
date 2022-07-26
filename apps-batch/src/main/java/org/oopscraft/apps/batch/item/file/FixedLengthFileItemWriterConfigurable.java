@@ -11,7 +11,7 @@ public abstract class FixedLengthFileItemWriterConfigurable<T> extends FixedLeng
      * constructor
      */
     public FixedLengthFileItemWriterConfigurable() {
-
+        super.setWithHeader(false);
     }
 
     /**

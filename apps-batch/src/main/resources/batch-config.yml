@@ -11,13 +11,23 @@ logging:
     org.springframework.beans.factory.support.DefaultListableBeanFactory: INFO
 
 #===============================================
+# spring
+#===============================================
+spring:
+  main:
+    web-application-type: none
+  output:
+    ansi:
+      enabled: DETECT
+
+#===============================================
 # batch
 #===============================================
 batch:
   enableDatasource: true
   datasource:
-    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
+    driverClassName: org.h2.Driver
+    jdbcUrl: jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
     username: sa
     password:
     connectionTestQuery: select 1 from dual

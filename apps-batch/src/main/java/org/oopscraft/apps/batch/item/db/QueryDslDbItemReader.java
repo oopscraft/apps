@@ -55,7 +55,7 @@ public class QueryDslDbItemReader <T> extends AbstractItemCountingItemStreamItem
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [START] QueryDslDbItemReader");
+        log.info("| [OPEN] QueryDslDbItemReader");
         log.info("| name: {}", name);
         log.info("| query: {}", queryToString(query));
         log.info("{}", StringUtils.repeat("-",80));
@@ -118,7 +118,7 @@ public class QueryDslDbItemReader <T> extends AbstractItemCountingItemStreamItem
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [END] QueryDslDbItemReader");
+        log.info("| [CLOSE] QueryDslDbItemReader");
         log.info("| name: {}", name);
         log.info("| query: {}", queryToString(query));
         log.info("| readCount: {}", readCount);

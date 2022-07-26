@@ -55,7 +55,7 @@ public class FixedLengthLineAggregator extends ExtractorLineAggregator<Object> {
 
                 // array copy
                 if(itemField.getLength().align() == Align.RIGHT) {
-                    System.arraycopy(sourceBytes, 0, targetBytes, length - sourceBytes.length, Math.min(sourceBytes.length, length));
+                    System.arraycopy(sourceBytes, 0, targetBytes,  Math.max(length-sourceBytes.length,0), Math.min(sourceBytes.length, length));
                 }else{
                     System.arraycopy(sourceBytes, 0, targetBytes, 0, Math.min(sourceBytes.length, length));
                 }

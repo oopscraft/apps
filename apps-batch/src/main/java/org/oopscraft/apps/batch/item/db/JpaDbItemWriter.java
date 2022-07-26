@@ -46,7 +46,7 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
 
         // logging
         log.info("{}", StringUtils.repeat("-",80));
-        log.info("| [START] JpaDbItemWriter");
+        log.info("| [OPEN] JpaDbItemWriter");
         log.info("| name: {}", name);
         log.info("| dataSourceKey: {}", dataSourceKey);
         log.info("{}", StringUtils.repeat("-",80));
@@ -155,7 +155,7 @@ public class JpaDbItemWriter<T> extends JpaItemWriter<T> implements ItemStreamWr
     public void close() throws ItemStreamException {
         // logging
         log.info(StringUtils.repeat("-", 80));
-        log.info("| [END] JpaDbItemWriter");
+        log.info("| [CLOSE] JpaDbItemWriter");
         log.info("| name: {}", name);
         log.info("| dataSourceKey: {}", dataSourceKey);
         log.info("| writeCount: {}", writeCount);

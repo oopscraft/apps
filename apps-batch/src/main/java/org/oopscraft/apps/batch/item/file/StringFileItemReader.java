@@ -47,7 +47,7 @@ public class StringFileItemReader extends FlatFileItemReader<String> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [START] StringFileItemReader");
+        log.info("| [OPEN] StringFileItemReader");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("{}", StringUtils.repeat("-", 80));
@@ -90,7 +90,7 @@ public class StringFileItemReader extends FlatFileItemReader<String> {
 
         // logging
         log.info("{}", StringUtils.repeat("-", 80));
-        log.info("| [END] StringFileItemReader");
+        log.info("| [CLOSE] StringFileItemReader");
         log.info("| name: {}", name);
         log.info("| filePath: {}", filePath);
         log.info("| readCount: {}", readCount);
