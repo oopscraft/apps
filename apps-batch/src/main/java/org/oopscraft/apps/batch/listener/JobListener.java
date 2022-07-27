@@ -42,7 +42,6 @@ public class JobListener implements JobExecutionListener {
         log.info("| endTime: {}", Optional.ofNullable(jobExecution.getEndTime()).map(v->DATE_FORMAT.format(v)).orElse(null));
         log.info("| status: {}", jobExecution.getStatus());
         log.info("| exitStatus: {}", jobExecution.getExitStatus());
-        log.info("| failureExceptions: {}", jobExecution.getFailureExceptions());
         log.info("{}", StringUtils.repeat("=",80));
     }
 

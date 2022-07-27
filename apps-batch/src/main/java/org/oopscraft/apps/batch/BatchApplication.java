@@ -127,39 +127,29 @@ public class BatchApplication implements CommandLineRunner, ApplicationContextAw
      */
     @Override
     public void run(String... args) throws Exception {
-        try {
-            // profiles startup process
-            printStartupProfile();
+        // profiles startup process
+        printStartupProfile();
 
-            // logging startup context
-            printStartupContext(args);
+        // logging startup context
+        printStartupContext(args);
 
-            // launch
-            Job job = applicationContext.getBean(batchContext.getJobClass());
-            JobLauncher jobLauncher = applicationContext.getBean(JobLauncher.class);
-            JobExecution jobExecution = jobLauncher.run(job, batchContext.createJobParameters());
-            log.info("JobExecution:{}", jobExecution);
+        // launch
+        Job job = applicationContext.getBean(batchContext.getJobClass());
+        JobLauncher jobLauncher = applicationContext.getBean(JobLauncher.class);
+        JobExecution jobExecution = jobLauncher.run(job, batchContext.createJobParameters());
 
-            // check isUnsuccessful
-            if(jobExecution.getStatus().isUnsuccessful()){
-                String failureExceptions = jobExecution.getFailureExceptions().stream()
-                        .map(ExceptionUtils::getStackTrace)
-                        .collect(Collectors.joining());
-                throw new RuntimeException(jobExecution + failureExceptions);
-            }
-
-            // check stopped
-            if(jobExecution.getStatus() == BatchStatus.STOPPED){
-                log.warn("== BatchStatus is [{}]", jobExecution.getStatus().name());
-                shutdown();
-                System.exit(143);       // SIGTERM(143)
-            }
-
-        }catch(Exception e){
-            log.error("{}", e.getMessage());
-            throw e;
+        // check isUnsuccessful
+        if(jobExecution.getStatus().isUnsuccessful()){
+            throw new RuntimeException(jobExecution.toString());
         }
-    }
+
+        // check stopped
+        if(jobExecution.getStatus() == BatchStatus.STOPPED){
+            log.warn("== BatchStatus is [{}]", jobExecution.getStatus().name());
+            shutdown();
+            System.exit(143);       // SIGTERM(143)
+        }
+   }
 
     /**
      * printStartupProfile

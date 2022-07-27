@@ -13,8 +13,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @Slf4j
 public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
@@ -110,11 +112,14 @@ public abstract class GenericFileItemReader<T> extends FlatFileItemReader<T> {
      */
     @Override
     protected final T doRead() throws Exception {
-        readCount ++;
         String line = readLine();
         if (line == null) {
             return null;
         } else {
+            readCount ++;
+            if(log.isDebugEnabled()) {
+                log.debug("READ [{}]", line);
+            }
             return internalRead(line, this.getCurrentItemCount());
         }
     }

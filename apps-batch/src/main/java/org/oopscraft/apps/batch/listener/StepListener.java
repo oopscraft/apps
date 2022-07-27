@@ -65,7 +65,6 @@ public class StepListener implements StepExecutionListener, ChunkListener {
         log.info("| commitCount: {}", stepExecution.getCommitCount());
         log.info("| rollbackCount: {}", stepExecution.getRollbackCount());
         log.info("| exitStatus: {}", stepExecution.getExitStatus());
-        log.info("| failureExceptions: {}", stepExecution.getFailureExceptions());
         log.info("{}", StringUtils.repeat("─",80));
         return stepExecution.getExitStatus();
     }

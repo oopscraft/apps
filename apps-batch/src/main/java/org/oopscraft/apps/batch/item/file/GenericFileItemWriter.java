@@ -180,7 +180,11 @@ public abstract class GenericFileItemWriter<T> extends FlatFileItemWriter<T> {
 
         // actual write
         LineAggregator<Object> lineAggregator = lineAggregatorRegistry.get(item.getClass());
-        state.write(lineAggregator.aggregate(item) + lineSeparator);
+        String line = lineAggregator.aggregate(item);
+        if(log.isDebugEnabled()){
+            log.debug("WRITE [{}]", line);
+        }
+        state.write(line + lineSeparator);
     }
 
     /**
