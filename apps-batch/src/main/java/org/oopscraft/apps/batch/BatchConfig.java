@@ -41,7 +41,7 @@ public class BatchConfig {
     private static String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
     @Getter
-    private static String timestampFormat = "yyyy-MM-dd HH:mm:ss.S";
+    private static String timestampFormat = "yyyy-MM-dd HH:mm:ss";
 
     @Getter
     private final boolean enableDatasource;
