@@ -41,6 +41,9 @@ dependencies {
         api "com.amazonaws:aws-java-sdk-batch:1.11.890"
         api "com.amazonaws:aws-java-sdk-logs:1.11.890"
         api "com.amazonaws:aws-java-sdk-lambda:1.11.890"
+
+        // data faker
+        api "net.datafaker:datafaker:1.4.0"
    }
 }
 

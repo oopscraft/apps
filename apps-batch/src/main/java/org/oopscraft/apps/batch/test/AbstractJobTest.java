@@ -33,7 +33,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.UUID;
 
 import static org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR;
 
@@ -89,6 +92,7 @@ public class AbstractJobTest {
             batchContextBean.setJobClass(batchContext.getJobClass());
             batchContextBean.setBaseDate(batchContext.getBaseDate());
             batchContextBean.setJobParameters(batchContext.getJobParameters());
+            batchContextBean.setJobParameter("_junit", UUID.randomUUID().toString());
 
             // initializes job
             try {
@@ -134,6 +138,8 @@ public class AbstractJobTest {
         TaskletTestJob.setTasklet(tasklet);
         BatchContext batchContext = BatchContext.builder()
                 .jobClass(TaskletTestJob.class)
+                .baseDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                .jobParameter("_junit", UUID.randomUUID().toString())
                 .build();
         JobExecution jobExecution = runJob(batchContext);
         Collection<StepExecution> stepExecutions = jobExecution.getStepExecutions();

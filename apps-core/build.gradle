@@ -108,6 +108,9 @@ dependencies {
 	api "com.google.guava:guava"
 	api "com.google.code.findbugs:jsr305"
 
+	// data faker
+	api "net.datafaker:datafaker"
+
 }
 
 test {
