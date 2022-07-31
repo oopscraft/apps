@@ -106,18 +106,7 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
 
     @Override
     protected void doExecute(JobExecution execution) throws JobInterruptedException, JobRestartException, StartLimitExceededException {
-        try {
-            // switches data source
-            if (dataSourceKey != null) {
-                dataSource.switchDefaultDataSource(dataSourceKey);
-            }
-            super.doExecute(execution);
-        }finally{
-            // stores data source
-            if(dataSourceKey != null){
-                dataSource.restoreDefaultDataSource();
-            }
-        }
+        super.doExecute(execution);
     }
 
     /**

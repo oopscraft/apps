@@ -7,6 +7,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
+import java.util.Map;
 
 @Slf4j
 public class RoutingDataSource extends AbstractRoutingDataSource implements DisposableBean {
@@ -14,6 +15,16 @@ public class RoutingDataSource extends AbstractRoutingDataSource implements Disp
     public static final String DEFAULT_KEY = "default";
 
     private static ThreadLocal<String> currentKey = new ThreadLocal<>();
+
+    /**
+     * constructor
+     * @param defaultKey
+     * @param targetDataSources
+     */
+    public RoutingDataSource(String defaultKey, Map<Object, Object> targetDataSources) {
+        setTargetDataSources(targetDataSources);
+        setDefaultTargetDataSource(targetDataSources.get(defaultKey));
+    }
 
     /**
      * sets current key
@@ -57,25 +68,6 @@ public class RoutingDataSource extends AbstractRoutingDataSource implements Disp
                 log.warn(ignore.getMessage());
             }
         }
-    }
-
-    /**
-     * switchDefaultDataSource
-     * @param dataSourceKey
-     */
-    public void switchDefaultDataSource(String dataSourceKey) {
-        DataSource dataSource = getResolvedDataSources().get(dataSourceKey);
-        setDefaultTargetDataSource(dataSource);
-        afterPropertiesSet();
-    }
-
-    /**
-     * restoreDefaultDataSource
-     */
-    public void restoreDefaultDataSource(){
-        DataSource dataSource = getResolvedDataSources().get(DEFAULT_KEY);
-        setDefaultTargetDataSource(dataSource);
-        afterPropertiesSet();
     }
 
     @PreDestroy

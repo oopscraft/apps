@@ -90,38 +90,27 @@ public abstract class AbstractTasklet implements Tasklet {
 
     @Override
     public final RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
+        this.stepContribution = stepContribution;
+        DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        transactionStatus = transactionManager.getTransaction((TransactionDefinition) defaultTransactionDefinition);
+        stepContribution.setExitStatus(ExitStatus.EXECUTING);
+        ExecutionContext executionContext = StepSynchronizationManager.getContext().getStepExecution().getExecutionContext();
+        BatchContext batchContext = applicationContext.getBean(BatchContext.class);
         try {
-            // switches data source
-            if (dataSourceKey != null) {
-                dataSource.switchDefaultDataSource(dataSourceKey);
-            }
-
-            this.stepContribution = stepContribution;
-            DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-            transactionStatus = transactionManager.getTransaction((TransactionDefinition) defaultTransactionDefinition);
-            stepContribution.setExitStatus(ExitStatus.EXECUTING);
-            ExecutionContext executionContext = StepSynchronizationManager.getContext().getStepExecution().getExecutionContext();
-            BatchContext batchContext = applicationContext.getBean(BatchContext.class);
-            try {
-                doExecute(batchContext, executionContext);
-                this.transactionManager.commit(this.transactionStatus);
-            } catch (Throwable e) {
-                this.transactionManager.rollback(this.transactionStatus);
-                stepContribution.setExitStatus(ExitStatus.FAILED);
-                log.error("Error Occurred in batch Job execution", e);
-                throw new Exception(e);
-            } finally {
-                closeAll();
-            }
-
-            // exit
-            stepContribution.setExitStatus(ExitStatus.COMPLETED);
-            return RepeatStatus.FINISHED;
-        }finally{
-            if(dataSourceKey != null){
-                dataSource.restoreDefaultDataSource();
-            }
+            doExecute(batchContext, executionContext);
+            this.transactionManager.commit(this.transactionStatus);
+        } catch (Throwable e) {
+            this.transactionManager.rollback(this.transactionStatus);
+            stepContribution.setExitStatus(ExitStatus.FAILED);
+            log.error("Error Occurred in batch Job execution", e);
+            throw new Exception(e);
+        } finally {
+            closeAll();
         }
+
+        // exit
+        stepContribution.setExitStatus(ExitStatus.COMPLETED);
+        return RepeatStatus.FINISHED;
     }
 
     /**

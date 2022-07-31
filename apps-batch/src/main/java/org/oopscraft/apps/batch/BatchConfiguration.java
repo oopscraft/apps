@@ -5,11 +5,11 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.oopscraft.apps.AppsBasePackage;
 import org.oopscraft.apps.batch.dependency.BatchComponentScan;
 import org.oopscraft.apps.batch.dependency.DependencyTracker;
 import org.oopscraft.apps.core.CoreConfiguration;
+import org.oopscraft.apps.core.data.DataSourceKey;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -33,8 +33,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
@@ -47,7 +45,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -87,11 +84,16 @@ public class BatchConfiguration implements EnvironmentPostProcessor {
                 });
         environment.getPropertySources().addLast(parseYamlResource(("classpath:batch-config.yml")));
 
-        // apply BatchComponentScan
-        if (batchContext.getJobClass() != null && batchContext.getJobClass().getAnnotation(BatchComponentScan.class) != null) {
-            applyBatchComponentScan(batchContext.getJobClass(), environment);
+        // overrides datasource key (@DataSourceKey)
+        if(batchContext.getJobClass() != null && batchContext.getJobClass().getAnnotation(DataSourceKey.class) != null) {
+            overrideDataSourceKey(batchContext.getJobClass(), environment);
         }
-    }
+
+        // overrides BatchComponentScan (@BatchComponentScan)
+        if(batchContext.getJobClass() != null && batchContext.getJobClass().getAnnotation(BatchComponentScan.class) != null) {
+            overrideComponentScan(batchContext.getJobClass(), environment);
+        }
+   }
 
     /**
      * parseYamResource
@@ -112,20 +114,43 @@ public class BatchConfiguration implements EnvironmentPostProcessor {
     }
 
     /**
+     * overrideDataSourceKey
+     * @param jobClass
+     * @param environment
+     */
+    private void overrideDataSourceKey(Class<?> jobClass, ConfigurableEnvironment environment){
+        DataSourceKey dataSourceKeyAnnotation = batchContext.getJobClass().getAnnotation(DataSourceKey.class);
+        String dataSourceKey = dataSourceKeyAnnotation.value();
+        log.info("== dataSourceKey:{}", dataSourceKey);
+        environment.getSystemProperties().put("--core.datasource-key", dataSourceKey);
+    }
+
+    /**
+     * overrideComponentScan
+     *
+     * @param jobClass
+     * @param environment
+     */
+    private void overrideComponentScan(Class<?> jobClass, ConfigurableEnvironment environment) {
+
+        // batchComponentScanPackageNames
+        List<String> batchComponentScanPackageNames = getBatchComponentScanPackageNames(batchContext.getJobClass());
+        batchComponentScanPackageNames.forEach(el -> log.info(el));
+
+        // overrides base package to scan
+        environment.getSystemProperties().put("--core.base-packages", String.join(",", batchComponentScanPackageNames));
+    }
+
+
+    /**
      * checkBatchComponentScan
      * @param jobClass job class
-     * @param environment spring environment
      */
-    private void applyBatchComponentScan(Class<?> jobClass, ConfigurableEnvironment environment) {
+    private static List<String> getBatchComponentScanPackageNames(Class<?> jobClass) {
         Assert.notNull(jobClass, "JobClass is null");
-        Assert.notNull(environment, "environment is null");
 
         // check batch component scan annotation
         BatchComponentScan batchComponentScan = jobClass.getAnnotation(BatchComponentScan.class);
-        if(batchComponentScan == null) {
-            log.info("No BatchComponentScan...skip");
-            return;
-        }
 
         // 1. apps base package
         List<String> basePackageNames = new ArrayList<String>(){{
@@ -153,10 +178,8 @@ public class BatchConfiguration implements EnvironmentPostProcessor {
         List<String> effectivePackageNames = toEffectivePackageNames(basePackageNames);
         effectivePackageNames.forEach(el -> log.info(el));
 
-        // overrides base package to scan
-        overrideEffectiveComponentScan(effectivePackageNames);
-        overrideEffectiveJpaRepositoryScan(effectivePackageNames);
-        overrideEffectiveMapperScan(effectivePackageNames);
+        // returns
+        return effectivePackageNames;
     }
 
     /**
@@ -192,74 +215,6 @@ public class BatchConfiguration implements EnvironmentPostProcessor {
 
         // returns
         return effectivePackageNames;
-    }
-
-    /**
-     * overrideEffectiveComponentScan
-     * @param effectivePackageNames effective package names
-     */
-    private void overrideEffectiveComponentScan(List<String> effectivePackageNames) {
-        Annotation componentScanAnnotation = CoreConfiguration.class.getDeclaredAnnotation(ComponentScan.class);
-        if (java.lang.reflect.Proxy.isProxyClass(componentScanAnnotation.getClass())) {
-            try {
-                java.lang.reflect.InvocationHandler handler = java.lang.reflect.Proxy.getInvocationHandler(componentScanAnnotation);
-                Field memberValues = handler.getClass().getDeclaredField("memberValues");
-                memberValues.setAccessible(true);
-                Map<Object, Object> annotationAttributes = (Map<Object, Object>) memberValues.get(handler);
-                annotationAttributes.put("basePackages", effectivePackageNames.toArray(new String[0]));
-                memberValues.set(handler, annotationAttributes);
-            } catch (NoSuchFieldException|SecurityException|IllegalArgumentException|IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }else{
-            log.warn("== Scans All Components");
-        }
-    }
-
-    /**
-     * overrideEffectiveJpaRepositoryScan
-     * @param effectivePackageNames effective package names
-     */
-    private void overrideEffectiveJpaRepositoryScan(List<String> effectivePackageNames){
-        EnableJpaRepositories annotations = CoreConfiguration.class.getDeclaredAnnotation(EnableJpaRepositories.class);
-        if(java.lang.reflect.Proxy.isProxyClass(annotations.getClass())){
-            try {
-                java.lang.reflect.InvocationHandler handler = java.lang.reflect.Proxy.getInvocationHandler(annotations);
-                Class<?> handlerClass = handler.getClass();
-                Field memberValues = handlerClass.getDeclaredField("memberValues");
-                memberValues.setAccessible(true);
-                Map<Object,Object> annotationAttributes = (Map<Object,Object>) memberValues.get(handler);
-                annotationAttributes.put("basePackages", effectivePackageNames.toArray(new String[0]));
-                memberValues.set(handler, annotationAttributes);
-            }catch(Exception e){
-                throw new RuntimeException(e);
-            }
-        }else{
-            log.warn("== Scans All Jpa Repository");
-        }
-    }
-
-    /**
-     * overrideEffectiveMapperScan
-     * @param effectivePackageNames effective package names
-     */
-    private void overrideEffectiveMapperScan(List<String> effectivePackageNames) {
-        MapperScan mapperScan = CoreConfiguration.class.getDeclaredAnnotation(MapperScan.class);
-        if(java.lang.reflect.Proxy.isProxyClass(mapperScan.getClass())){
-            try {
-                java.lang.reflect.InvocationHandler handler = java.lang.reflect.Proxy.getInvocationHandler(mapperScan);
-                Class<?> handlerClass = handler.getClass();
-                Field memberValues = handlerClass.getDeclaredField("memberValues");
-                memberValues.setAccessible(true);
-                Map<Object,Object> annotationAttributes = (Map<Object,Object>) memberValues.get(handler);
-                annotationAttributes.put("basePackages", effectivePackageNames.toArray(new String[0]));
-                memberValues.set(handler, annotationAttributes);
-            }catch(Exception e){
-                throw new RuntimeException(e);
-            }
-        }else{
-            log.warn("== Scans All Mapper");
-        }
     }
 
     /**

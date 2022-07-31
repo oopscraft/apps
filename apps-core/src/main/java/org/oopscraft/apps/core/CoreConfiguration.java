@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.type.JdbcType;
@@ -42,6 +43,7 @@ import org.springframework.util.Assert;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Slf4j
@@ -50,6 +52,7 @@ import java.util.*;
 @EnableTransactionManagement
 @ComponentScan(
         basePackageClasses = {AppsBasePackage.class},
+        basePackages = "${core.base-packages}",
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class
 )
 @EnableJpaRepositories(
@@ -61,6 +64,7 @@ import java.util.*;
 )
 @MapperScan(
         basePackageClasses = {AppsBasePackage.class},
+        basePackages = "${core.base-packages}",
         annotationClass = Mapper.class,
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
         sqlSessionFactoryRef = "sqlSessionFactory"
@@ -81,6 +85,35 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
                     environment.getPropertySources().addLast(parseYamlResource(location));
                 });
         environment.getPropertySources().addLast(parseYamlResource(("classpath:core-config.yml")));
+
+
+        // EnableJpaRepositories 는 SpEL 적용이 안됨 으로 직접 변경 (해당 부분 JDK warning 발생함)
+        EnableJpaRepositories annotations = this.getClass().getDeclaredAnnotation(EnableJpaRepositories.class);
+        if(java.lang.reflect.Proxy.isProxyClass(annotations.getClass())){
+            try {
+                java.lang.reflect.InvocationHandler handler = java.lang.reflect.Proxy.getInvocationHandler(annotations);
+                Class<?> handlerClass = handler.getClass();
+                Field memberValues = handlerClass.getDeclaredField("memberValues");
+                memberValues.setAccessible(true);
+                Map<Object,Object> annotationAttributes = (Map<Object,Object>) memberValues.get(handler);
+                String coreBasePackages = environment.getProperty("core.base-packages");
+                if(coreBasePackages != null && coreBasePackages.trim().length() > 0) {
+                    String[] basePackages = (String[])annotationAttributes.get("basePackages");
+                    Arrays.stream(basePackages).map(element -> {
+                        return environment.resolvePlaceholders(element);
+                    }).toArray(unused -> basePackages);
+                    annotationAttributes.put("basePackages", basePackages);
+                }else{
+                    annotationAttributes.put("basePackages", new String[]{});
+                }
+                memberValues.set(handler, annotationAttributes);
+            }catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }else{
+            log.warn("== Scans All Jpa Repository");
+        }
+
     }
 
     /**
@@ -109,16 +142,29 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
      */
     @Bean(destroyMethod = "close")
     public RoutingDataSource dataSource(CoreConfig coreConfig) throws Exception {
-        RoutingDataSource routingDataSource = new RoutingDataSource();
-        Map<String, HikariConfig> datasource = coreConfig.getDatasource();
+        String defaultKey = coreConfig.getDatasourceKey();
+        Map<String, HikariConfig> dataSources = coreConfig.getDatasource();
         Map<Object, Object> targetDataSources = new LinkedHashMap<Object, Object>();
-        for(String key: datasource.keySet()) {
-            HikariDataSource targetDataSource = new HikariDataSource(datasource.get(key));
+        int count = 0;
+        for (String key : dataSources.keySet()) {
+            count ++;
+            HikariConfig hikariConfig = dataSources.get(key);
+            log.debug(StringUtils.repeat("-", 80));
+            log.debug("- DataSource[{}]: {} {}", count, key, (key.equals(defaultKey)?"[*]":""));
+            log.debug("- driver: {}", hikariConfig.getDriverClassName());
+            log.debug("- jdbcUrl: {}", hikariConfig.getJdbcUrl());
+            log.debug("- username: {}", hikariConfig.getUsername());
+            log.debug("- connectionTestQuery: {}", hikariConfig.getConnectionTestQuery());
+            log.debug("- initializationFailTimeout: {}", hikariConfig.getInitializationFailTimeout());
+            log.debug("- minimumIdle: {}", hikariConfig.getMinimumIdle());
+            log.debug("- maximumPoolSize: {}", hikariConfig.getMaximumPoolSize());
+            log.debug("- idleTimeout: {}", hikariConfig.getIdleTimeout());
+            log.debug("- maxLifetime: {}", hikariConfig.getMaxLifetime());
+            HikariDataSource targetDataSource = new HikariDataSource(hikariConfig);
             targetDataSources.put(key, targetDataSource);
+            log.debug(StringUtils.repeat("-", 80));
         }
-        routingDataSource.setTargetDataSources(targetDataSources);
-        routingDataSource.setDefaultTargetDataSource(targetDataSources.get(RoutingDataSource.DEFAULT_KEY));
-        return routingDataSource;
+        return new RoutingDataSource(defaultKey, targetDataSources);
     }
 
     /**

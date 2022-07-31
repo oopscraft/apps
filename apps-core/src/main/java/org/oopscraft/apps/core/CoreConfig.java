@@ -14,6 +14,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CoreConfig {
 
+    private final String basePackages;
+
+    private final String datasourceKey;
+
     private final Map<String, HikariConfig> datasource;
 
 }

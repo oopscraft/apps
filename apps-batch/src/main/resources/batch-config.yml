@@ -36,14 +36,11 @@ batch:
 # core
 #===============================================
 core:
+  datasource-key: h2
   datasource:
-    # default
-    default:
+    # h2
+    h2:
       minimumIdle: 1
       maximumPoolSize: 4
-    # readonly
-#    readonly:
-#      minimumIdle: 1
-#      maximumPoolSize: 2
 
 

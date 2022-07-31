@@ -29,19 +29,21 @@ spring:
 # core
 #===============================================
 core:
+  base-packages: ~
+  datasource-key: h2
   datasource:
     # default
-    default:
+    h2:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
       username: sa
       password:
       connectionTestQuery: select 1 from dual
-    # readonly
-#    readonly:
-#      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-#      jdbcUrl: jdbc:log4jdbc:h2:mem:apps;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE;
-#      username: sa
-#      password:
-#      connectionTestQuery: select 1 from dual
+    # mariadb
+    mariadb:
+      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbcUrl: jdbc:log4jdbc:mariadb://192.168.0.2:3306/apps?characterEncoding=utf-8
+      username: apps
+      password: apps
+      connectionTestQuery: select 1 from dual
 
