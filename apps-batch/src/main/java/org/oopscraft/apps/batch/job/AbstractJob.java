@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.modelmapper.ModelMapper;
 import org.oopscraft.apps.batch.BatchContext;
 import org.oopscraft.apps.batch.item.db.JpaDbItemWriter;
 import org.oopscraft.apps.batch.item.db.MybatisDbItemReader;
@@ -64,7 +65,9 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
     @Getter
     protected StepBuilderFactory stepBuilderFactory;
 
-    private String dataSourceKey;
+    @Autowired
+    @Getter
+    protected ModelMapper modelMapper;
 
     /**
      * setApplicationContext
@@ -93,15 +96,6 @@ public abstract class AbstractJob extends SimpleJob implements ApplicationContex
         this.setJobRepository(applicationContext.getBean(JobRepository.class));
         this.registerJobExecutionListener(new JobListener());
         this.initialize(applicationContext.getBean(BatchContext.class));
-    }
-
-    /**
-     * setDataSourceKey
-     * @param dataSourceKey
-     */
-    public final void setDataSourceKey(String dataSourceKey) {
-        log.info("AbstractTasklet.setDataSourceKey({})", dataSourceKey);
-        this.dataSourceKey = dataSourceKey;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.type.JdbcType;
 import org.hibernate.cfg.AvailableSettings;
+import org.modelmapper.ModelMapper;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
@@ -252,17 +253,7 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         return sqlSessionFactoryBean;
     }
 
-    /**
-     * jpaQueryFactory
-     * @param entityManager
-     * @return
-     */
-    @Bean
-    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
-       return new JPAQueryFactory(entityManager);
-    }
-
-    /**
+   /**
      * messageSource
      * @param messageService
      * @return
@@ -276,6 +267,29 @@ public class CoreConfiguration implements EnvironmentPostProcessor {
         messageSource.setUseCodeAsDefaultMessage(true);
         messageSource.setCacheSeconds(10);
         return messageSource;
+    }
+
+    /**
+     * jpaQueryFactory
+     * @param entityManager
+     * @return jpa query factory
+     */
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+        return new JPAQueryFactory(entityManager);
+    }
+
+    /**
+     * modelMapper
+     * @return model mapper
+     */
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration()
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+                .setFieldMatchingEnabled(true);
+        return modelMapper;
     }
 
 }
